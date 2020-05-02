@@ -6,7 +6,7 @@ class UserCognito {
   UserState _userState;
   UserState get userState => _userState;
 
-  Map<String, String> _userAttrs = {"email": ""};
+  Map<String, String> _userAttrs = {"email": "Usuário Local"};
   Map<String, String> get userAttrs => _userAttrs;
 
   initialize() async {

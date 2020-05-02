@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/izaiasjr/Documentos/EMPRESA/condomínio/flutter_login_setup_cognito/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
+            "outputFile": "/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
             "map": [
                 {
-                    "source": "/home/izaiasjr/Documentos/EMPRESA/condomínio/flutter_login_setup_cognito/android/app/src/main/res/values/styles.xml",
+                    "source": "/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/res/values/styles.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

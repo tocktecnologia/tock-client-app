@@ -24,13 +24,11 @@ class _HomeScreen2State extends State<HomeScreen2>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  static const List<String> _drawerContents = <String>[
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-  ];
+  AnimationController _controller;
+  Animation<double> _drawerContentsOpacity;
+  Animation<Offset> _drawerDetailsPosition;
+  bool _showDrawerContents = true;
+  int _currentIndex;
 
   static final Animatable<Offset> _drawerDetailsTween = Tween<Offset>(
     begin: const Offset(0.0, -1.0),
@@ -38,11 +36,6 @@ class _HomeScreen2State extends State<HomeScreen2>
   ).chain(CurveTween(
     curve: Curves.fastOutSlowIn,
   ));
-
-  AnimationController _controller;
-  Animation<double> _drawerContentsOpacity;
-  Animation<Offset> _drawerDetailsPosition;
-  bool _showDrawerContents = true;
 
   @override
   void initState() {
@@ -56,6 +49,9 @@ class _HomeScreen2State extends State<HomeScreen2>
       curve: Curves.fastOutSlowIn,
     );
     _drawerDetailsPosition = _controller.drive(_drawerDetailsTween);
+
+    // implement to get from shared preference for save state
+    _currentIndex = 0;
   }
 
   @override
@@ -64,36 +60,34 @@ class _HomeScreen2State extends State<HomeScreen2>
     super.dispose();
   }
 
-  void _showNotImplementedMessage() {
-    Navigator.pop(context); // Dismiss the drawer.
-    _scaffoldKey.currentState.showSnackBar(const SnackBar(
-      content: Text("Essa função está sendo implementada!"),
-    ));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawerDragStartBehavior: DragStartBehavior.down,
       key: _scaffoldKey,
-      appBar: AppBar(actions: _iconsStatus()),
+      appBar: AppBar(
+        title: Text("Olá"),
+        actions: _iconsStatus(),
+        centerTitle: true,
+      ),
       drawer: _drawer(),
-      body: _content(),
+      body: _body(),
+      bottomNavigationBar: BottomNavigationBar(
+        items: _bottomNavigatioItens(),
+        onTap: (int idx) {
+          if (idx == 3) {
+            _scaffoldKey.currentState.openDrawer();
+          } else {
+            setState(() {
+              _currentIndex = idx;
+            });
+          }
+        },
+      ),
     );
   }
 
-  List<Widget> _iconsStatus() {
-    final iconRemote = BlocProvider.of<BlocAuth>(context).isConnectedRemote
-        ? Icon(Icons.cloud, color: Colors.white)
-        : Icon(Icons.cloud_off, color: Colors.white30);
-    final iconLocal = BlocProvider.of<BlocAuth>(context).isConnectedLocal
-        ? Icon(Icons.wifi_tethering, color: Colors.white)
-        : Icon(Icons.portable_wifi_off, color: Colors.white30);
-
-    return [iconLocal, SizedBox(width: 20), iconRemote, SizedBox(width: 10)];
-  }
-
-  _content() {
+  _body() {
     return BlocBuilder<BlocAuth, AuthState>(condition: (previousState, state) {
       if (state is LoggedOutState) {
         final email = Locator.instance.get<UserCognito>().userAttrs['email'];
@@ -114,15 +108,51 @@ class _HomeScreen2State extends State<HomeScreen2>
     });
   }
 
+  List<BottomNavigationBarItem> _bottomNavigatioItens() {
+    return <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home, color: ColorsCustom.loginScreenMiddle),
+        title: Text('Painel',
+            maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.favorite, color: ColorsCustom.loginScreenMiddle),
+        title: Text('+ Usados',
+            maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.video_library, color: ColorsCustom.loginScreenMiddle),
+        title: Text('Cenas',
+            maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.menu, color: ColorsCustom.loginScreenMiddle),
+        title: Text('Menu',
+            maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
+      ),
+    ];
+  }
+
+  List<Widget> _iconsStatus() {
+    final iconRemote = BlocProvider.of<BlocAuth>(context).isConnectedRemote
+        ? Icon(Icons.cloud_done, color: Colors.white)
+        : Icon(Icons.cloud_off, color: Colors.white30);
+    final iconLocal = BlocProvider.of<BlocAuth>(context).isConnectedLocal
+        ? Icon(Icons.wifi_tethering, color: Colors.white)
+        : Icon(Icons.portable_wifi_off, color: Colors.white30);
+
+    return [iconLocal, SizedBox(width: 20), iconRemote, SizedBox(width: 10)];
+  }
+
   Widget _drawer() {
     final email = Locator.instance.get<UserCognito>().userAttrs['email'];
     return Drawer(
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: const Text('Condomínio'),
+            accountName: Text('Condomínio'),
             accountEmail: Text('$email'),
-            currentAccountPicture: const CircleAvatar(
+            currentAccountPicture: CircleAvatar(
               backgroundImage: AssetImage('lib/assets/images/cond.png'),
             ),
             margin: EdgeInsets.zero,
@@ -189,16 +219,31 @@ class _HomeScreen2State extends State<HomeScreen2>
   }
 
   List<Widget> _optionsDrawer() {
+    final mheight = 8.0;
     return <Widget>[
       ListTile(
         leading: CircleAvatar(child: Icon(Icons.plus_one)),
         title: Text('Adicionar módulo'),
         onTap: _showNotImplementedMessage,
       ),
+      Divider(
+        height: mheight,
+      ),
       ListTile(
         leading: CircleAvatar(child: Icon(Icons.build)),
         title: Text('Configurar'),
         onTap: _showNotImplementedMessage,
+      ),
+      Divider(
+        height: mheight,
+      ),
+      ListTile(
+        leading: CircleAvatar(child: Icon(Icons.cloud_download)),
+        title: Text('Baixar Backup'),
+        onTap: _showNotImplementedMessage,
+      ),
+      Divider(
+        height: mheight,
       ),
       ListTile(
         leading: CircleAvatar(child: Icon(Icons.exit_to_app)),
@@ -208,6 +253,14 @@ class _HomeScreen2State extends State<HomeScreen2>
           Navigator.pop(context),
         },
       ),
+      Divider(height: mheight),
     ];
+  }
+
+  void _showNotImplementedMessage() {
+    Navigator.pop(context); // Dismiss the drawer.
+    _scaffoldKey.currentState.showSnackBar(const SnackBar(
+      content: Text("Essa função está sendo implementada!"),
+    ));
   }
 }

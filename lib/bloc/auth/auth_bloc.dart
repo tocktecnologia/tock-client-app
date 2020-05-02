@@ -60,8 +60,8 @@ class BlocAuth extends Bloc<AuthEvent, AuthState> {
         _isConnectedLocal =
             await Locator.instance.get<Firmware>().verifyLogin();
 
-        // print('_isConnectedRemote: $_isConnectedRemote');
-        // print('_isConnectedLocal: $_isConnectedLocal');
+        print('_isConnectedRemote: $_isConnectedRemote');
+        print('_isConnectedLocal: $_isConnectedLocal');
 
         if (_isConnectedLocal)
           yield LoggedState(
