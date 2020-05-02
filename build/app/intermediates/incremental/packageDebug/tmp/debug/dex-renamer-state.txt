@@ -1,0 +1,4 @@
+#Sat May 02 16:36:18 BRT 2020
+base.0=/home/izaiasjr/Documentos/EMPRESA/condomínio/flutter_login_setup_cognito/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
