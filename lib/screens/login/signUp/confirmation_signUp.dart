@@ -26,7 +26,7 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
 
   _confirmSignUp() {
     if (_formKey.currentState.validate()) {
-      BlocProvider.of<BlocAuth>(context).add(
+      BlocProvider.of<AuthBloc>(context).add(
         ConfirmSignUpEvent(
             email: widget.email,
             confirmationCode: numConfirmationController.text),
@@ -35,7 +35,7 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
   }
 
   _resendConfirmationCode() {
-    BlocProvider.of<BlocAuth>(context)
+    BlocProvider.of<AuthBloc>(context)
         .add(SendCodeConfirmSignUpEvent(email: widget.email));
   }
 
@@ -93,7 +93,7 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
   }
 
   Widget _textTitle() {
-    return BlocBuilder<BlocAuth, AuthState>(
+    return BlocBuilder<AuthBloc, AuthState>(
       builder: (previusState, state) {
         if (state is LoadingSendCodeConfirmSignUpState) {
           return ListView(
@@ -130,7 +130,7 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
   }
 
   Widget _buttonSignUp() {
-    return BlocBuilder<BlocAuth, AuthState>(
+    return BlocBuilder<AuthBloc, AuthState>(
       condition: (previusState, state) {
         if (state is LoadedConfirmSignUpState) {
           Navigator.pushReplacement(

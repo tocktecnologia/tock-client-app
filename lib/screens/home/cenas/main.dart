@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class Cenas extends StatefulWidget {
+class CenasScreen extends StatefulWidget {
   @override
-  _CenasState createState() => _CenasState();
+  _CenasScreenState createState() => _CenasScreenState();
 }
 
-class _CenasState extends State<Cenas> {
+class _CenasScreenState extends State<CenasScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: Text("Cenas")),
+      appBar: AppBar(title: Text("Cenas")),
       body: Center(
-        child: Text("Cenas"),
+        child: Text("CenasScreen"),
       ),
     );
   }

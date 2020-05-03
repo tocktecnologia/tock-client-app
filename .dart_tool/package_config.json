@@ -218,6 +218,12 @@
       "languageVersion": "2.0"
     },
     {
+      "name": "reorderables",
+      "rootUri": "file:///home/izaiasjr/flutter/.pub-cache/hosted/pub.dartlang.org/reorderables-0.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "rxdart",
       "rootUri": "file:///home/izaiasjr/flutter/.pub-cache/hosted/pub.dartlang.org/rxdart-0.23.1",
       "packageUri": "lib/",
@@ -302,7 +308,7 @@
       "languageVersion": "2.1"
     }
   ],
-  "generated": "2020-05-03T00:43:12.357989Z",
+  "generated": "2020-05-03T03:36:46.239376Z",
   "generator": "pub",
   "generatorVersion": "2.7.0"
 }

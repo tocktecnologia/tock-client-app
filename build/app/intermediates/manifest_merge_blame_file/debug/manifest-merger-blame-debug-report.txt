@@ -33,8 +33,8 @@
 26        android:debuggable="true"
 27        android:icon="@mipmap/ic_launcher"
 27-->/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:11:9-43
-28        android:label="Flutter Cognito" >
-28-->/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:10:9-40
+28        android:label="Tock" >
+28-->/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:10:9-29
 29        <activity
 29-->/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:12:9-23:20
 30            android:name="com.example.flutter_login_setup_cognito.MainActivity"

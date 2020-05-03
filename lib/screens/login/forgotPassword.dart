@@ -28,7 +28,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   _forgotPassword() {
     if (_formKey.currentState.validate()) {
-      BlocProvider.of<BlocAuth>(context).add(
+      BlocProvider.of<AuthBloc>(context).add(
         ForgotPasswordEvent(
             email: widget.email,
             newPassowrd: newPassController.text,
@@ -38,7 +38,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   _resendCode() {
-    BlocProvider.of<BlocAuth>(context)
+    BlocProvider.of<AuthBloc>(context)
         .add(SendCodeForgotPasswordEvent(email: widget.email));
   }
 
@@ -52,7 +52,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<BlocAuth>(context)
+    BlocProvider.of<AuthBloc>(context)
         .add(SendCodeForgotPasswordEvent(email: widget.email));
   }
 
@@ -106,7 +106,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Widget _textTitle() {
-    return BlocBuilder<BlocAuth, AuthState>(
+    return BlocBuilder<AuthBloc, AuthState>(
       builder: (previusState, state) {
         if (state is LoadingSendCodeState) {
           return ListView(
@@ -143,7 +143,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Widget _buttonSignUp() {
-    return BlocBuilder<BlocAuth, AuthState>(
+    return BlocBuilder<AuthBloc, AuthState>(
       condition: (previusState, state) {
         if (state is LoadedForgotPasswordState) {
           Navigator.pushReplacement(

@@ -47,7 +47,7 @@
         {
             "label": "Quadra",
             "group_id": "abcd",
-            "module_ids": [
+            "object_ids": [
                 "1234567",
                 "12345678"
             ]
@@ -55,7 +55,7 @@
         {
             "label": "Academia",
             "group_id": "abc",
-            "device_ids": [
+            "object_ids": [
                 "1234",
                 "12345"
             ]
@@ -65,35 +65,11 @@
         {
             "scene_id": "abc123",
             "label": "desligadar quadra e academia",
-            "device_ids": [
-                {
-                    "remote_id": "9F3A12345",
-                    "local_id": "10.0.1.11",
-                    "object_id": "1234",
-                    "label": "Lampada da Quadra 1",
-                    "type": "LIGHT"
-                },
-                {
-                    "remote_id": "9F3A123456",
-                    "local_id": "10.0.1.12",
-                    "object_id": "12345",
-                    "label": "Lampada da Quadra 2",
-                    "type": "LIGHT"
-                },
-                {
-                    "remote_id": "9F3A1234567",
-                    "local_id": "10.0.1.13",
-                    "object_id": "123456",
-                    "label": "Lampada da academia 1",
-                    "type": "LIGHT"
-                },
-                {
-                    "remote_id": "9F3A12345678",
-                    "local_id": "10.0.1.14",
-                    "object_id": "1234567",
-                    "label": "Lampada da academia 2",
-                    "type": "LIGHT"
-                }
+            "object_ids": [
+                "1234",
+                "12345",
+                "123456",
+                "123457"
             ]
         }
     ]

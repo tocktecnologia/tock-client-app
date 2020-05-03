@@ -37,7 +37,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   _signUp() {
     if (_formKey.currentState.validate()) {
-      BlocProvider.of<BlocAuth>(context).add(
+      BlocProvider.of<AuthBloc>(context).add(
         SignUpEvent(
           login: emailController.text,
           password: passController.text,
@@ -87,7 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget _buttonSignUp() {
-    return BlocBuilder<BlocAuth, AuthState>(
+    return BlocBuilder<AuthBloc, AuthState>(
       condition: (previusState, state) {
         if (state is LoadedSignUpState) {
           Navigator.pushReplacement(

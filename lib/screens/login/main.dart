@@ -4,7 +4,7 @@ import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
-import 'package:flutter_login_setup_cognito/screens/home/main2.dart';
+import 'package:flutter_login_setup_cognito/screens/home/main.dart';
 import 'package:flutter_login_setup_cognito/screens/login/signUp/confirmation_signUp.dart';
 import 'package:flutter_login_setup_cognito/screens/login/signUp/signUp.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
@@ -72,12 +72,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _contentLogin() {
-    return BlocBuilder<BlocAuth, AuthState>(condition: (previousState, state) {
+    return BlocBuilder<AuthBloc, AuthState>(condition: (previousState, state) {
       print('$state');
       if (state is LoggedState) {
-        Navigator.pushReplacement(
-            context, OpenAndFadeTransition(HomeScreen2()));
-      } else if (state is LoggedOutState) {
+        Navigator.pushReplacement(context, OpenAndFadeTransition(HomeScreen()));
+      } else if (state is LoginErrorState) {
         ShowAlert.open(
             context: context,
             titleText: "Alerta de Conexão",
@@ -127,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   _buttonLogin(),
                   SizedBox(height: 15),
                   // InkWell(
-                  //   onTap: () => BlocProvider.of<BlocAuth>(context)
+                  //   onTap: () => BlocProvider.of<AuthBloc>(context)
                   //       .add(ForceLoginEvent()),
                   //   child: Icon(Icons.wifi_tethering,
                   //       size: 30, color: Colors.white),
@@ -180,13 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buttonLogin() {
-    return BlocBuilder<BlocAuth, AuthState>(
-      condition: (previousState, state) {
-        if (state is LoginErrorState && previousState is LoadingLoginState) {
-          ShowAlert.open(context: context, contentText: state.message);
-        }
-        return true;
-      },
+    return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         if (state is LoadingLoginState) {
           return ButtonLogin(
@@ -215,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
   _login() {
     // not validate email cause the user can want to login in local
     //if (_formKey.currentState.validate()) {
-    BlocProvider.of<BlocAuth>(context).add(
+    BlocProvider.of<AuthBloc>(context).add(
         LoginEvent(login: loginController.text, password: passController.text));
     //}
   }

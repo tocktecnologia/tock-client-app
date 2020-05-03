@@ -7,7 +7,7 @@ import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
-class BlocAuth extends Bloc<AuthEvent, AuthState> {
+class AuthBloc extends Bloc<AuthEvent, AuthState> {
   @override
   get initialState => LoggedOutState();
 
@@ -41,14 +41,13 @@ class BlocAuth extends Bloc<AuthEvent, AuthState> {
           yield LoggedState(
               message: "Você está conectado na Tock pela Internet!");
         } else
-          yield LoggedOutState(
+          yield LoginErrorState(
               message:
                   "Você está desconectado da rede local de automação e da internet.\nHabilite uma das duas para conectar!");
       }
       // Logout event
       else if (event is LogoutEvent) {
         yield LoadingLogoutState();
-        await Future.delayed(Duration(milliseconds: 900));
         await Cognito.signOut();
         yield LoggedOutState();
       }
@@ -71,7 +70,7 @@ class BlocAuth extends Bloc<AuthEvent, AuthState> {
           yield LoggedState(
               message: "Você está conectado na Tock pela Internet!");
         } else
-          yield LoggedOutState(
+          yield LoginErrorState(
               message:
                   "Você está desconectado da rede local de automação e da internet.\nHabilite uma das duas para conectar!");
       }

@@ -32,4 +32,8 @@ class FirmwareApi {
       return false;
     }
   }
+
+  Future getState() async {
+    ;
+  }
 }

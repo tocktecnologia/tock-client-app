@@ -1,32 +1,33 @@
 class DataUser {
-  List<Devices> devices;
-  List<Groups> groups;
-  List<Scenes> scenes;
+  List<Device> devices;
+  List<Group> groups;
+  List<Scene> scenes;
 
   DataUser({this.devices, this.groups, this.scenes});
 
   DataUser.fromJson(Map<String, dynamic> json) {
     if (json['devices'] != null) {
-      devices = new List<Devices>();
+      devices = new List<Device>();
       json['devices'].forEach((v) {
-        devices.add(new Devices.fromJson(v));
+        devices.add(new Device.fromJson(v));
       });
     }
     if (json['groups'] != null) {
-      groups = new List<Groups>();
+      groups = new List<Group>();
       json['groups'].forEach((v) {
-        groups.add(new Groups.fromJson(v));
+        groups.add(new Group.fromJson(v));
       });
     }
     if (json['scenes'] != null) {
-      scenes = new List<Scenes>();
+      scenes = new List<Scene>();
       json['scenes'].forEach((v) {
-        scenes.add(new Scenes.fromJson(v));
+        scenes.add(new Scene.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
+    print("entrei em toJson");
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.devices != null) {
       data['devices'] = this.devices.map((v) => v.toJson()).toList();
@@ -41,16 +42,16 @@ class DataUser {
   }
 }
 
-class Devices {
+class Device {
   String remoteId;
   String localId;
   String objectId;
   String label;
   String type;
 
-  Devices({this.remoteId, this.localId, this.objectId, this.label, this.type});
+  Device({this.remoteId, this.localId, this.objectId, this.label, this.type});
 
-  Devices.fromJson(Map<String, dynamic> json) {
+  Device.fromJson(Map<String, dynamic> json) {
     remoteId = json['remote_id'];
     localId = json['local_id'];
     objectId = json['object_id'];
@@ -69,56 +70,46 @@ class Devices {
   }
 }
 
-class Groups {
+class Group {
   String label;
   String groupId;
-  List<String> moduleIds;
-  List<String> deviceIds;
+  List<String> objectIds;
 
-  Groups({this.label, this.groupId, this.moduleIds, this.deviceIds});
+  Group({this.label, this.groupId, this.objectIds});
 
-  Groups.fromJson(Map<String, dynamic> json) {
+  Group.fromJson(Map<String, dynamic> json) {
     label = json['label'];
     groupId = json['group_id'];
-    moduleIds = json['module_ids'].cast<String>();
-    deviceIds = json['device_ids'].cast<String>();
+    objectIds = json['object_ids'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['label'] = this.label;
     data['group_id'] = this.groupId;
-    data['module_ids'] = this.moduleIds;
-    data['device_ids'] = this.deviceIds;
+    data['object_ids'] = this.objectIds;
     return data;
   }
 }
 
-class Scenes {
+class Scene {
   String sceneId;
   String label;
-  List<String> deviceIds;
+  List<String> objectIds;
 
-  Scenes({this.sceneId, this.label, this.deviceIds});
+  Scene({this.sceneId, this.label, this.objectIds});
 
-  Scenes.fromJson(Map<String, dynamic> json) {
+  Scene.fromJson(Map<String, dynamic> json) {
     sceneId = json['scene_id'];
     label = json['label'];
-    if (json['device_ids'] != null) {
-      deviceIds = new List<String>();
-      json['device_ids'].forEach((v) {
-        deviceIds.add(v);
-      });
-    }
+    objectIds = json['object_ids'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['scene_id'] = this.sceneId;
     data['label'] = this.label;
-    if (this.deviceIds != null) {
-      data['device_ids'] = this.deviceIds.map((v) => v).toList();
-    }
+    data['object_ids'] = this.objectIds;
     return data;
   }
 }
