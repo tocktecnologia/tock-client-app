@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_login_setup_cognito/shared/styles.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/styles.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'colors.dart';

@@ -1,3 +1,4 @@
+import 'package:flutter_login_setup_cognito/shared/services/api.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
 import 'package:flutter_login_setup_cognito/shared/services/firmware_api.dart';
 import 'package:get_it/get_it.dart';
@@ -11,6 +12,7 @@ class Locator {
 
     _i.registerSingleton<UserCognito>(UserCognito());
 
-    _i.registerSingleton<Firmware>(Firmware());
+    _i.registerSingleton<FirmwareApi>(FirmwareApi());
+    _i.registerSingleton<AwsApi>(AwsApi());
   }
 }

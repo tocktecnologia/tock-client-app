@@ -5,9 +5,9 @@ import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
 import 'package:flutter_login_setup_cognito/screens/login/signUp/confirmation_signUp.dart';
-import 'package:flutter_login_setup_cognito/shared/colors.dart';
-import 'package:flutter_login_setup_cognito/shared/components.dart';
-import 'package:flutter_login_setup_cognito/shared/screen_transitions/slide.transition.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/slide.transition.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override

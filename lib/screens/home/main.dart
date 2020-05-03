@@ -5,10 +5,10 @@ import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
 import 'package:flutter_login_setup_cognito/screens/login/main.dart';
-import 'package:flutter_login_setup_cognito/shared/colors.dart';
-import 'package:flutter_login_setup_cognito/shared/locator.dart';
-import 'package:flutter_login_setup_cognito/shared/screen_transitions/fade.transition.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/fade.transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HomeScreen extends StatefulWidget {

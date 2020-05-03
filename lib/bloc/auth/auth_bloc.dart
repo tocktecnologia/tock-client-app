@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
-import 'package:flutter_login_setup_cognito/shared/exceptions.dart';
-import 'package:flutter_login_setup_cognito/shared/locator.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
 import 'package:flutter_login_setup_cognito/shared/services/firmware_api.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/exceptions.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -31,7 +31,7 @@ class BlocAuth extends Bloc<AuthEvent, AuthState> {
             .login(event.login, event.password);
 
         _isConnectedLocal =
-            await Locator.instance.get<Firmware>().verifyLogin();
+            await Locator.instance.get<FirmwareApi>().verifyLogin();
 
         if (_isConnectedLocal)
           yield LoggedState(
@@ -58,7 +58,7 @@ class BlocAuth extends Bloc<AuthEvent, AuthState> {
         _isConnectedRemote =
             await Locator.instance.get<UserCognito>().verifyLogin();
         _isConnectedLocal =
-            await Locator.instance.get<Firmware>().verifyLogin();
+            await Locator.instance.get<FirmwareApi>().verifyLogin();
 
         print('_isConnectedRemote: $_isConnectedRemote');
         print('_isConnectedLocal: $_isConnectedLocal');

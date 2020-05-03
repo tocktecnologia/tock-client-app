@@ -5,10 +5,10 @@ import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
 import 'package:flutter_login_setup_cognito/screens/login/main.dart';
-import 'package:flutter_login_setup_cognito/shared/colors.dart';
-import 'package:flutter_login_setup_cognito/shared/components.dart';
-import 'package:flutter_login_setup_cognito/shared/screen_transitions/slide.transition.dart';
-import 'package:flutter_login_setup_cognito/shared/styles.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/slide.transition.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/styles.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ConfirmSignUpScreen extends StatefulWidget {

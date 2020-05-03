@@ -1,18 +1,17 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
+import 'package:flutter_login_setup_cognito/screens/home/cenas/main.dart';
+import 'package:flutter_login_setup_cognito/screens/home/favorits.dart/main.dart';
+import 'package:flutter_login_setup_cognito/screens/home/panel/main.dart';
 import 'package:flutter_login_setup_cognito/screens/login/main.dart';
-import 'package:flutter_login_setup_cognito/shared/colors.dart';
-import 'package:flutter_login_setup_cognito/shared/locator.dart';
-import 'package:flutter_login_setup_cognito/shared/screen_transitions/fade.transition.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/fade.transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HomeScreen2 extends StatefulWidget {
@@ -36,6 +35,8 @@ class _HomeScreen2State extends State<HomeScreen2>
   ).chain(CurveTween(
     curve: Curves.fastOutSlowIn,
   ));
+
+  List<Widget> _bodys = <Widget>[Panel(), Favorits(), Cenas()];
 
   @override
   void initState() {
@@ -65,14 +66,10 @@ class _HomeScreen2State extends State<HomeScreen2>
     return Scaffold(
       drawerDragStartBehavior: DragStartBehavior.down,
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text("Olá"),
-        actions: _iconsStatus(),
-        centerTitle: true,
-      ),
       drawer: _drawer(),
       body: _body(),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
         items: _bottomNavigatioItens(),
         onTap: (int idx) {
           if (idx == 3) {
@@ -103,7 +100,7 @@ class _HomeScreen2State extends State<HomeScreen2>
           ),
         );
       } else {
-        return Center();
+        return IndexedStack(index: _currentIndex, children: _bodys);
       }
     });
   }
@@ -117,7 +114,7 @@ class _HomeScreen2State extends State<HomeScreen2>
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.favorite, color: ColorsCustom.loginScreenMiddle),
-        title: Text('+ Usados',
+        title: Text('Grupos',
             maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
       ),
       BottomNavigationBarItem(
@@ -131,17 +128,6 @@ class _HomeScreen2State extends State<HomeScreen2>
             maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
       ),
     ];
-  }
-
-  List<Widget> _iconsStatus() {
-    final iconRemote = BlocProvider.of<BlocAuth>(context).isConnectedRemote
-        ? Icon(Icons.cloud_done, color: Colors.white)
-        : Icon(Icons.cloud_off, color: Colors.white30);
-    final iconLocal = BlocProvider.of<BlocAuth>(context).isConnectedLocal
-        ? Icon(Icons.wifi_tethering, color: Colors.white)
-        : Icon(Icons.portable_wifi_off, color: Colors.white30);
-
-    return [iconLocal, SizedBox(width: 20), iconRemote, SizedBox(width: 10)];
   }
 
   Widget _drawer() {
@@ -248,9 +234,9 @@ class _HomeScreen2State extends State<HomeScreen2>
       ListTile(
         leading: CircleAvatar(child: Icon(Icons.exit_to_app)),
         title: Text('Sair'),
-        onTap: () => {
-          BlocProvider.of<BlocAuth>(context).add(LogoutEvent()),
-          Navigator.pop(context),
+        onTap: () {
+          BlocProvider.of<BlocAuth>(context).add(LogoutEvent());
+          Navigator.pop(context);
         },
       ),
       Divider(height: mheight),

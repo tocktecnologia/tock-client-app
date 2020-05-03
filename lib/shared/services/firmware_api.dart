@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter_login_setup_cognito/shared/constants.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 import 'package:http/http.dart';
 
-class Firmware {
+class FirmwareApi {
   String username = 'tock';
   String password = 'tocktecnologia30130';
   String idTest = '10';
