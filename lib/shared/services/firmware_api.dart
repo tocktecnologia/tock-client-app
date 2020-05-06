@@ -33,7 +33,27 @@ class FirmwareApi {
     }
   }
 
-  Future getState() async {
-    ;
+  Future<Map> getStates() async {
+    final url = '${Endpoints.NetAddress}.$idTest:80/tock/states';
+    final basicAuth =
+        'Basic ' + base64Encode(utf8.encode('$username:$password'));
+    final headers = {
+      'authorization': basicAuth,
+      'content-type': 'application/json'
+    };
+
+    try {
+      final response =
+          await post(url, headers: headers).timeout(Duration(seconds: 5));
+      if (response.statusCode == 200) {
+        return {"response": "sucesso", "retorno": json.decode(response.body)};
+      } else {
+        return {"response": "falha"};
+      }
+    } on TimeoutException catch (_) {
+      return {"response": "timeout"};
+    } on SocketException catch (_) {
+      return {"response": "no-internet"};
+    }
   }
 }

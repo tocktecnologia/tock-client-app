@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/data_user/data_user_bloc.dart';
+import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
 import 'package:flutter_login_setup_cognito/screens/login/main.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
@@ -22,6 +23,8 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<LightsBloc>(
+            create: (BuildContext context) => LightsBloc()),
         BlocProvider<AuthBloc>(create: (BuildContext context) => AuthBloc()),
         BlocProvider<DataUserBloc>(
             create: (BuildContext context) => DataUserBloc()),

@@ -5,12 +5,11 @@ abstract class LightsState {}
 
 class LightsInitial extends LightsState {}
 
-class LoadingLightState extends LightsState {
-  final lightId;
-  LoadingLightState({@required this.lightId});
-}
+class LoadingLightStates extends LightsState {}
 
-class LoadedLightState extends LightsState {
-  final lightId;
-  LoadedLightState({@required this.lightId});
+class LoadedLightStates extends LightsState {}
+
+class LoadLightStatesError extends LightsState {
+  final message;
+  LoadLightStatesError({@required this.message});
 }

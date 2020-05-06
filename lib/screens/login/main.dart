@@ -85,11 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return true;
     }, builder: (context, state) {
       if (state is ForcingLoginState || state is LoggedState) {
-        return SizedBox(
-          child: SpinKitWave(
-            color: Colors.white,
-          ),
-        );
+        return SizedBox(child: SpinKitWave(color: Colors.white));
       } else {
         return _formLogin();
       }

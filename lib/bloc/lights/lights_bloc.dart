@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter_login_setup_cognito/shared/services/firmware_api.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'package:meta/meta.dart';
 
@@ -16,11 +17,17 @@ class LightsBloc extends Bloc<LightsEvent, LightsState> {
     LightsEvent event,
   ) async* {
     try {
-      if (event is GetStateLight) {
-        yield LoadingLightState(lightId: event.lightId);
-        await  Locator.instance.get<FirmwareApi>()
-        yield LoadingLightState(lightId: event.lightId);
+      if (event is GetStatesLight) {
+        yield LoadingLightStates();
+        final response = await Locator.instance.get<FirmwareApi>().getStates();
+        print(response);
+        // for (int i = 0; i < 160; i++) {
+        //   print(i);
+        // }
+        yield LoadedLightStates();
       }
-    } catch (e) {}
+    } catch (e) {
+      LoadLightStatesError(message: e.toString());
+    }
   }
 }

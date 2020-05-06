@@ -1,7 +1,12 @@
+import 'dart:io';
+
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
 import 'package:flutter_login_setup_cognito/shared/services/firmware_api.dart';
+import 'package:flutter_login_setup_cognito/shared/services/wifi.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/exceptions.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'auth_event.dart';
@@ -31,12 +36,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             .login(event.login, event.password);
 
         _isConnectedLocal =
-            await Locator.instance.get<FirmwareApi>().verifyLogin();
+            Locator.instance.get<WifiService>().isConnectedLocal();
 
         if (_isConnectedLocal)
           yield LoggedState(
               message:
-                  "Você está conectado na rede  de automação local da Tock!");
+                  "Você está conectado na rede local de automação da Tock!");
         else if (_isConnectedRemote) {
           yield LoggedState(
               message: "Você está conectado na Tock pela Internet!");
@@ -56,8 +61,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         yield ForcingLoginState();
         _isConnectedRemote =
             await Locator.instance.get<UserCognito>().verifyLogin();
+
         _isConnectedLocal =
-            await Locator.instance.get<FirmwareApi>().verifyLogin();
+            Locator.instance.get<WifiService>().isConnectedLocal();
 
         print('_isConnectedRemote: $_isConnectedRemote');
         print('_isConnectedLocal: $_isConnectedLocal');

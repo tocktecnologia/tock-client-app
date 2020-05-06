@@ -31,7 +31,7 @@ class _TockDeviceState extends State<TockDevice> {
               widget.device.label,
               textAlign: TextAlign.center,
               style:
-                  TextStyle(fontSize: 13, color: Colors.black.withAlpha(200)),
+                  TextStyle(fontSize: 12, color: Colors.black.withAlpha(200)),
             ),
           ],
         ),

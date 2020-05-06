@@ -30,6 +30,8 @@ dependencies:
   flutter_cognito_plugin: ^1.0.2
   http: ^0.12.1
   reorderables: ^0.3.2
+  connectivity: ^0.4.8
+  pull_to_refresh: ^1.5.8
 
 
   

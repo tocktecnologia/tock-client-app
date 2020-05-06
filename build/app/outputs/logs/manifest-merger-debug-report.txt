@@ -8,6 +8,8 @@ MERGED from /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android
 MERGED from [:path_provider] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/path_provider/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:path_provider_macos] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/path_provider_macos/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:flutter_cognito_plugin] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/flutter_cognito_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:connectivity] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-10:12
+MERGED from [:connectivity_macos] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/connectivity_macos/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:plugin_scaffold] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/plugin_scaffold/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.fragment:fragment:1.0.0] /home/izaiasjr/.gradle/caches/transforms-2/files-2.1/b8b68c04ee72209a3beca37e17f7088d/fragment-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/izaiasjr/.gradle/caches/transforms-2/files-2.1/f046f38cf99e9cbe4891b184ce64db19/legacy-support-core-ui-1.0.0/AndroidManifest.xml:17:1-22:12
@@ -105,6 +107,10 @@ MERGED from [:path_provider_macos] /home/izaiasjr/Documentos/EMPRESA/condomínio
 MERGED from [:path_provider_macos] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/path_provider_macos/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_cognito_plugin] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/flutter_cognito_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_cognito_plugin] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/flutter_cognito_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity_macos] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/connectivity_macos/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity_macos] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/connectivity_macos/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:plugin_scaffold] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/plugin_scaffold/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:plugin_scaffold] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/plugin_scaffold/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [androidx.fragment:fragment:1.0.0] /home/izaiasjr/.gradle/caches/transforms-2/files-2.1/b8b68c04ee72209a3beca37e17f7088d/fragment-1.0.0/AndroidManifest.xml:20:5-44
@@ -172,6 +178,12 @@ MERGED from [com.amazonaws:aws-android-sdk-mobile-client:2.16.4] /home/izaiasjr/
 	android:name
 		ADDED from /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/debug/AndroidManifest.xml:6:22-64
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from [com.amazonaws:aws-android-sdk-mobile-client:2.16.4] /home/izaiasjr/.gradle/caches/transforms-2/files-2.1/1522796c0779a8e1a60d486d76b04484/jetified-aws-android-sdk-mobile-client-2.16.4/AndroidManifest.xml:7:5-78
+ADDED from [:connectivity] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-79
+MERGED from [com.amazonaws:aws-android-sdk-mobile-client:2.16.4] /home/izaiasjr/.gradle/caches/transforms-2/files-2.1/1522796c0779a8e1a60d486d76b04484/jetified-aws-android-sdk-mobile-client-2.16.4/AndroidManifest.xml:7:5-78
+MERGED from [com.amazonaws:aws-android-sdk-mobile-client:2.16.4] /home/izaiasjr/.gradle/caches/transforms-2/files-2.1/1522796c0779a8e1a60d486d76b04484/jetified-aws-android-sdk-mobile-client-2.16.4/AndroidManifest.xml:7:5-78
 	android:name
-		ADDED from [com.amazonaws:aws-android-sdk-mobile-client:2.16.4] /home/izaiasjr/.gradle/caches/transforms-2/files-2.1/1522796c0779a8e1a60d486d76b04484/jetified-aws-android-sdk-mobile-client-2.16.4/AndroidManifest.xml:7:22-76
+		ADDED from [:connectivity] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:7:22-76
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from [:connectivity] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-76
+	android:name
+		ADDED from [:connectivity] /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:8:22-73
