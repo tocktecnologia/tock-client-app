@@ -36,20 +36,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _isConnectedLocal =
             await Locator.instance.get<FirmwareApi>().isDeviceConnected();
 
-        // _isConnectedLocal =
-        //     Locator.instance.get<WifiService>().isConnectedLocal();
-
-        if (_isConnectedLocal)
-          yield LoggedState(
-              message:
-                  "Você está conectado na rede local de automação da Tock!");
-        else if (_isConnectedRemote) {
-          yield LoggedState(
-              message: "Você está conectado na Tock pela Internet!");
-        } else
-          yield LoginErrorState(
-              message:
-                  "Você está desconectado da rede local de automação e da internet.\nHabilite uma das duas para conectar!");
+        yield _handleLogin(
+            isConnectedLocal: _isConnectedLocal,
+            isConnectedRemote: _isConnectedRemote);
+        // if (_isConnectedLocal)
+        //   yield LoggedState(
+        //       message:
+        //           "Você está conectado na rede local de automação da Tock!");
+        // else if (_isConnectedRemote) {
+        //   yield LoggedState(
+        //       message: "Você está conectado na Tock pela Internet!");
+        // } else
+        //   yield LoginErrorState(
+        //       message:
+        //           "Você está desconectado da rede local de automação e da internet.\nHabilite uma das duas para conectar!");
       }
       // Logout event
       else if (event is LogoutEvent) {
@@ -65,23 +65,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         _isConnectedLocal =
             await Locator.instance.get<FirmwareApi>().isDeviceConnected();
-        // _isConnectedLocal =
-        //     Locator.instance.get<WifiService>().isConnectedLocal();
 
-        print('_isConnectedRemote: $_isConnectedRemote');
-        print('_isConnectedLocal: $_isConnectedLocal');
+        yield _handleLogin(
+            isConnectedLocal: _isConnectedLocal,
+            isConnectedRemote: _isConnectedRemote);
 
-        if (_isConnectedLocal)
-          yield LoggedState(
-              message:
-                  "Você está conectado na rede  de automação local da Tock!");
-        else if (_isConnectedRemote) {
-          yield LoggedState(
-              message: "Você está conectado na Tock pela Internet!");
-        } else
-          yield LoginErrorState(
-              message:
-                  "Você não possui uma central Tock na sua rede e não logou no app pela internet.\nTente validar uma dos dois requisitos para entrar!");
+        // if (_isConnectedLocal)
+        //   yield LoggedState(
+        //       message:
+        //           "Você está conectado na rede  de automação local da Tock!");
+        // else if (_isConnectedRemote) {
+        //   yield LoggedState(
+        //       message: "Você está conectado na Tock pela Internet!");
+        // } else
+        //   yield LoginErrorState(
+        //       message:
+        //           "Você não possui uma Central Tock na sua rede e não logou no app pela internet.\nTente validar uma dos dois requisitos para entrar!");
       }
       // SignUp Event
       else if (event is SignUpEvent) {
@@ -124,6 +123,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print(e.toString());
 
       yield LoginErrorState(message: HandleExptions.message(e));
+    }
+  }
+
+  AuthState _handleLogin({isConnectedRemote, isConnectedLocal}) {
+    if (isConnectedLocal && !isConnectedRemote)
+      return LoggedState(
+          message: "Você está conectado na rede local de automação da Tock!");
+    else if (!isConnectedLocal && isConnectedRemote) {
+      return LoggedState(message: "Você está conectado na Tock pela Internet!");
+    } else if (isConnectedLocal && isConnectedRemote) {
+      return LoggedState(
+          message:
+              "Você está conectado na Tock pela Internet e pela rede Local!");
+    } else {
+      return LoginErrorState(
+          message:
+              "Você não possui uma Central Tock na sua rede e não logou no app pela internet.\nTente validar uma dos dois requisitos para entrar!");
     }
   }
 }
