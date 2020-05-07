@@ -1,11 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/data_user/data_user_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
 import 'package:flutter_login_setup_cognito/screens/home/panel/tock_device.dart';
-import 'package:flutter_login_setup_cognito/shared/model/data_user_model.dart';
 import 'package:flutter_login_setup_cognito/shared/services/wifi.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
@@ -30,6 +28,7 @@ class _PanelScreenState extends State<PanelScreen> {
   @override
   void initState() {
     super.initState();
+    updateState();
   }
 
   @override
@@ -155,7 +154,7 @@ class _PanelScreenState extends State<PanelScreen> {
   Widget _iconLocal() {
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Locator.instance.get<WifiService>().isConnectedLocal()
+        child: BlocProvider.of<AuthBloc>(context).isConnectedLocal
             ? Icon(Icons.wifi_tethering, color: Colors.white)
             : Icon(Icons.portable_wifi_off, color: Colors.white30));
   }

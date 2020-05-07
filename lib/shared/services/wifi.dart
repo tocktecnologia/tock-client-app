@@ -49,6 +49,7 @@ class WifiService {
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    print('_updateConnectionStatus changed! _wifiName: $_wifiName');
     switch (result) {
       case ConnectivityResult.wifi:
         try {

@@ -9,7 +9,7 @@ class FirmwareApi {
   String password = 'tocktecnologia30130';
   String idTest = '10';
 
-  Future verifyLogin() async {
+  Future isDeviceConnected() async {
     final url = '${Endpoints.NetAddress}.$idTest:80/tock';
     final basicAuth =
         'Basic ' + base64Encode(utf8.encode('$username:$password'));

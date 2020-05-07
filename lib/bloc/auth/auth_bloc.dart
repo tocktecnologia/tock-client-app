@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:connectivity/connectivity.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
@@ -36,7 +34,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             .login(event.login, event.password);
 
         _isConnectedLocal =
-            Locator.instance.get<WifiService>().isConnectedLocal();
+            await Locator.instance.get<FirmwareApi>().isDeviceConnected();
+
+        // _isConnectedLocal =
+        //     Locator.instance.get<WifiService>().isConnectedLocal();
 
         if (_isConnectedLocal)
           yield LoggedState(
@@ -63,7 +64,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             await Locator.instance.get<UserCognito>().verifyLogin();
 
         _isConnectedLocal =
-            Locator.instance.get<WifiService>().isConnectedLocal();
+            await Locator.instance.get<FirmwareApi>().isDeviceConnected();
+        // _isConnectedLocal =
+        //     Locator.instance.get<WifiService>().isConnectedLocal();
 
         print('_isConnectedRemote: $_isConnectedRemote');
         print('_isConnectedLocal: $_isConnectedLocal');
@@ -78,7 +81,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else
           yield LoginErrorState(
               message:
-                  "Você está desconectado da rede local de automação e da internet.\nHabilite uma das duas para conectar!");
+                  "Você não possui uma central Tock na sua rede e não logou no app pela internet.\nTente validar uma dos dois requisitos para entrar!");
       }
       // SignUp Event
       else if (event is SignUpEvent) {
