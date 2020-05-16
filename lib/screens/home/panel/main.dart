@@ -29,7 +29,8 @@ class _PanelScreenState extends State<PanelScreen> {
   @override
   void initState() {
     super.initState();
-    updateState();
+    BlocProvider.of<LightsBloc>(context).add(GetStatesLight());
+    //updateState();
   }
 
   @override
@@ -46,21 +47,7 @@ class _PanelScreenState extends State<PanelScreen> {
         onRefresh: () {
           return updateState();
         },
-        child:
-            BlocBuilder<DataUserBloc, DataUserState>(builder: (context, state) {
-          if (state is LoadedDataUserState) {
-            return _panelLights();
-          } else {
-            return Center(
-              child: Text(
-                "Você ainda não configurou seus devices!",
-                textAlign: TextAlign.center,
-                style:
-                    TextStyle(color: ColorsCustom.loginScreenUp, fontSize: 20),
-              ),
-            );
-          }
-        }),
+        child: _panelLights(),
       ),
     );
   }
@@ -87,39 +74,44 @@ class _PanelScreenState extends State<PanelScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
-                Text("Atualizando estado atual ...",
+                Text("Atualizando ...",
                     style: TextStyle(
                         color: ColorsCustom.loginScreenUp, fontSize: 16))
               ],
             ),
           );
+        } else if (state is LoadedLightStates) {
+          return _cardDevices();
         } else {
-          return SingleChildScrollView(
-            primary: true,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: PADDING_HORIZ_EXTERN, vertical: 10),
-              child: Container(
-                decoration: new BoxDecoration(boxShadow: [
-                  new BoxShadow(
-                    color: ColorsCustom.loginScreenMiddle,
-                    blurRadius: 8,
-                    spreadRadius: 1,
-                  ),
-                ]),
-                width: MediaQuery.of(context).size.width,
-                child: Card(
-                  margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                  child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: PADDING_HORIZ_INTERN),
-                      child: _listWrapReorderable()),
-                ),
-              ),
-            ),
-          );
+          return Center(child: Text('Central não encontrada'));
         }
       },
+    );
+  }
+
+  Widget _cardDevices() {
+    return SingleChildScrollView(
+      primary: true,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: PADDING_HORIZ_EXTERN, vertical: 10),
+        child: Container(
+          decoration: new BoxDecoration(boxShadow: [
+            new BoxShadow(
+              color: ColorsCustom.loginScreenMiddle,
+              blurRadius: 8,
+              spreadRadius: 1,
+            ),
+          ]),
+          width: MediaQuery.of(context).size.width,
+          child: Card(
+            margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+            child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: PADDING_HORIZ_INTERN),
+                child: _listWrapReorderable()),
+          ),
+        ),
+      ),
     );
   }
 
@@ -127,11 +119,6 @@ class _PanelScreenState extends State<PanelScreen> {
     final dataUser = BlocProvider.of<DataUserBloc>(context).dataUser;
     final devices =
         dataUser.devices.map<TockDevice>((v) => TockDevice(device: v)).toList();
-
-    _onReorder(int oldIndex, int newIndex) {
-      BlocProvider.of<DataUserBloc>(context)
-          .add(UpdateIdxDataUserEvent(oldIndex: oldIndex, newIndex: newIndex));
-    }
 
     return ReorderableWrap(
       spacing: (MediaQuery.of(context).size.width -
@@ -144,6 +131,11 @@ class _PanelScreenState extends State<PanelScreen> {
       children: devices,
       onReorder: _onReorder,
     );
+  }
+
+  void _onReorder(int oldIndex, int newIndex) {
+    BlocProvider.of<DataUserBloc>(context)
+        .add(UpdateIdxDataUserEvent(oldIndex: oldIndex, newIndex: newIndex));
   }
 
   Widget _iconRemote() {

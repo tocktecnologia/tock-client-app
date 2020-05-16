@@ -100,13 +100,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _body() {
     return BlocBuilder<DataUserBloc, DataUserState>(builder: (context, state) {
       if (state is LoadingDataUserState) {
-        return SizedBox(
-          child: SpinKitWave(
-            color: ColorsCustom.loginScreenUp,
-          ),
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              child: SpinKitWave(
+                color: ColorsCustom.loginScreenUp,
+              ),
+            ),
+            Text("Download dos dados ..."),
+          ],
         );
-      } else {
+      } else if (state is LoadedDataUserState) {
         return IndexedStack(index: _currentIndex, children: _bodys);
+      } else {
+        return Center(child: Text("Não foi possível recuperar os dados!"));
       }
     });
   }

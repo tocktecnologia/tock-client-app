@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login_setup_cognito/shared/model/data_user_model.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 
 const SIZE_WIDTH_LAMP = 70.0;
 
 class TockDevice extends StatefulWidget {
-  final device;
+  final Device device;
 
   const TockDevice({Key key, this.device}) : super(key: key);
   @override
