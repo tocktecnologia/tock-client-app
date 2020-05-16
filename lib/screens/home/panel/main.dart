@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
@@ -146,6 +147,8 @@ class _PanelScreenState extends State<PanelScreen> {
   }
 
   Widget _iconRemote() {
+    // bool hasInternet = Locator.instance.get<WifiService>().connectivityResult !=
+    //     ConnectivityResult.none;
     return BlocProvider.of<AuthBloc>(context).isConnectedRemote
         ? Icon(Icons.cloud_done, color: Colors.white)
         : Icon(Icons.cloud_off, color: Colors.white30);

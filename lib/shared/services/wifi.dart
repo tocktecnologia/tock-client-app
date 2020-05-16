@@ -4,24 +4,21 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 
-const String WIFI_TOCK = "IZAIAS 2702";
-
 class WifiService {
   final Connectivity _connectivity = Connectivity();
   StreamSubscription<ConnectivityResult> _connectivitySubscription;
   String _connectionStatus = 'Unknown';
   String _wifiName, _wifiBSSID, _wifiIP;
+  ConnectivityResult _connectivityResult;
 
+  get connectivityResult => _connectivityResult;
   get wifiName => _wifiName;
 
   WifiService() {
+    _connectivityResult = ConnectivityResult.none;
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-  }
-
-  bool isConnectedLocal() {
-    return _wifiName == WIFI_TOCK ? true : false;
   }
 
   disconnect() {
@@ -49,7 +46,6 @@ class WifiService {
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    print('_updateConnectionStatus changed! _wifiName: $_wifiName');
     switch (result) {
       case ConnectivityResult.wifi:
         try {
@@ -78,6 +74,8 @@ class WifiService {
           if (Platform.isIOS) {
             LocationAuthorizationStatus status =
                 await _connectivity.getLocationServiceAuthorization();
+            print(status);
+
             if (status == LocationAuthorizationStatus.notDetermined) {
               status =
                   await _connectivity.requestLocationServiceAuthorization();
@@ -116,5 +114,7 @@ class WifiService {
         _connectionStatus = 'Failed to get connectivity.';
         break;
     }
+    _connectivityResult = result;
+    print('_connectivityResult status: $_connectivityResult');
   }
 }

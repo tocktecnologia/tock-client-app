@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
 import 'package:flutter_login_setup_cognito/shared/services/firmware_api.dart';
-import 'package:flutter_login_setup_cognito/shared/services/wifi.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/exceptions.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'auth_event.dart';

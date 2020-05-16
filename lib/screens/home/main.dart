@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  _body() {
+  Widget _body() {
     return BlocBuilder<DataUserBloc, DataUserState>(builder: (context, state) {
       if (state is LoadingDataUserState) {
         return SizedBox(
