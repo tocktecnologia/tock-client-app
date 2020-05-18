@@ -46,14 +46,42 @@ class FirmwareApi {
       final response =
           await post(url, headers: headers).timeout(Duration(seconds: 5));
       if (response.statusCode == 200) {
-        return {"response": "sucesso", "retorno": json.decode(response.body)};
+        return {"status": "sucesso", "message": json.decode(response.body)};
       } else {
-        return {"response": "falha"};
+        return {"status": "falha"};
       }
     } on TimeoutException catch (_) {
-      return {"response": "timeout"};
+      return {"status": "falha", "message": "timeout"};
     } on SocketException catch (_) {
-      return {"response": "no-internet"};
+      return {"status": "falha", "message": "no-internet"};
+    } catch (e) {
+      return {"status": "falha", "message": e.runtimeType};
+    }
+  }
+
+  Future<Map> updateState() async {
+    final url = '${Endpoints.NetAddress}.$idTest:80/tock/states';
+    final basicAuth =
+        'Basic ' + base64Encode(utf8.encode('$username:$password'));
+    final headers = {
+      'authorization': basicAuth,
+      'content-type': 'application/json'
+    };
+
+    try {
+      final response =
+          await post(url, headers: headers).timeout(Duration(seconds: 5));
+      if (response.statusCode == 200) {
+        return {"status": "sucesso", "message": json.decode(response.body)};
+      } else {
+        return {"status": "falha"};
+      }
+    } on TimeoutException catch (_) {
+      return {"status": "falha", "message": "timeout"};
+    } on SocketException catch (_) {
+      return {"status": "falha", "message": "no-internet"};
+    } catch (e) {
+      return {"status": "falha", "message": e.runtimeType};
     }
   }
 }

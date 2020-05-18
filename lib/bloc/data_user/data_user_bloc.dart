@@ -13,14 +13,6 @@ class DataUserBloc extends HydratedBloc<DataUserEvent, DataUserState> {
   @override
   DataUserState get initialState => super.initialState ?? DataUserInitial();
 
-  DataUser _dataUser;
-  get dataUser => _dataUser;
-
-  // change devices order
-  setDevices(devices) {
-    _dataUser.devices = devices;
-  }
-
   @override
   Stream<DataUserState> mapEventToState(
     DataUserEvent event,
@@ -28,17 +20,9 @@ class DataUserBloc extends HydratedBloc<DataUserEvent, DataUserState> {
     try {
       if (event is GetDataUserEvent) {
         yield LoadingDataUserState();
-        _dataUser = await Locator.instance.get<AwsApi>().getDataUser();
-        yield LoadedDataUserState();
+        final dataUser = await Locator.instance.get<AwsApi>().getDataUser();
+        yield LoadedDataUserState(dataUser: dataUser);
         //
-      } else if (event is UpdateIdxDataUserEvent) {
-        yield LoadingDataUserState();
-
-        // update position
-        Device w = dataUser.devices.removeAt(event.oldIndex);
-        dataUser.devices.insert(event.newIndex, w);
-
-        yield LoadedDataUserState();
       }
     } catch (e) {
       yield LoadDataUserErrorState(message: e.toString);
@@ -47,20 +31,20 @@ class DataUserBloc extends HydratedBloc<DataUserEvent, DataUserState> {
 
   @override
   DataUserState fromJson(Map<String, dynamic> json) {
-    try {
-      _dataUser = DataUser.fromJson(json);
-      return LoadedDataUserState(dataUser: _dataUser);
-    } catch (_) {
-      return null;
-    }
+    // try {
+    //   _dataUser = DataUser.fromJson(json);
+    //   return LoadedDataUserState(dataUser: _dataUser);
+    // } catch (_) {
+    return null;
+    // }
   }
 
   @override
   Map<String, dynamic> toJson(DataUserState state) {
-    try {
-      return _dataUser.toJson();
-    } catch (_) {
-      return null;
-    }
+    // try {
+    //   return _dataUser.toJson();
+    // } catch (_) {
+    return null;
+    // }
   }
 }

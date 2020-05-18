@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
@@ -59,6 +57,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       // Forcing login Event
       else if (event is ForceLoginEvent) {
         yield ForcingLoginState();
+
+        await Locator.instance.get<UserCognito>().initialize();
+
         _isConnectedRemote =
             await Locator.instance.get<UserCognito>().verifyLogin();
 

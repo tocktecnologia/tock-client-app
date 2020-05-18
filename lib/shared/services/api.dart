@@ -15,6 +15,39 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "1",
+      "object_id": "123",
+      "label": "Lampadas da Saída 1",
+      "type": "LIGHT"
+    },
+    {
+      "remote_id": "9F3A1234",
+      "local_id": "10.0.1.10",
+      "pin": "2",
+      "object_id": "123",
+      "label": "Lampadas da Saída 2",
+      "type": "LIGHT"
+    },
+    {
+      "remote_id": "9F3A1234",
+      "local_id": "10.0.1.10",
+      "pin": "3",
+      "object_id": "123",
+      "label": "Lampadas da Saída 3",
+      "type": "LIGHT"
+    },
+    {
+      "remote_id": "9F3A1234",
+      "local_id": "10.0.1.10",
+      "pin": "4",
+      "object_id": "123",
+      "label": "Lampadas da Saída 4",
+      "type": "LIGHT"
+    },
+    {
+      "remote_id": "9F3A1234",
+      "local_id": "10.0.1.10",
+      "pin": "5",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
@@ -22,6 +55,7 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "6",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
@@ -29,6 +63,7 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "7",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
@@ -36,6 +71,7 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "8",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
@@ -43,6 +79,7 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "9",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
@@ -50,6 +87,7 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "10",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
@@ -57,6 +95,7 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "11",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
@@ -64,6 +103,7 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "12",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
@@ -71,6 +111,7 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "13",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
@@ -78,6 +119,7 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "14",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
@@ -85,6 +127,7 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "15",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
@@ -92,178 +135,11 @@ final dataUserJson = {
     {
       "remote_id": "9F3A1234",
       "local_id": "10.0.1.10",
+      "pin": "16",
       "object_id": "123",
       "label": "Lampadas da Saída",
       "type": "LIGHT"
     },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A12345",
-      "local_id": "10.0.1.11",
-      "object_id": "1234",
-      "label": "Lampada da Quadra 1",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A123456",
-      "local_id": "10.0.1.12",
-      "object_id": "12345",
-      "label": "Lampada da Quadra 2",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234567",
-      "local_id": "10.0.1.13",
-      "object_id": "123456",
-      "label": "Lampada da academia 1",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A12345678",
-      "local_id": "10.0.1.14",
-      "object_id": "1234567",
-      "label": "Lampada da academia 2",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A123456789",
-      "local_id": "10.0.1.15",
-      "object_id": "12345678",
-      "label": "Lampadas  do Hall",
-      "type": "LIGHTS"
-    }
   ],
   "groups": [
     {

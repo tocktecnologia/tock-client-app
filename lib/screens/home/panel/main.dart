@@ -1,14 +1,10 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/data_user/data_user_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
-import 'package:flutter_login_setup_cognito/screens/home/panel/tock_device.dart';
-import 'package:flutter_login_setup_cognito/shared/services/wifi.dart';
+import 'package:flutter_login_setup_cognito/screens/home/panel/light_widget.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:reorderables/reorderables.dart';
 
@@ -22,15 +18,10 @@ class PanelScreen extends StatefulWidget {
 }
 
 class _PanelScreenState extends State<PanelScreen> {
-  List<TockDevice> _devices;
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      new GlobalKey<RefreshIndicatorState>();
-
   @override
   void initState() {
     super.initState();
     BlocProvider.of<LightsBloc>(context).add(GetStatesLight());
-    //updateState();
   }
 
   @override
@@ -42,59 +33,16 @@ class _PanelScreenState extends State<PanelScreen> {
         leading: _iconRemote(),
         centerTitle: true,
       ),
-      body: RefreshIndicator(
-        key: _refreshIndicatorKey,
-        onRefresh: () {
-          return updateState();
-        },
-        child: _panelLights(),
-      ),
+      body: Center(child: _cardLights()),
     );
   }
 
-  Future<String> updateState() async {
-    BlocProvider.of<LightsBloc>(context).add(GetStatesLight());
-    return "sucesso";
-  }
-
-  Widget _panelLights() {
-    return BlocBuilder<LightsBloc, LightsState>(
-      condition: (prevState, state) {
-        if (state is LoadLightStatesError) {
-          ShowAlert.open(
-              context: context,
-              contentText: "Erro buscando estados: ${state.message}");
-        }
-        return;
-      },
-      builder: (context, state) {
-        if (state is LoadingLightStates) {
-          return SizedBox(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
-                Text("Atualizando ...",
-                    style: TextStyle(
-                        color: ColorsCustom.loginScreenUp, fontSize: 16))
-              ],
-            ),
-          );
-        } else if (state is LoadedLightStates) {
-          return _cardDevices();
-        } else {
-          return Center(child: Text('Central não encontrada'));
-        }
-      },
-    );
-  }
-
-  Widget _cardDevices() {
+  Widget _cardLights() {
     return SingleChildScrollView(
       primary: true,
       child: Padding(
         padding: EdgeInsets.symmetric(
-            horizontal: PADDING_HORIZ_EXTERN, vertical: 10),
+            horizontal: PADDING_HORIZ_EXTERN, vertical: 20),
         child: Container(
           decoration: new BoxDecoration(boxShadow: [
             new BoxShadow(
@@ -105,20 +53,86 @@ class _PanelScreenState extends State<PanelScreen> {
           ]),
           width: MediaQuery.of(context).size.width,
           child: Card(
-            margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-            child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: PADDING_HORIZ_INTERN),
-                child: _listWrapReorderable()),
+            margin: EdgeInsets.all(0),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    SizedBox(width: 85),
+                    Text(
+                      "Iluminação",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: ColorsCustom.loginScreenMiddle,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    InkWell(
+                      onTap: () => BlocProvider.of<LightsBloc>(context)
+                          .add(GetStatesLight()),
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                        child: Icon(
+                          Icons.update,
+                          size: 27,
+                          color: ColorsCustom.loginScreenUp,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Divider(height: 0)),
+                Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: PADDING_HORIZ_INTERN),
+                    child: _lights()),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  Widget _lights() {
+    return BlocBuilder<LightsBloc, LightsState>(condition: (prevState, state) {
+      if (state is LoadLightStatesError) {
+        ShowAlert.open(
+            context: context,
+            contentText: "Erro buscando estados: ${state.message}");
+      }
+      return;
+    }, builder: (context, state) {
+      if (state is LoadingLightStates) {
+        return SizedBox(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
+              SizedBox(height: 50),
+              Text(
+                "Atualizando ...",
+                style:
+                    TextStyle(color: ColorsCustom.loginScreenUp, fontSize: 16),
+              ),
+              SizedBox(height: 700),
+            ],
+          ),
+        );
+      } else {
+        return _listWrapReorderable();
+      }
+    });
+  }
+
   Widget _listWrapReorderable() {
-    final dataUser = BlocProvider.of<DataUserBloc>(context).dataUser;
-    final devices =
-        dataUser.devices.map<TockDevice>((v) => TockDevice(device: v)).toList();
+    final lights = BlocProvider.of<LightsBloc>(context).lights;
+    final tockLights =
+        lights.map<TockLight>((light) => TockLight(light: light)).toList();
 
     return ReorderableWrap(
       spacing: (MediaQuery.of(context).size.width -
@@ -128,14 +142,14 @@ class _PanelScreenState extends State<PanelScreen> {
           (NUM_LAMPS_ROW - 1),
       runSpacing: 20,
       padding: EdgeInsets.only(top: 20, bottom: 10),
-      children: devices,
+      children: tockLights,
       onReorder: _onReorder,
     );
   }
 
   void _onReorder(int oldIndex, int newIndex) {
-    BlocProvider.of<DataUserBloc>(context)
-        .add(UpdateIdxDataUserEvent(oldIndex: oldIndex, newIndex: newIndex));
+    BlocProvider.of<LightsBloc>(context)
+        .add(UpdateIdxLightsEvent(oldIndex: oldIndex, newIndex: newIndex));
   }
 
   Widget _iconRemote() {

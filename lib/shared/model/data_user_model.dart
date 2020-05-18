@@ -48,8 +48,15 @@ class Device {
   String objectId;
   String label;
   String type;
+  String pin;
 
-  Device({this.remoteId, this.localId, this.objectId, this.label, this.type});
+  Device(
+      {this.remoteId,
+      this.localId,
+      this.objectId,
+      this.label,
+      this.type,
+      this.pin});
 
   Device.fromJson(Map<String, dynamic> json) {
     remoteId = json['remote_id'];
@@ -57,6 +64,7 @@ class Device {
     objectId = json['object_id'];
     label = json['label'];
     type = json['type'];
+    pin = json['pin'];
   }
 
   Map<String, dynamic> toJson() {
@@ -66,6 +74,7 @@ class Device {
     data['object_id'] = this.objectId;
     data['label'] = this.label;
     data['type'] = this.type;
+    data['pin'] = this.pin;
     return data;
   }
 }

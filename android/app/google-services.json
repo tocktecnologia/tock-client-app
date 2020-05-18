@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "578690645325",
+    "firebase_url": "https://tock-condominio.firebaseio.com",
+    "project_id": "tock-condominio",
+    "storage_bucket": "tock-condominio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578690645325:android:1bd473c23bab55b71bcb04",
+        "android_client_info": {
+          "package_name": "com.example.flutter_login_setup_cognito"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "578690645325-4511fk5rjalam1ls1hghmlfnva28li2i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByUzwUII41SIqY-OtZ3a5IU6svChPG7dw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "578690645325-4511fk5rjalam1ls1hghmlfnva28li2i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

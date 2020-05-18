@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: ColorsCustom.loginScreenUp,
       body: Column(
         children: <Widget>[
-          SizedBox(height: size.height * 0.0671),
+          SizedBox(height: size.height * 0.0871),
           Container(
               child: Image.asset(
             'lib/assets/images/logo.png',

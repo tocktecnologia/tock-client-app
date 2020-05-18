@@ -5,9 +5,10 @@ import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
 import 'package:flutter_login_setup_cognito/bloc/data_user/data_user_bloc.dart';
-import 'package:flutter_login_setup_cognito/screens/home/cenas/main.dart';
-import 'package:flutter_login_setup_cognito/screens/home/favorits.dart/main.dart';
+import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
+import 'package:flutter_login_setup_cognito/screens/home/groups/main.dart';
 import 'package:flutter_login_setup_cognito/screens/home/panel/main.dart';
+import 'package:flutter_login_setup_cognito/screens/home/schedules/main.dart';
 import 'package:flutter_login_setup_cognito/screens/login/main.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
@@ -38,8 +39,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   List<Widget> _bodys = <Widget>[
     PanelScreen(),
-    FavoritsScreen(),
-    CenasScreen()
+    GroupsScreen(),
+    SchedulesScreen()
   ];
 
   @override
@@ -98,7 +99,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _body() {
-    return BlocBuilder<DataUserBloc, DataUserState>(builder: (context, state) {
+    return BlocBuilder<DataUserBloc, DataUserState>(
+        condition: (prevState, state) {
+      if (state is LoadedDataUserState) {
+        BlocProvider.of<LightsBloc>(context)
+            .add(UpdateLightConfigsEvent(userDevices: state.dataUser.devices));
+      }
+      return true;
+    }, builder: (context, state) {
       if (state is LoadingDataUserState) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -111,10 +119,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Text("Download dos dados ..."),
           ],
         );
-      } else if (state is LoadedDataUserState) {
-        return IndexedStack(index: _currentIndex, children: _bodys);
       } else {
-        return Center(child: Text("Não foi possível recuperar os dados!"));
+        return IndexedStack(index: _currentIndex, children: _bodys);
       }
     });
   }
@@ -127,13 +133,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.favorite, color: ColorsCustom.loginScreenMiddle),
+        icon: Icon(Icons.pie_chart, color: ColorsCustom.loginScreenMiddle),
         title: Text('Grupos',
             maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.video_library, color: ColorsCustom.loginScreenMiddle),
-        title: Text('Cenas',
+        icon:
+            Icon(Icons.event_available, color: ColorsCustom.loginScreenMiddle),
+        title: Text('Agenda',
             maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
       ),
       BottomNavigationBarItem(
@@ -185,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         position: _drawerDetailsPosition,
                         child: FadeTransition(
                           opacity: ReverseAnimation(_drawerContentsOpacity),
-                          child: _optionsConfigsDrawer(),
+                          child: _optionsAccountDrawer(),
                         ),
                       ),
                     ],
@@ -244,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _optionsConfigsDrawer() {
+  Widget _optionsAccountDrawer() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -8,7 +8,7 @@ class LoadingDataUserState extends DataUserState {}
 
 class LoadedDataUserState extends DataUserState {
   DataUser dataUser;
-  LoadedDataUserState({this.dataUser});
+  LoadedDataUserState({@required this.dataUser});
 }
 
 class LoadDataUserErrorState extends DataUserState {
