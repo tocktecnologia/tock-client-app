@@ -27,14 +27,18 @@ dependencies:
   flutter_spinkit: "^2.1.0"
   get_it: ^3.0.3
   flutter_launcher_icons: ^0.7.3  
-  flutter_cognito_plugin: ^2.0.0
   http: ^0.12.1
   reorderables: ^0.3.2
-  
+  uuid: ^2.0.4
+  mqtt_client: ^5.5.0
+  flutter_cognito_plugin: ^1.0.2
+  aws_iot: ^0.1.0
+
+
 flutter_icons:
   android: "launcher_icon" 
   ios: true
-  image_path: "lib/assets/images/1024x1024.png"
+  image_path: "assets/images/1024x1024.png"
 
 dev_dependencies: 
   flutter_test:
@@ -54,7 +58,8 @@ flutter:
   uses-material-design: true
 
   assets:
-   - lib/assets/images/
+   - assets/images/
+   - assets/icons/
   
 
   # An image asset can refer to one or more resolution-specific "variants", see

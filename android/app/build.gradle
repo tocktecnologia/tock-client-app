@@ -73,7 +73,7 @@ android {
             shrinkResources false
             minifyEnabled false
         }
-    }
+    }  
 }
 
 flutter {

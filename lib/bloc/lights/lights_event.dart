@@ -5,9 +5,9 @@ abstract class LightsEvent {}
 
 class GetStatesLight extends LightsEvent {}
 
-class UpdateLightConfigsEvent extends LightsEvent {
-  final userDevices;
-  UpdateLightConfigsEvent({@required this.userDevices});
+class UpdateDevicesFromAwsEvent extends LightsEvent {
+  final devices;
+  UpdateDevicesFromAwsEvent({@required this.devices});
 }
 
 class UpdateIdxLightsEvent extends LightsEvent {
@@ -16,7 +16,19 @@ class UpdateIdxLightsEvent extends LightsEvent {
   UpdateIdxLightsEvent({@required this.oldIndex, @required this.newIndex});
 }
 
-class TouchLightEvent extends LightsEvent {
+// class TouchLightEvent extends LightsEvent {
+//   final Light light;
+//   TouchLightEvent({@required this.light});
+// }
+
+class ChangeConfigsLightEvent extends LightsEvent {
   final Light light;
-  TouchLightEvent({@required this.light});
+  ChangeConfigsLightEvent({@required this.light});
+}
+
+class ReceiveStateLightEvent extends LightsEvent {
+  final state;
+  final deviceId;
+  final pin;
+  ReceiveStateLightEvent({this.state, this.deviceId, this.pin});
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_login_setup_cognito/shared/model/light_model.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 import 'package:http/http.dart';
 
@@ -20,7 +21,7 @@ class FirmwareApi {
 
     try {
       final response =
-          await post(url, headers: headers).timeout(Duration(seconds: 5));
+          await post(url, headers: headers).timeout(Duration(seconds: 3));
       if (response.statusCode == 200) {
         return true;
       } else {
@@ -44,7 +45,7 @@ class FirmwareApi {
 
     try {
       final response =
-          await post(url, headers: headers).timeout(Duration(seconds: 5));
+          await post(url, headers: headers).timeout(Duration(seconds: 4));
       if (response.statusCode == 200) {
         return {"status": "sucesso", "message": json.decode(response.body)};
       } else {
@@ -53,26 +54,31 @@ class FirmwareApi {
     } on TimeoutException catch (_) {
       return {"status": "falha", "message": "timeout"};
     } on SocketException catch (_) {
-      return {"status": "falha", "message": "no-internet"};
+      return {
+        "status": "falha",
+        "message": "Central Tock não encontrada na rede local."
+      };
     } catch (e) {
       return {"status": "falha", "message": e.runtimeType};
     }
   }
 
-  Future<Map> updateState() async {
-    final url = '${Endpoints.NetAddress}.$idTest:80/tock/states';
+  Future<Map> updateState({Light light}) async {
+    final url = '${Endpoints.NetAddress}.$idTest:80/tock/update';
     final basicAuth =
         'Basic ' + base64Encode(utf8.encode('$username:$password'));
     final headers = {
       'authorization': basicAuth,
       'content-type': 'application/json'
     };
+    final body = {"${light.device.pin}": light.state};
 
     try {
       final response =
-          await post(url, headers: headers).timeout(Duration(seconds: 5));
+          await post(url, headers: headers, body: json.encode(body))
+              .timeout(Duration(seconds: 4));
       if (response.statusCode == 200) {
-        return {"status": "sucesso", "message": json.decode(response.body)};
+        return {"status": "sucesso", "message": (response.body)};
       } else {
         return {"status": "falha"};
       }
@@ -81,7 +87,7 @@ class FirmwareApi {
     } on SocketException catch (_) {
       return {"status": "falha", "message": "no-internet"};
     } catch (e) {
-      return {"status": "falha", "message": e.runtimeType};
+      return {"status": "falha", "message": e.toString()};
     }
   }
 }

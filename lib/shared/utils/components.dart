@@ -145,7 +145,8 @@ class ButtonLogin extends MaterialButton {
                           color: labelColor,
                           fontWeight: FontWeight.bold),
                     ),
-                    SpinKitCircle(
+                    SpinKitThreeBounce(
+                      size: 20,
                       color: ColorsCustom.loginScreenUp,
                     ),
                   ],
@@ -184,16 +185,37 @@ class Alert extends AlertDialog {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      elevation: 5,
-      title: Text(
-        titleText,
-        textAlign: TextAlign.center,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18.0),
       ),
-      content: SingleChildScrollView(child: Text(contentText)),
+      elevation: 5,
+      title: titleText != null
+          ? Text(
+              titleText,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: ColorsCustom.loginScreenUp),
+            )
+          : Icon(
+              Icons.info_outline,
+              size: 60,
+              color: ColorsCustom.loginScreenUp,
+            ),
+      content: SingleChildScrollView(
+        child: Text(
+          contentText,
+          style: TextStyle(color: Colors.black54),
+          textAlign: TextAlign.center,
+        ),
+      ),
       actions: <Widget>[
         RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            side: BorderSide(color: ColorsCustom.loginScreenMiddle),
+          ),
+          color: ColorsCustom.loginScreenUp,
           onPressed: () => Navigator.pop(context),
-          child: Text('Ok'),
+          child: Text('OK'),
         )
       ],
     );

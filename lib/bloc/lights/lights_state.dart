@@ -5,6 +5,33 @@ abstract class LightsState {}
 
 class LightsInitial extends LightsState {}
 
+class UpdatingDevicesState extends LightsState {}
+
+class UpdatedDevicesState extends LightsState {
+  final List<Light> lights;
+  UpdatedDevicesState({@required this.lights});
+}
+
+//
+//
+//
+class UpdatedLightConfigsState extends LightsState {
+  final List<Light> lights;
+  UpdatedLightConfigsState({@required this.lights});
+}
+
+class UpdatingLightState extends LightsState {
+  final state;
+  final deviceId;
+  final pin;
+  UpdatingLightState({this.state, this.deviceId, this.pin});
+}
+
+class UpdatedLightState extends LightsState {
+  final List<Light> lights;
+  UpdatedLightState({@required this.lights});
+}
+
 class LoadingLightStates extends LightsState {}
 
 class LoadedLightStates extends LightsState {
@@ -17,14 +44,12 @@ class LoadLightStatesError extends LightsState {
   LoadLightStatesError({@required this.message});
 }
 
-class UpdatingLightState extends LightsState {
-  final Light light;
-  UpdatingLightState({@required this.light});
+class ReorderedLightStates extends LightsState {
+  final List<Light> lights;
+  ReorderedLightStates({@required this.lights});
 }
 
-class UpdatedLightState extends LightsState {
-  final Light light;
-  UpdatedLightState({@required this.light});
+class LightStatesError extends LightsState {
+  final message;
+  LightStatesError({this.message});
 }
-
-class UpdatLightsStateError extends LightsState {}

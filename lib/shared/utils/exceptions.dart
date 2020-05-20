@@ -16,6 +16,6 @@ class HandleExptions {
     } else if (e.runtimeType == SocketTimeoutException) {
       return 'Time out achieved, try again later.';
     } else
-      return 'Error Unknownm verify if you are connected to internet. ${e.toString()}';
+      return 'Error Unknownm $e';
   }
 }

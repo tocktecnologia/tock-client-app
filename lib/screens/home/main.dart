@@ -6,9 +6,10 @@ import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
 import 'package:flutter_login_setup_cognito/bloc/data_user/data_user_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
+import 'package:flutter_login_setup_cognito/bloc/schedules/schedules_bloc.dart';
 import 'package:flutter_login_setup_cognito/screens/home/groups/main.dart';
-import 'package:flutter_login_setup_cognito/screens/home/panel/main.dart';
-import 'package:flutter_login_setup_cognito/screens/home/schedules/main.dart';
+import 'package:flutter_login_setup_cognito/screens/home/panel/panel_lights.dart';
+import 'package:flutter_login_setup_cognito/screens/home/schedules/schedules_screen.dart';
 import 'package:flutter_login_setup_cognito/screens/login/main.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
@@ -103,7 +104,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         condition: (prevState, state) {
       if (state is LoadedDataUserState) {
         BlocProvider.of<LightsBloc>(context)
-            .add(UpdateLightConfigsEvent(userDevices: state.dataUser.devices));
+            .add(UpdateDevicesFromAwsEvent(devices: state.dataUser.devices));
+
+        BlocProvider.of<SchedulesBloc>(context).add(
+            UpdateSchedulesConfigsEvent(schedules: state.dataUser.schedules));
       }
       return true;
     }, builder: (context, state) {
@@ -160,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             accountName: Text('Condomínio'),
             accountEmail: Text('$email'),
             currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage('lib/assets/images/cond.png'),
+              backgroundImage: AssetImage('assets/images/cond.png'),
             ),
             margin: EdgeInsets.zero,
             onDetailsPressed: () {

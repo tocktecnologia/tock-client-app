@@ -23,11 +23,12 @@ class UserCognito {
 
   Future login(login, password) async {
     try {
-      await Cognito.signIn(login, password).timeout(Duration(seconds: 5));
+      await Cognito.signIn(login, password).timeout(Duration(seconds: 10));
       _userAttrs =
           await Cognito.getUserAttributes().timeout(Duration(seconds: 5));
       return true;
     } catch (e) {
+      print('Log ----- catch cognito login: ${e.toString()}');
       return false;
     }
   }
@@ -39,6 +40,7 @@ class UserCognito {
           await Cognito.getUserAttributes().timeout(Duration(seconds: 5));
       return true;
     } catch (e) {
+      print('Log ----- catch cognito verify login: ${e.toString()}');
       return false;
     }
   }

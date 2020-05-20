@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
+import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
-import 'package:flutter_login_setup_cognito/shared/services/firmware_api.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/exceptions.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'auth_event.dart';
@@ -30,23 +30,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             .get<UserCognito>()
             .login(event.login, event.password);
 
-        _isConnectedLocal =
-            await Locator.instance.get<FirmwareApi>().isDeviceConnected();
+        await Locator.instance.get<AwsIot>().intialize();
+
+        // _isConnectedLocal =
+        //     await Locator.instance.get<FirmwareApi>().isDeviceConnected();
 
         yield _handleLogin(
             isConnectedLocal: _isConnectedLocal,
             isConnectedRemote: _isConnectedRemote);
-        // if (_isConnectedLocal)
-        //   yield LoggedState(
-        //       message:
-        //           "Você está conectado na rede local de automação da Tock!");
-        // else if (_isConnectedRemote) {
-        //   yield LoggedState(
-        //       message: "Você está conectado na Tock pela Internet!");
-        // } else
-        //   yield LoginErrorState(
-        //       message:
-        //           "Você está desconectado da rede local de automação e da internet.\nHabilite uma das duas para conectar!");
       }
       // Logout event
       else if (event is LogoutEvent) {
@@ -59,28 +50,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         yield ForcingLoginState();
 
         await Locator.instance.get<UserCognito>().initialize();
+        await Locator.instance.get<AwsIot>().intialize();
 
         _isConnectedRemote =
             await Locator.instance.get<UserCognito>().verifyLogin();
 
-        _isConnectedLocal =
-            await Locator.instance.get<FirmwareApi>().isDeviceConnected();
+        // _isConnectedLocal =
+        //     await Locator.instance.get<FirmwareApi>().isDeviceConnected();
 
         yield _handleLogin(
             isConnectedLocal: _isConnectedLocal,
             isConnectedRemote: _isConnectedRemote);
-
-        // if (_isConnectedLocal)
-        //   yield LoggedState(
-        //       message:
-        //           "Você está conectado na rede  de automação local da Tock!");
-        // else if (_isConnectedRemote) {
-        //   yield LoggedState(
-        //       message: "Você está conectado na Tock pela Internet!");
-        // } else
-        //   yield LoginErrorState(
-        //       message:
-        //           "Você não possui uma Central Tock na sua rede e não logou no app pela internet.\nTente validar uma dos dois requisitos para entrar!");
       }
       // SignUp Event
       else if (event is SignUpEvent) {
@@ -119,9 +99,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
       // Error State
     } catch (e) {
-      print(e.runtimeType);
-      print(e.toString());
-
       yield LoginErrorState(message: HandleExptions.message(e));
     }
   }

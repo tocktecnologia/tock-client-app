@@ -48,14 +48,14 @@ class ScheduleRecurrent {
 }
 
 class ScheduleAction {
-  Action action;
+  TockAction action;
   String type;
 
   ScheduleAction({this.action, this.type});
 
   ScheduleAction.fromJson(Map<String, dynamic> json) {
     action =
-        json['action'] != null ? new Action.fromJson(json['action']) : null;
+        json['action'] != null ? new TockAction.fromJson(json['action']) : null;
     type = json['type'];
   }
 
@@ -69,7 +69,7 @@ class ScheduleAction {
   }
 }
 
-class Action {
+class TockAction {
   String actionId;
   String delay;
   String deviceId;
@@ -79,7 +79,7 @@ class Action {
   String section;
   String type;
 
-  Action(
+  TockAction(
       {this.actionId,
       this.delay,
       this.deviceId,
@@ -89,7 +89,7 @@ class Action {
       this.section,
       this.type});
 
-  Action.fromJson(Map<String, dynamic> json) {
+  TockAction.fromJson(Map<String, dynamic> json) {
     actionId = json['action_id'];
     delay = json['delay'];
     deviceId = json['device_id'];

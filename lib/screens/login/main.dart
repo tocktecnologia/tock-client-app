@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SizedBox(height: size.height * 0.0871),
           Container(
               child: Image.asset(
-            'lib/assets/images/logo.png',
+            'assets/images/logo.png',
             height: 140,
             fit: BoxFit.fill,
           )),
@@ -73,7 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _contentLogin() {
     return BlocBuilder<AuthBloc, AuthState>(condition: (previousState, state) {
-      print('$state');
       if (state is LoggedState) {
         Navigator.pushReplacement(context, OpenAndFadeTransition(HomeScreen()));
       } else if (state is LoginErrorState) {
@@ -121,12 +120,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: <Widget>[
                   _buttonLogin(),
                   SizedBox(height: 15),
-                  // InkWell(
-                  //   onTap: () => BlocProvider.of<AuthBloc>(context)
-                  //       .add(ForceLoginEvent()),
-                  //   child: Icon(Icons.wifi_tethering,
-                  //       size: 30, color: Colors.white),
-                  // ),
                 ],
               ),
               SizedBox(height: size.height * 0.05),
@@ -181,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return ButtonLogin(
             isLoading: true,
             backgroundColor: Colors.white,
-            label: 'Entrando  ...',
+            label: 'Entrando  ',
             mOnPressed: () => {},
           );
         } else if (state is LoggedState) {
