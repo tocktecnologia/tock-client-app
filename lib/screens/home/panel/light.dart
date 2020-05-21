@@ -1,6 +1,7 @@
 import 'package:aws_iot/aws_iot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_login_setup_cognito/bloc/light/light_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
 import 'package:flutter_login_setup_cognito/shared/model/light_model.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
@@ -24,6 +25,7 @@ class _TockLightState extends State<TockLight> {
   final TextEditingController lightNameController = TextEditingController();
   Light light;
   bool forceHideAnimation = false;
+  bool showProgress = false;
 
   @override
   void initState() {
@@ -39,23 +41,25 @@ class _TockLightState extends State<TockLight> {
       child: SizedBox(
         width: SIZE_WIDTH_LAMP,
         child: InkWell(
-          onDoubleTap: () =>
-              widget.isConfigMode ? _showDialogHideAnimation() : {},
           onTap: () =>
               widget.isConfigMode ? _configLight() : _updateLightState(),
           splashColor: ColorsCustom.loginScreenMiddle,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              //_icon(),
-              _getIcon(light.device.type ?? DeviceTypes.LIGHT, light.state),
+              _icon(),
+              // _getIcon(light.device.type ?? DeviceTypes.LIGHT, light.state),
               _progress(),
               SizedBox(height: 5),
-              Text(
-                light.device.label,
-                textAlign: TextAlign.center,
-                style:
-                    TextStyle(fontSize: 12, color: Colors.black.withAlpha(200)),
+              InkWell(
+                onDoubleTap: () =>
+                    widget.isConfigMode ? _showDialogHideAnimation() : {},
+                child: Text(
+                  light.device.label,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 12, color: Colors.black.withAlpha(200)),
+                ),
               ),
             ],
           ),
@@ -76,19 +80,18 @@ class _TockLightState extends State<TockLight> {
   }
 
   Widget _progress() {
-    if (light.state != '0' && light.state != '1' && !forceHideAnimation) {
-      return SizedBox(
-        width: SIZE_WIDTH_LAMP * 0.7,
-        height: SIZE_WIDTH_LAMP * 0.06,
-        child: LinearProgressIndicator(
-          backgroundColor: ColorsCustom.loginScreenUp,
-        ),
-      );
-    } else
-      return SizedBox(
-        width: SIZE_WIDTH_LAMP * 0.7,
-        height: SIZE_WIDTH_LAMP * 0.06,
-      );
+    return showProgress
+        ? SizedBox(
+            width: SIZE_WIDTH_LAMP * 0.7,
+            height: SIZE_WIDTH_LAMP * 0.06,
+            child: LinearProgressIndicator(
+              backgroundColor: ColorsCustom.loginScreenUp,
+            ),
+          )
+        : SizedBox(
+            width: SIZE_WIDTH_LAMP * 0.7,
+            height: SIZE_WIDTH_LAMP * 0.06,
+          );
   }
 
   _changeLightName() {
@@ -100,24 +103,41 @@ class _TockLightState extends State<TockLight> {
   }
 
   _updateLightState() {
-    if (light.state != "0" && light.state != "1") {
-      return;
-    }
+    print('_updateLightState');
+
+    setState(() {
+      showProgress = true;
+    });
+    final state = light.state =
+        light.state == '1' ? '0' : '1'; // : light.state == '0' ? '1' : '2';
 
     AWSIotDevice awsIotDevice = Locator.instance.get<AwsIot>().awsIotDevice;
-    final state = light.state == "1" ? "0" : "1";
+    // final state = light.state == "1" ? "0" : "1";
 
     // publish mqtt
-    print('state:$state');
+    // print('state:$state');
     awsIotDevice.publishJson({
       'state': {
         'desired': {'pin${light.device.pin}': int.parse(state)}
       }
     }, topic: '\$aws/things/${light.device.remoteId}/shadow/update');
+  }
 
-    setState(() {
-      light.state = "2";
-    });
+  Widget _icon() {
+    return BlocListener<LightBloc, LightState>(
+      listener: (context, state) {
+        if (state is UpdatedLighState) {
+          if (state.deviceId == light.device.remoteId &&
+              state.pin == light.device.pin) {
+            setState(() {
+              light.state = state.state;
+              showProgress = false;
+            });
+          }
+        }
+      },
+      child: _getIcon(light.device.type ?? DeviceTypes.LIGHT, light.state),
+    );
   }
 
   Widget _getIcon(type, mState) {

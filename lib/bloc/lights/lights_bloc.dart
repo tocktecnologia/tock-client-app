@@ -25,7 +25,7 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
     LightsEvent event,
   ) async* {
     try {
-      if (event is UpdateDevicesFromAwsEvent) {
+      if (event is UpdateDevicesFromAwsAPIEvent) {
         yield UpdatingDevicesState();
 
         _lights = event.devices
@@ -48,13 +48,15 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
         yield UpdatedDevicesState(lights: _lights);
       }
       //
-      //
-      else if (event is GetStatesLight) {
-        yield LoadingLightStates();
+      else if (event is UpdateLightsFromCentralEvent) {
+        yield UpdatingDevicesState();
 
-        // reconnection aws mqtt
-        final AwsIot awsIot = Locator.instance.get<AwsIot>();
-        await awsIot.intialize();
+        // await Future.delayed(Duration(seconds: 1));
+        _lights.forEach((light) {
+          if (event.statesJson.containsKey(light.device.pin)) {
+            light.state = event.statesJson[light.device.pin];
+          }
+        });
 
         //############################ LOCAL ############################
         // final Map response =
@@ -70,95 +72,40 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
         //         state: states['pin${light.device.pin}'] ?? '3'))
         //     .toList();
 
-        yield LoadedLightStates(lights: _lights);
+        yield UpdatedDevicesState(lights: _lights);
       }
       //
-      //
-      // else if (event is TouchLightEvent) {
-      //   yield UpdatingLightState(light: event.light);
+      else if (event is ReconnectAwsIotEvent) {
+        yield UpdatingDevicesState();
 
-      //   //change state for light came from event
-      //   Light light = event.light;
-      //   light.state = light.state == '1' ? '0' : '1';
+        // reconnection aws mqtt
+        final AwsIot awsIot = Locator.instance.get<AwsIot>();
+        await awsIot.intialize();
 
-      //   // verrify connection mqtt
-      //   final AWSIotDevice awsIotDevice =
-      //       Locator.instance.get<AwsIot>().awsIotDevice;
-      //   final status = awsIotDevice.client.connectionStatus.state;
-      //   if (status == MqttConnectionState.connected) {
-      //     _updateMqtt(awsIotDevice, light);
-      //     return;
-      //   }
+        yield UpdatedDevicesState(lights: _lights);
 
-      //############################ LOCAL ############################
-      // // if disconnected restart connection mqtt
-      // Locator.instance.get<AwsIot>().intialize();
+        //############################ LOCAL ############################
+        // // if disconnected restart connection mqtt
+        // Locator.instance.get<AwsIot>().intialize();
 
-      // // request to module change state
-      // final Map response = await Locator.instance
-      //     .get<FirmwareApi>()
-      //     .updateState(light: event.light);
+        // // request to module change state
+        // final Map response = await Locator.instance
+        //     .get<FirmwareApi>()
+        //     .updateState(light: event.light);
 
-      // // if fails , state error
-      // if (response['status'] == 'falha') {
-      //   yield LoadLightStatesError(message: response['message']);
-      //   return;
-      // }
+        // // if fails , state error
+        // if (response['status'] == 'falha') {
+        //   yield LoadLightStatesError(message: response['message']);
+        //   return;
+        // }
 
-      // // update state in list bloc
-      // final index = _lights
-      //     .indexWhere((light) => light.device.pin == event.light.device.pin);
-      // _lights.elementAt(index).state = event.light.state;
+        // // update state in list bloc
+        // final index = _lights
+        //     .indexWhere((light) => light.device.pin == event.light.device.pin);
+        // _lights.elementAt(index).state = event.light.state;
 
-      // yield UpdatedLightState(light: _lights.elementAt(index));
-      // }
-      //
-      //
-      else if (event is UpdateIdxLightsEvent) {
-        yield LoadingLightStates();
-
-        // update position
-        final w = _lights.removeAt(event.oldIndex);
-        _lights.insert(event.newIndex, w);
-
-        yield ReorderedLightStates(lights: _lights);
+        // yield UpdatedLightState(light: _lights.elementAt(index));
       }
-      //
-      //
-      else if (event is ChangeConfigsLightEvent) {
-        yield LoadingLightStates();
-
-        // update cnofigs
-        _lights.elementAt(_lights.indexOf(event.light)).device =
-            event.light.device;
-
-        yield LoadedLightStates(lights: _lights);
-      }
-      //
-      //
-      // else if (event is ReceiveStateLightEvent) {
-      //   yield UpdatingLightState(
-      //       deviceId: event.deviceId, pin: event.pin, state: event.state);
-
-      //   // for update list
-      //   final index = _lights.indexWhere((light) =>
-      //       light.device.remoteId == event.deviceId &&
-      //       light.device.pin == event.pin);
-
-      //   if (index < 0)
-      //     yield LightStatesError(
-      //       message:
-      //           "pin${event.pin} do dispositivo ${event.deviceId} não encontrato no app. \nVerifiques o id das luzes adicionadas no aplicativo.",
-      //     );
-
-      //   final light = _lights.elementAt(index);
-
-      //   _lights.elementAt(index).state = '${event.state}';
-
-      //   // yield UpdatedLightConfigsState(lights: _lights);
-
-      //   yield UpdatedLightState(lights: _lights);
-      // }
     } catch (e) {
       LightStatesError(message: HandleExptions.message(e));
     }

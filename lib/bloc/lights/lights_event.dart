@@ -3,11 +3,16 @@ part of 'lights_bloc.dart';
 @immutable
 abstract class LightsEvent {}
 
-class GetStatesLight extends LightsEvent {}
+class UpdateLightsFromCentralEvent extends LightsEvent {
+  final statesJson;
+  UpdateLightsFromCentralEvent({this.statesJson});
+}
 
-class UpdateDevicesFromAwsEvent extends LightsEvent {
+class ReconnectAwsIotEvent extends LightsEvent {}
+
+class UpdateDevicesFromAwsAPIEvent extends LightsEvent {
   final devices;
-  UpdateDevicesFromAwsEvent({@required this.devices});
+  UpdateDevicesFromAwsAPIEvent({@required this.devices});
 }
 
 class UpdateIdxLightsEvent extends LightsEvent {
@@ -15,11 +20,6 @@ class UpdateIdxLightsEvent extends LightsEvent {
   final newIndex;
   UpdateIdxLightsEvent({@required this.oldIndex, @required this.newIndex});
 }
-
-// class TouchLightEvent extends LightsEvent {
-//   final Light light;
-//   TouchLightEvent({@required this.light});
-// }
 
 class ChangeConfigsLightEvent extends LightsEvent {
   final Light light;

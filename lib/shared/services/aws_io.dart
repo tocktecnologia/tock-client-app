@@ -20,7 +20,10 @@ class AwsIot {
     final identityId = await Cognito.getIdentityId();
     print('connecting ... \nidentityId: $identityId');
 
-    await _awsIotDevice.connect().timeout(Duration(seconds: 10));
+    await _awsIotDevice
+        .connect()
+        .timeout(Duration(seconds: 10))
+        .catchError((onError) => print("error -->$onError"));
 
     _subscribing();
   }
@@ -29,8 +32,10 @@ class AwsIot {
     print('conectou abestado, subscribing ...!!!');
     final shadow = '\$aws/things/${Central.remoteId}/shadow/update/accepted';
     final states = '\$aws/things/${Central.remoteId}/states';
+    final statesCentral = '\$aws/things/${Central.remoteId}/states/ret';
     print('shadow:$shadow \nstate:$states');
     _awsIotDevice.subscribe(shadow);
     _awsIotDevice.subscribe(states);
+    _awsIotDevice.subscribe(statesCentral);
   }
 }

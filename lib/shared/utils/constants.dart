@@ -10,7 +10,7 @@ class MqttTopics {
 }
 
 class Central {
-  static const remoteId = "E821C76A"; //"E821C457";
+  static const remoteId = "E82723EB"; //"E821C76A";
   static const localId = '10.0.1.10';
 }
 

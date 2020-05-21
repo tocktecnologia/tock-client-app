@@ -2,12 +2,15 @@ import 'package:aws_iot/aws_iot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
+import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
+import 'package:flutter_login_setup_cognito/bloc/light/light_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
-import 'package:flutter_login_setup_cognito/shared/model/light_model.dart';
+import 'package:flutter_login_setup_cognito/screens/login/main.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/fade.transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:reorderables/reorderables.dart';
@@ -33,13 +36,18 @@ class _PanelScreenState extends State<PanelScreen> {
     final AWSIotDevice awsIotDevice =
         Locator.instance.get<AwsIot>().awsIotDevice;
     awsIotDevice.client.updates.listen((_) {
-      _onReceive(awsIotDevice);
+      _onReceive(awsIotDevice, BlocProvider.of<LightBloc>(context));
     });
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _updateStates();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print('build panel devices');
     return Scaffold(
       appBar: AppBar(
         title: Text("Painel"),
@@ -52,31 +60,22 @@ class _PanelScreenState extends State<PanelScreen> {
   }
 
   // listinning from aws mqtt
-  _onReceive(awsIotDevice) async {
+  _onReceive(awsIotDevice, lightBloc) async {
     final lastMsg = await awsIotDevice.messages.elementAt(0);
-    print('msg arrived: $lastMsg');
-
+    print(lastMsg);
     // verify if is aws shadow message
     if (lastMsg.asJson.containsKey('state')) {
       if (lastMsg.asJson['state'].containsKey('reported')) {
         final deviceId = lastMsg.topic.split('/')[2];
         lastMsg.asJson['state']['reported'].forEach((k, v) {
-          print("deviceid: $deviceId, pin${k[3]} ---->  $v");
-
-          // update list in lightsBloc
-          List<Light> lights = BlocProvider.of<LightsBloc>(context).lights;
-          final index = lights.indexWhere((light) =>
-              light.device.remoteId == deviceId && light.device.pin == k[3]);
-          print('index: $index');
-
-          // if (index >= 0) {
-          //   lights.elementAt(index).state = '$v';
-          //   BlocProvider.of<LightsBloc>(context).setLights(lights);
-          //   // force build for changes in list
-          //   setState(() {});
-          // }
+          //print("deviceid: $deviceId, pin${k[3]} ---->  $v");
+          BlocProvider.of<LightBloc>(context).add(ReceiveUpdateLightEvent(
+              deviceId: deviceId, pin: k[3], state: v.toString()));
         });
       }
+    } else if (lastMsg.asJson.containsKey('states')) {
+      BlocProvider.of<LightsBloc>(context).add(
+          UpdateLightsFromCentralEvent(statesJson: lastMsg.asJson['states']));
     }
   }
 
@@ -154,10 +153,28 @@ class _PanelScreenState extends State<PanelScreen> {
     );
   }
 
+  _updateStates() {
+    print('_updateStates()');
+    // // verrify connection mqtt
+    final AwsIot awsIot = Locator.instance.get<AwsIot>();
+    final status = awsIot.awsIotDevice.client.connectionStatus.state;
+    if (status == MqttConnectionState.disconnected) {
+      print('disconnected , do event ...');
+      BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
+      Navigator.pushReplacement(context, FadeRoute(page: LoginScreen()));
+    } else {
+      print('publishing');
+      // awsIot.awsIotDevice.publishJson({}, topic: MqttTopics.getStates);
+      awsIot.awsIotDevice.publishJson({"estados": "000,160"},
+          topic: '\$aws/things/${Central.remoteId}/states');
+    }
+  }
+
   Widget _lights() {
     return BlocBuilder<LightsBloc, LightsState>(
       builder: (context, state) {
-        if (state is UpdatingDevicesState) {
+        if (state is UpdatingDevicesState ||
+            state is UpdatingDevicesFromAwsState) {
           return Center(
             child: SpinKitRipple(
               size: 30,
@@ -171,10 +188,7 @@ class _PanelScreenState extends State<PanelScreen> {
               child: Text('Você possui dispositivos ainda!'),
             );
           else {
-            Locator.instance
-                .get<AwsIot>()
-                .awsIotDevice
-                .publishJson({}, topic: MqttTopics.getStates);
+            print('rebuild _listWrapReorderable');
             return _listWrapReorderable();
           }
         } else
@@ -185,49 +199,6 @@ class _PanelScreenState extends State<PanelScreen> {
       },
     );
   }
-
-  _updateStates() {
-    // verrify connection mqtt
-    final AwsIot awsIot = Locator.instance.get<AwsIot>();
-    final status = awsIot.awsIotDevice.client.connectionStatus.state;
-    if (status == MqttConnectionState.disconnected) {
-      //BlocProvider.of<LightsBloc>(context).add(GetStatesLight());
-    } else {
-      awsIot.awsIotDevice.publishJson({}, topic: MqttTopics.getStates);
-    }
-  }
-  // Widget _lights() {
-  //   return BlocBuilder<LightsBloc, LightsState>(condition: (prevState, state) {
-  //     if (state is LightStatesError) {
-  //       ShowAlert.open(
-  //           context: context,
-  //           contentText: "Erro buscando estados: ${state.message}");
-  //     }
-  //     return;
-  //   }, builder: (context, state) {
-  //     print('panel_lights: $state');
-  //     if (state is UpdatingLightConfigsState) {
-  //       return SizedBox(
-  //         child: Column(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: <Widget>[
-  //             SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
-  //             SizedBox(height: 50),
-  //             Text("Atualizando ...",
-  //                 style: TextStyle(
-  //                     color: ColorsCustom.loginScreenUp, fontSize: 16)),
-  //             SizedBox(height: 700),
-  //           ],
-  //         ),
-  //       );
-  //     } else if (state is UpdatedLightConfigsState) {
-  //       return _listWrapReorderable(state.lights);
-  //     } else {
-  //       final lights = BlocProvider.of<LightsBloc>(context).lights;
-  //       return _listWrapReorderable(lights);
-  //     }
-  //   });
-  // }
 
   Widget _listWrapReorderable() {
     final lights = BlocProvider.of<LightsBloc>(context).lights;

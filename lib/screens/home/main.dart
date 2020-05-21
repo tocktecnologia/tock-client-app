@@ -103,8 +103,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return BlocBuilder<DataUserBloc, DataUserState>(
         condition: (prevState, state) {
       if (state is LoadedDataUserState) {
+        // update list
         BlocProvider.of<LightsBloc>(context)
-            .add(UpdateDevicesFromAwsEvent(devices: state.dataUser.devices));
+            .add(UpdateDevicesFromAwsAPIEvent(devices: state.dataUser.devices));
 
         BlocProvider.of<SchedulesBloc>(context).add(
             UpdateSchedulesConfigsEvent(schedules: state.dataUser.schedules));
@@ -124,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ],
         );
       } else {
+        
         return IndexedStack(index: _currentIndex, children: _bodys);
       }
     });

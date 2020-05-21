@@ -1,74 +1,100 @@
 import 'package:flutter_login_setup_cognito/shared/model/data_user_model.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/exceptions_tock.dart';
 
 class AwsApi {
   Future<DataUser> getDataUser() async {
     await Future.delayed(Duration(milliseconds: 1000));
     print('lendo json');
-    DataUser u = DataUser.fromJson(dataUserJson);
-    print(u.toString());
-    return u;
+
+    try {
+      DataUser u = DataUser.fromJson(Map.from(dataUserJson));
+      print(u.toString());
+      return u;
+    } catch (e) {
+      print('getDataUser Exception: ${e.toString()}');
+      throw TockExceptions(e.toString(), e.runtimeType);
+    }
+  }
+
+  _createUser() {
+    // String url = Endpoints.user;
+    // String body = '{"email":"${user.email}","identity_id":"$identityId","environment_name":"${user.locale}"}';
+    // Map<String, String> headers = {"Content-type": "application/json"};
+
+    // var response = await post(url,headers: headers, body: body );
+
+    // return json.decode(response.body);
   }
 }
 
 final dataUserJson = {
   "devices": [
     {
-      "remote_id": "E821C76A",
+      "remote_id": "${Central.remoteId}",
       "local_id": "10.0.1.10",
       "pin": "1",
       "object_id": "123",
-      "label": "E821C76A 1",
+      "label": "${Central.remoteId} 1",
       "type": "LIGHT"
     },
     {
-      "remote_id": "E821C76A",
+      "remote_id": "${Central.remoteId}",
       "local_id": "10.0.1.10",
       "pin": "2",
       "object_id": "123",
-      "label": "E821C76A 2",
+      "label": "${Central.remoteId} 2",
       "type": "LIGHT"
     },
     {
-      "remote_id": "E821C76A",
+      "remote_id": "${Central.remoteId}",
       "local_id": "10.0.1.10",
       "pin": "3",
       "object_id": "123",
-      "label": "E821C76A 3",
+      "label": "${Central.remoteId} 3",
       "type": "LIGHT"
     },
     {
-      "remote_id": "E821C76A",
+      "remote_id": "${Central.remoteId}",
       "local_id": "10.0.1.10",
       "pin": "4",
       "object_id": "123",
-      "label": "E821C76A 4",
+      "label": "${Central.remoteId} 4",
       "type": "LIGHT"
     },
     {
-      "remote_id": "E821C76A",
+      "remote_id": "${Central.remoteId}",
       "local_id": "10.0.1.10",
       "pin": "5",
       "object_id": "123",
-      "label": "E821C76A 5",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "E821C76A",
-      "local_id": "10.0.1.10",
-      "pin": "6",
-      "object_id": "123",
-      "label": "E821C76A 6",
-      "type": "LIGHT"
-    },
-    {
-      "remote_id": "9F3A1234",
-      "local_id": "10.0.1.10",
-      "pin": "12",
-      "object_id": "123",
-      "label": "Lampadas da Saída",
+      "label": "${Central.remoteId} 5",
       "type": "LIGHT"
     },
     // {
+    //   "remote_id": "E821C76A",
+    //   "local_id": "10.0.1.10",
+    //   "pin": "5",
+    //   "object_id": "123",
+    //   "label": "E821C76A 5",
+    //   "type": "LIGHT"
+    // },
+    // {
+    //   "remote_id": "E821C76A",
+    //   "local_id": "10.0.1.10",
+    //   "pin": "6",
+    //   "object_id": "123",
+    //   "label": "E821C76A 6",
+    //   "type": "LIGHT"
+    // },
+    // {
+    //   "remote_id": "9F3A1234",
+    //   "local_id": "10.0.1.10",
+    //   "pin": "12",
+    //   "object_id": "123",
+    //   "label": "Lampadas da Saída",
+    //   "type": "LIGHT"
+    // },
+    // // {
     //   "remote_id": "9F3A1234",
     //   "local_id": "10.0.1.10",
     //   "pin": "13",
@@ -105,12 +131,12 @@ final dataUserJson = {
     {
       "label": "Quadra",
       "group_id": "abcd",
-      "object_ids": ["1234567", "12345678"]
+      "object_ids": ["3", "4"]
     },
     {
       "label": "Academia",
       "group_id": "abc",
-      "object_ids": ["1234", "12345"]
+      "object_ids": ["1", "2"]
     }
   ],
   "scenes": [

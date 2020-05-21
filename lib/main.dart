@@ -8,6 +8,7 @@ import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'bloc/auth/auth_bloc.dart';
 import 'bloc/auth/auth_event.dart';
+import 'bloc/light/light_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,7 @@ class Application extends StatelessWidget {
       providers: [
         BlocProvider<SchedulesBloc>(
             create: (BuildContext context) => SchedulesBloc()),
+        BlocProvider<LightBloc>(create: (BuildContext context) => LightBloc()),
         BlocProvider<LightsBloc>(
             create: (BuildContext context) => LightsBloc()),
         BlocProvider<AuthBloc>(create: (BuildContext context) => AuthBloc()),

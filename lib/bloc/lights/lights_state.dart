@@ -5,6 +5,8 @@ abstract class LightsState {}
 
 class LightsInitial extends LightsState {}
 
+class UpdatingDevicesFromAwsState extends LightsState {}
+
 class UpdatingDevicesState extends LightsState {}
 
 class UpdatedDevicesState extends LightsState {
