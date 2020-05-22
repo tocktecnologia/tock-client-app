@@ -60,7 +60,7 @@ class _InputLoginState extends State<InputLogin> {
     final size = MediaQuery.of(context).size;
     return Container(
       decoration: DecorationsLogin.borderInput,
-      height: (size.height) * 0.056,
+      height: (size.height) * 0.066,
       // /width: (size.width) * 0.74,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),

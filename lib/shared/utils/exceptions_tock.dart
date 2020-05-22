@@ -13,3 +13,8 @@ class LocalNetException extends TockExceptions {
   final hasTimeout;
   LocalNetException({this.hasTimeout, message, type}) : super(message, type);
 }
+
+class IotAwsException extends TockExceptions {
+  final hasTimeout;
+  IotAwsException({this.hasTimeout, message, type}) : super(message, type);
+}

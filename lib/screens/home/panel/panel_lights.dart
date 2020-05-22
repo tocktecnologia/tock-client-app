@@ -2,15 +2,14 @@ import 'package:aws_iot/aws_iot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
+import 'package:flutter_login_setup_cognito/bloc/iot_aws/iot_aws_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/light/light_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
-import 'package:flutter_login_setup_cognito/screens/login/main.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/fade.transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:reorderables/reorderables.dart';
@@ -32,35 +31,10 @@ class _PanelScreenState extends State<PanelScreen> {
   @override
   void initState() {
     super.initState();
-
-    final AWSIotDevice awsIotDevice =
-        Locator.instance.get<AwsIot>().awsIotDevice;
-    awsIotDevice.client.updates.listen((_) {
-      _onReceive(awsIotDevice, BlocProvider.of<LightBloc>(context));
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _updateStates();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Painel"),
-        actions: [_iconLocal()],
-        leading: _iconRemote(),
-        centerTitle: true,
-      ),
-      body: _cardLights(),
-    );
   }
 
   // listinning from aws mqtt
-  _onReceive(awsIotDevice, lightBloc) async {
+  _onReceive(awsIotDevice) async {
     final lastMsg = await awsIotDevice.messages.elementAt(0);
     print(lastMsg);
     // verify if is aws shadow message
@@ -77,6 +51,81 @@ class _PanelScreenState extends State<PanelScreen> {
       BlocProvider.of<LightsBloc>(context).add(
           UpdateLightsFromCentralEvent(statesJson: lastMsg.asJson['states']));
     }
+  }
+
+  _updateStates() {
+    print('_updateStates()');
+    final AwsIot awsIot = Locator.instance.get<AwsIot>();
+    print(awsIot.awsIotDevice);
+    final status = awsIot.awsIotDevice.client.connectionStatus.state;
+    print(status);
+    if (status == MqttConnectionState.connected) {
+      BlocProvider.of<LightsBloc>(context)
+          .add(GetUpdateLightsFromCentralEvent());
+      awsIot.awsIotDevice.publishJson({"estados": "000,160"},
+          topic: '\$aws/things/${Central.remoteId}/states');
+    } else if (status == MqttConnectionState.disconnected)
+      BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<IotAwsBloc, IotAwsState>(
+          listener: (contex, state) {
+            if (state is ConnectedIotAwsState) {
+              // init listenning aws iot
+              final AWSIotDevice awsIotDevice =
+                  Locator.instance.get<AwsIot>().awsIotDevice;
+              awsIotDevice.client.updates.listen((_) {
+                _onReceive(awsIotDevice);
+              });
+              _updateStates();
+              // update statess
+            } else if (state is ConnectionErrorIotAwsState) {
+              ShowAlert.open(context: context, contentText: state.mesage);
+            }
+          },
+        ),
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Painel"),
+          actions: [_iconLocal()],
+          leading: _iconRemote(),
+          centerTitle: true,
+        ),
+        body: _cardLights(),
+      ),
+    );
+
+    return BlocListener<IotAwsBloc, IotAwsState>(
+      listener: (contex, state) {
+        if (state is ConnectedIotAwsState) {
+          // init listenning aws iot
+          final AWSIotDevice awsIotDevice =
+              Locator.instance.get<AwsIot>().awsIotDevice;
+          awsIotDevice.client.updates.listen((_) {
+            _onReceive(awsIotDevice);
+          });
+          // update statess
+          // _updateStates();
+        } else if (state is ConnectionErrorIotAwsState) {
+          ShowAlert.open(context: context, contentText: state.mesage);
+        }
+        return;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Painel"),
+          actions: [_iconLocal()],
+          leading: _iconRemote(),
+          centerTitle: true,
+        ),
+        body: _cardLights(),
+      ),
+    );
   }
 
   Widget _cardLights() {
@@ -122,21 +171,7 @@ class _PanelScreenState extends State<PanelScreen> {
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () => _updateStates(),
-                      child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                        child: Icon(
-                          Icons.update,
-                          size: 27,
-                          color: ColorsCustom.loginScreenUp,
-                        ),
-                      ),
-                    ),
-                  )
+                  _updateButton()
                 ],
               ),
               Padding(
@@ -145,7 +180,7 @@ class _PanelScreenState extends State<PanelScreen> {
               Padding(
                   padding:
                       EdgeInsets.symmetric(horizontal: PADDING_HORIZ_INTERN),
-                  child: _lights()),
+                  child: _panelLights()),
             ],
           ),
         ),
@@ -153,43 +188,71 @@ class _PanelScreenState extends State<PanelScreen> {
     );
   }
 
-  _updateStates() {
-    print('_updateStates()');
-    // // verrify connection mqtt
-    final AwsIot awsIot = Locator.instance.get<AwsIot>();
-    final status = awsIot.awsIotDevice.client.connectionStatus.state;
-    if (status == MqttConnectionState.disconnected) {
-      print('disconnected , do event ...');
-      BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
-      Navigator.pushReplacement(context, FadeRoute(page: LoginScreen()));
-    } else {
-      print('publishing');
-      // awsIot.awsIotDevice.publishJson({}, topic: MqttTopics.getStates);
-      awsIot.awsIotDevice.publishJson({"estados": "000,160"},
-          topic: '\$aws/things/${Central.remoteId}/states');
-    }
+  Widget _updateButton() {
+    return BlocBuilder<IotAwsBloc, IotAwsState>(builder: (context, state) {
+      if (state is ConnectingIotAwsState)
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+          child:
+              SpinKitThreeBounce(color: ColorsCustom.loginScreenUp, size: 20),
+        );
+      else
+        return _icon();
+    });
   }
 
-  Widget _lights() {
+  Widget _icon() {
+    return BlocBuilder<LightsBloc, LightsState>(builder: (context, state) {
+      if (state is UpdatingDevicesState) {
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+          child:
+              SpinKitThreeBounce(color: ColorsCustom.loginScreenUp, size: 20),
+        );
+      } else
+        return InkWell(
+          onTap: () => _updateStates(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+            child:
+                Icon(Icons.update, size: 27, color: ColorsCustom.loginScreenUp),
+          ),
+        );
+    });
+  }
+
+  Widget _panelLights() {
     return BlocBuilder<LightsBloc, LightsState>(
       builder: (context, state) {
         if (state is UpdatingDevicesState ||
             state is UpdatingDevicesFromAwsState) {
-          return Center(
-            child: SpinKitRipple(
-              size: 30,
-              color: ColorsCustom.loginScreenUp,
-            ),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Center(
+                child: SpinKitRipple(
+                  size: 30,
+                  color: ColorsCustom.loginScreenUp,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Text(
+                  "Recuperando Estados ... ",
+                  style: TextStyle(
+                      fontSize: 14, color: ColorsCustom.loginScreenUp),
+                ),
+              ),
+            ],
           );
         } else if (state is UpdatedDevicesState) {
           if (state.lights.isEmpty)
             return Padding(
               padding: const EdgeInsets.all(30.0),
-              child: Text('Você possui dispositivos ainda!'),
+              child: Text('Você Não possui dispositivos ainda!'),
             );
           else {
-            print('rebuild _listWrapReorderable');
-            return _listWrapReorderable();
+            return _listWrapReorderable(state);
           }
         } else
           return Padding(
@@ -200,9 +263,9 @@ class _PanelScreenState extends State<PanelScreen> {
     );
   }
 
-  Widget _listWrapReorderable() {
-    final lights = BlocProvider.of<LightsBloc>(context).lights;
-    final tockLights = lights
+  Widget _listWrapReorderable(state) {
+    // final lights = BlocProvider.of<LightsBloc>(context).lights;
+    final tockLights = state.lights
         .map<TockLight>(
             (light) => TockLight(light: light, isConfigMode: isConfigMode))
         .toList();

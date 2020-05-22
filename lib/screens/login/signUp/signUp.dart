@@ -16,6 +16,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final emailController = TextEditingController();
+  final localeController = TextEditingController();
   final passController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -23,6 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void dispose() {
     super.dispose();
     emailController.dispose();
+    localeController.dispose();
     passController.dispose();
   }
 
@@ -39,10 +41,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (_formKey.currentState.validate()) {
       BlocProvider.of<AuthBloc>(context).add(
         SignUpEvent(
-          login: emailController.text,
-          password: passController.text,
+          login: emailController.text, password: passController.text,
           // if you want more attributes, just do add in json
-          jsonAttrs: {'email': emailController.text},
+          jsonAttrs: {
+            'email': emailController.text,
+            'locale': localeController.text
+          },
         ),
       );
     }
@@ -51,12 +55,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorsCustom.loginScreenMiddle,
+      backgroundColor: ColorsCustom.loginScreenUp,
       appBar: new AppBar(
-        title: new Text('SignUp'),
-        backgroundColor: ColorsCustom.loginScreenMiddle,
+        leading: Icon(
+          Icons.arrow_back,
+          color: Colors.white,
+        ),
+        centerTitle: true,
+        title: new Text(
+          'Cadastro',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: ColorsCustom.loginScreenUp,
       ),
-      body: Form(
+      body: _form(),
+    );
+  }
+
+  Widget _form() {
+    return SingleChildScrollView(
+      child: Form(
         key: _formKey,
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -69,6 +87,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 hint: 'email',
                 keyboardType: TextInputType.emailAddress,
                 textEditingController: emailController,
+              ),
+              SizedBox(height: 30.0),
+              InputLogin(
+                prefixIcon: Icons.home,
+                hint: 'Local (Casa, Condomínio, AP ...)',
+                keyboardType: TextInputType.text,
+                textEditingController: localeController,
               ),
               SizedBox(height: 30.0),
               InputLogin(

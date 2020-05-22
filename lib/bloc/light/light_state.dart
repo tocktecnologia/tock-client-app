@@ -5,18 +5,16 @@ abstract class LightState {}
 
 class LightInitial extends LightState {}
 
-class UpdatingLighState extends LightState {
+class GettingLighState extends LightState {
   final state;
   final deviceId;
   final pin;
-  UpdatingLighState({this.state, this.deviceId, this.pin});
+  GettingLighState({this.state, this.deviceId, this.pin});
 }
 
-class UpdatedLighState extends LightState {
+class GettedLighState extends LightState {
   final state;
   final deviceId;
   final pin;
-  UpdatedLighState({this.state, this.deviceId, this.pin});
+  GettedLighState({this.state, this.deviceId, this.pin});
 }
-
-class UpdateErrorLighState extends LightState {}

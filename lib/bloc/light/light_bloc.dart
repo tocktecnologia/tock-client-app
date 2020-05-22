@@ -15,19 +15,18 @@ class LightBloc extends Bloc<LightEvent, LightState> {
     LightEvent event,
   ) async* {
     try {
-      //
       if (event is ReceiveUpdateLightEvent) {
-        yield UpdatingLighState(
-            deviceId: event.deviceId, pin: event.pin, state: event.state);
-        print('pin: ${event.pin}');
-        print('pinState: ${event.state}');
-
-        //await Future.delayed(Duration(milliseconds: 500));
-        // yield UpdatingLighState();
-        // _lights.singleWhere((light) => light.device.remoteId == event.devices);
-        yield UpdatedLighState(
+        // yield UpdatingLighState(
+        //     deviceId: event.deviceId, pin: event.pin, state: event.state);
+        print('changing state to getted');
+        yield GettedLighState(
             deviceId: event.deviceId, pin: event.pin, state: event.state);
       }
-    } catch (_) {}
+      //
+      else if (event is GetUpdateLightEvent) {
+        yield GettingLighState(
+            deviceId: event.deviceId, pin: event.pin, state: event.state);
+      }
+    } catch (e) {}
   }
 }

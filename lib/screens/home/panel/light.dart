@@ -1,6 +1,7 @@
 import 'package:aws_iot/aws_iot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_login_setup_cognito/bloc/iot_aws/iot_aws_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/light/light_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
 import 'package:flutter_login_setup_cognito/shared/model/light_model.dart';
@@ -108,7 +109,8 @@ class _TockLightState extends State<TockLight> {
     setState(() {
       showProgress = true;
     });
-    final state = light.state =
+
+    final state =
         light.state == '1' ? '0' : '1'; // : light.state == '0' ? '1' : '2';
 
     AWSIotDevice awsIotDevice = Locator.instance.get<AwsIot>().awsIotDevice;
@@ -126,7 +128,7 @@ class _TockLightState extends State<TockLight> {
   Widget _icon() {
     return BlocListener<LightBloc, LightState>(
       listener: (context, state) {
-        if (state is UpdatedLighState) {
+        if (state is GettedLighState) {
           if (state.deviceId == light.device.remoteId &&
               state.pin == light.device.pin) {
             setState(() {

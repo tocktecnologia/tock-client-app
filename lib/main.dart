@@ -8,6 +8,7 @@ import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'bloc/auth/auth_bloc.dart';
 import 'bloc/auth/auth_event.dart';
+import 'bloc/iot_aws/iot_aws_bloc.dart';
 import 'bloc/light/light_bloc.dart';
 
 void main() async {
@@ -23,14 +24,16 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<IotAwsBloc>(
+            create: (BuildContext context) => IotAwsBloc()),
         BlocProvider<SchedulesBloc>(
             create: (BuildContext context) => SchedulesBloc()),
         BlocProvider<LightBloc>(create: (BuildContext context) => LightBloc()),
         BlocProvider<LightsBloc>(
             create: (BuildContext context) => LightsBloc()),
         BlocProvider<AuthBloc>(create: (BuildContext context) => AuthBloc()),
-        BlocProvider<DataUserBloc>(
-            create: (BuildContext context) => DataUserBloc()),
+        // BlocProvider<DataUserBloc>(
+        //     create: (BuildContext context) => DataUserBloc()),
       ],
       child: MaterialApp(
         color: Colors.white,

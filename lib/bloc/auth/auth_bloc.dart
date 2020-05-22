@@ -1,8 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
-import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/exceptions.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/handle_exceptions.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
@@ -30,8 +29,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             .get<UserCognito>()
             .login(event.login, event.password);
 
-        await Locator.instance.get<AwsIot>().intialize();
-
         // _isConnectedLocal =
         //     await Locator.instance.get<FirmwareApi>().isDeviceConnected();
 
@@ -50,7 +47,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         yield ForcingLoginState();
 
         await Locator.instance.get<UserCognito>().initialize();
-        await Locator.instance.get<AwsIot>().intialize();
 
         _isConnectedRemote =
             await Locator.instance.get<UserCognito>().verifyLogin();
@@ -99,7 +95,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
       // Error State
     } catch (e) {
-      yield LoginErrorState(message: HandleExptions.message(e));
+      yield LoginErrorState(
+          message: HandleExptions.message(e), type: e.runtimeType);
     }
   }
 

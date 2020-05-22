@@ -7,6 +7,11 @@ class LightsInitial extends LightsState {}
 
 class UpdatingDevicesFromAwsState extends LightsState {}
 
+class UpdatedDevicesFromAwsState extends LightsState {
+  final List<Light> lights;
+  UpdatedDevicesFromAwsState({this.lights});
+}
+
 class UpdatingDevicesState extends LightsState {}
 
 class UpdatedDevicesState extends LightsState {

@@ -8,6 +8,8 @@ class UpdateLightsFromCentralEvent extends LightsEvent {
   UpdateLightsFromCentralEvent({this.statesJson});
 }
 
+class GetUpdateLightsFromCentralEvent extends LightsEvent {}
+
 class ReconnectAwsIotEvent extends LightsEvent {}
 
 class UpdateDevicesFromAwsAPIEvent extends LightsEvent {

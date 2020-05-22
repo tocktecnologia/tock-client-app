@@ -24,6 +24,9 @@ class DataUserBloc extends HydratedBloc<DataUserEvent, DataUserState> {
         yield LoadedDataUserState(dataUser: dataUser);
         //
       }
+      // else if (event is GetDataUserEvent) {
+      //     yield DataUserInitial();
+      // }
     } catch (e) {
       yield LoadDataUserErrorState(message: e.toString);
     }

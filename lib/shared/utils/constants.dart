@@ -1,5 +1,9 @@
 class Endpoints {
   static const NetAddress = "http://10.0.1";
+
+  static String STAGE = "dev";
+  static String AWSBASE =
+      "https://9cw57hx4ja.execute-api.us-east-1.amazonaws.com";
 }
 
 class MqttTopics {

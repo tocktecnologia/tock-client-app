@@ -4,6 +4,8 @@ import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
+import 'package:flutter_login_setup_cognito/bloc/data_user/data_user_bloc.dart';
+import 'package:flutter_login_setup_cognito/bloc/iot_aws/iot_aws_bloc.dart';
 import 'package:flutter_login_setup_cognito/screens/home/main.dart';
 import 'package:flutter_login_setup_cognito/screens/login/signUp/confirmation_signUp.dart';
 import 'package:flutter_login_setup_cognito/screens/login/signUp/signUp.dart';
@@ -71,10 +73,23 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  _homeScreen() {
+    Navigator.pushReplacement(
+      context,
+      OpenAndFadeTransition(
+        BlocProvider(
+          create: (context) => DataUserBloc(),
+          child: HomeScreen(),
+        ),
+      ),
+    );
+  }
+
   Widget _contentLogin() {
     return BlocBuilder<AuthBloc, AuthState>(condition: (previousState, state) {
       if (state is LoggedState) {
-        Navigator.pushReplacement(context, OpenAndFadeTransition(HomeScreen()));
+        BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
+        _homeScreen();
       } else if (state is LoginErrorState) {
         ShowAlert.open(
             context: context,

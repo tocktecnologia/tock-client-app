@@ -1,20 +1,57 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
 import 'package:flutter_login_setup_cognito/shared/model/data_user_model.dart';
+import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/exceptions_tock.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
+import 'package:http/http.dart';
 
 class AwsApi {
   Future<DataUser> getDataUser() async {
-    await Future.delayed(Duration(milliseconds: 1000));
-    print('lendo json');
+    final email = Locator.instance.get<UserCognito>().userAttrs['email'];
+    final locale = Locator.instance.get<UserCognito>().userAttrs['locale'];
+    final identityId = await Cognito.getIdentityId();
+    Tokens tokens = await Cognito.getTokens();
 
-    try {
-      DataUser u = DataUser.fromJson(Map.from(dataUserJson));
-      print(u.toString());
-      return u;
-    } catch (e) {
-      print('getDataUser Exception: ${e.toString()}');
-      throw TockExceptions(e.toString(), e.runtimeType);
-    }
+    String url =
+        'https://9cw57hx4ja.execute-api.us-east-1.amazonaws.com/${Endpoints.STAGE}/user';
+
+    String body =
+        '{"email":"$email","identity_id":"$identityId","environment_name":"$locale"}';
+    Map<String, String> headers = {"Content-type": "application/json"};
+
+    var response = await post(url, headers: headers, body: body);
+    print(response.body);
+    //return json.decode(response.body);
+
+    // String url = '${Endpoints.AWSBASE}/${Endpoints.STAGE}/user ';
+    // //final headers = {"auth": "Cognit"};
+    // final body =
+    //     '"email": "$email","identity_id": "$identityId","environment_name": "$locale"}';
+    // print(url);
+    // print(body);
+    // Map<String, String> headers = {"Content-type": "application/json"};
+
+    // try {
+    //   final response = await post(url, body: body, headers: headers)
+    //       .timeout(Duration(seconds: 10));
+    //   print(response.body);
+    // } catch (e) {
+    //   print('catch getDataUser: ${e.toString()}');
+    // }
+
+    return (DataUser.fromJson(dataUserJson));
+    // try {
+    //   DataUser u = DataUser.fromJson(Map.from(dataUserJson));
+    //   print(u.toString());
+    //   return u;
+    // } catch (e) {
+    //   print('getDataUser Exception: ${e.toString()}');
+    //   throw TockExceptions(e.toString(), e.runtimeType);
+    // }
   }
 
   _createUser() {
@@ -68,6 +105,30 @@ final dataUserJson = {
       "pin": "5",
       "object_id": "123",
       "label": "${Central.remoteId} 5",
+      "type": "LIGHT"
+    },
+    {
+      "remote_id": "${Central.remoteId}",
+      "local_id": "10.0.1.10",
+      "pin": "6",
+      "object_id": "123",
+      "label": "${Central.remoteId} 6",
+      "type": "LIGHT"
+    },
+    {
+      "remote_id": "${Central.remoteId}",
+      "local_id": "10.0.1.10",
+      "pin": "7",
+      "object_id": "123",
+      "label": "${Central.remoteId} 7",
+      "type": "LIGHT"
+    },
+    {
+      "remote_id": "${Central.remoteId}",
+      "local_id": "10.0.1.10",
+      "pin": "7",
+      "object_id": "123",
+      "label": "${Central.remoteId} 7",
       "type": "LIGHT"
     },
     // {

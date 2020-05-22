@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_login_setup_cognito/shared/model/light_model.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/exceptions.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/handle_exceptions.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
@@ -26,8 +26,9 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
   ) async* {
     try {
       if (event is UpdateDevicesFromAwsAPIEvent) {
-        yield UpdatingDevicesState();
+        yield UpdatingDevicesFromAwsState();
 
+        _lights.clear();
         _lights = event.devices
             .map<Light>((device) => Light(device: device, state: '0'))
             .toList();
@@ -46,6 +47,10 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
         //     .toList();
 
         yield UpdatedDevicesState(lights: _lights);
+      }
+      //
+      else if (event is GetUpdateLightsFromCentralEvent) {
+        yield UpdatingDevicesState();
       }
       //
       else if (event is UpdateLightsFromCentralEvent) {

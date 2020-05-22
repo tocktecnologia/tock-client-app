@@ -15,6 +15,7 @@ import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/open.transition.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/size.transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -103,14 +104,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return BlocBuilder<DataUserBloc, DataUserState>(
         condition: (prevState, state) {
       if (state is LoadedDataUserState) {
-        // update list
         BlocProvider.of<LightsBloc>(context)
             .add(UpdateDevicesFromAwsAPIEvent(devices: state.dataUser.devices));
 
         BlocProvider.of<SchedulesBloc>(context).add(
             UpdateSchedulesConfigsEvent(schedules: state.dataUser.schedules));
+        _restartApp();
       }
-      return true;
+      return;
     }, builder: (context, state) {
       if (state is LoadingDataUserState) {
         return Column(
@@ -124,11 +125,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Text("Download dos dados ..."),
           ],
         );
-      } else {
-        
+      } else if (state is LoadedDataUserState) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              child: SpinKitWave(
+                color: ColorsCustom.loginScreenUp,
+              ),
+            ),
+            Text("Download Concluído, reiniciando ..."),
+          ],
+        );
+      } else if (state is DataUserInitial) {
         return IndexedStack(index: _currentIndex, children: _bodys);
-      }
+      } else
+        return Container(child: Text('Erro carregando dados'));
     });
+  }
+
+  _restartApp() {
+    BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
+    Navigator.pushReplacement(context, SizeRoute(page: LoginScreen()));
   }
 
   List<BottomNavigationBarItem> _bottomNavigatioItens() {
@@ -159,11 +177,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _drawer() {
     final email = Locator.instance.get<UserCognito>().userAttrs['email'];
+    final locale = Locator.instance.get<UserCognito>().userAttrs['locale'];
     return Drawer(
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text('Condomínio'),
+            accountName: Text('$locale'),
             accountEmail: Text('$email'),
             currentAccountPicture: CircleAvatar(
               backgroundImage: AssetImage('assets/images/cond.png'),
@@ -223,17 +242,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           title: Text('Adicionar módulo'),
           onTap: _showNotImplementedMessage,
         ),
-        Divider(
-          height: mheight,
-        ),
+        Divider(height: mheight),
         ListTile(
           leading: CircleAvatar(child: Icon(Icons.build)),
           title: Text('Configurar'),
           onTap: _showNotImplementedMessage,
         ),
-        Divider(
-          height: mheight,
-        ),
+        Divider(height: mheight),
         ListTile(
             leading: CircleAvatar(child: Icon(Icons.cloud_download)),
             title: Text('Download Configurações'),
@@ -241,9 +256,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               BlocProvider.of<DataUserBloc>(context).add(GetDataUserEvent());
               Navigator.pop(context);
             }),
-        Divider(
-          height: mheight,
+        Divider(height: mheight),
+        ListTile(
+          leading: CircleAvatar(child: Icon(Icons.repeat)),
+          title: Text('Reiniciar'),
+          onTap: () {
+            Navigator.pop(context);
+            _restartApp();
+          },
         ),
+        Divider(height: mheight),
         ListTile(
           leading: CircleAvatar(child: Icon(Icons.exit_to_app)),
           title: Text('Sair'),

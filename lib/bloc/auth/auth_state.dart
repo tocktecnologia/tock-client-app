@@ -38,6 +38,7 @@ class LoadedSendCodeConfirmSignUpState extends AuthState {}
 
 class LoginErrorState extends AuthState {
   final message;
+  final type;
 
-  LoginErrorState({this.message});
+  LoginErrorState({this.message, this.type});
 }

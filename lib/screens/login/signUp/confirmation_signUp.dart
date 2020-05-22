@@ -24,21 +24,6 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
   final numConfirmationController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  _confirmSignUp() {
-    if (_formKey.currentState.validate()) {
-      BlocProvider.of<AuthBloc>(context).add(
-        ConfirmSignUpEvent(
-            email: widget.email,
-            confirmationCode: numConfirmationController.text),
-      );
-    }
-  }
-
-  _resendConfirmationCode() {
-    BlocProvider.of<AuthBloc>(context)
-        .add(SendCodeConfirmSignUpEvent(email: widget.email));
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -53,12 +38,18 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorsCustom.loginScreenMiddle,
+      backgroundColor: ColorsCustom.loginScreenUp,
       appBar: new AppBar(
         title: new Text('Coinfirm your SignUp'),
-        backgroundColor: ColorsCustom.loginScreenMiddle,
+        backgroundColor: ColorsCustom.loginScreenUp,
       ),
-      body: Form(
+      body: _form(),
+    );
+  }
+
+  _form() {
+    return SingleChildScrollView(
+      child: Form(
         key: _formKey,
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -90,6 +81,21 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
         ),
       ),
     );
+  }
+
+  _confirmSignUp() {
+    if (_formKey.currentState.validate()) {
+      BlocProvider.of<AuthBloc>(context).add(
+        ConfirmSignUpEvent(
+            email: widget.email,
+            confirmationCode: numConfirmationController.text),
+      );
+    }
+  }
+
+  _resendConfirmationCode() {
+    BlocProvider.of<AuthBloc>(context)
+        .add(SendCodeConfirmSignUpEvent(email: widget.email));
   }
 
   Widget _textTitle() {
