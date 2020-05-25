@@ -56,12 +56,14 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
       else if (event is UpdateLightsFromCentralEvent) {
         yield UpdatingDevicesState();
 
-        // await Future.delayed(Duration(seconds: 1));
-        _lights.forEach((light) {
-          if (event.statesJson.containsKey(light.device.pin)) {
-            light.state = event.statesJson[light.device.pin];
-          }
-        });
+        String mStates = event.statesJson['states'];
+        if (_lights.length < mStates.length) {
+          _lights.forEach((light) {
+            light.state = mStates[int.parse(light.device.pin) - 1];
+          });
+        }
+
+        await Future.delayed(Duration(seconds: 1));
 
         //############################ LOCAL ############################
         // final Map response =
@@ -77,7 +79,8 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
         //         state: states['pin${light.device.pin}'] ?? '3'))
         //     .toList();
 
-        yield UpdatedDevicesState(lights: _lights);
+        // /yield UpdatedDevicesState(lights: _lights);
+        yield UpdatedLightsFromCentralState(lights: _lights);
       }
       //
       else if (event is ReconnectAwsIotEvent) {

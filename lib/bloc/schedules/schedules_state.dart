@@ -12,7 +12,26 @@ class UpdatedSchedulesState extends SchedulesState {
   UpdatedSchedulesState({this.schedules});
 }
 
-class UpdatSchedulesErrorState extends SchedulesState {
+class UpdateSchedulesErrorState extends SchedulesState {
   final message;
-  UpdatSchedulesErrorState({this.message});
+  UpdateSchedulesErrorState({this.message});
 }
+
+class UpdatingScheduleActionState extends SchedulesState {}
+
+class UpdatedScheduleActionState extends SchedulesState {}
+
+class DeletingScheduleState extends SchedulesState {
+  final Schedule schedule;
+
+  DeletingScheduleState({this.schedule});
+}
+
+class DeletedScheduleState extends SchedulesState {}
+
+class EnablingScheduleState extends SchedulesState {
+  final Schedule schedule;
+  EnablingScheduleState({this.schedule});
+}
+
+class EnabledScheduleState extends SchedulesState {}

@@ -102,16 +102,16 @@ class _InputLoginState extends State<InputLogin> {
 }
 
 class ButtonLogin extends MaterialButton {
-  ButtonLogin({
-    this.backgroundColor = Colors.transparent,
-    this.borderColor = ColorsCustom.loginScreenMiddle,
-    this.label = 'OK',
-    this.labelColor = ColorsCustom.loginScreenUp,
-    this.mOnPressed,
-    this.isLoading = false,
-    this.height,
-    this.minWidth,
-  });
+  ButtonLogin(
+      {this.backgroundColor = Colors.transparent,
+      this.borderColor = ColorsCustom.loginScreenMiddle,
+      this.label = 'OK',
+      this.labelColor = ColorsCustom.loginScreenUp,
+      this.mOnPressed,
+      this.isLoading = false,
+      this.height,
+      this.minWidth,
+      this.fontSize});
   final minWidth;
   final height;
   final bool isLoading;
@@ -120,6 +120,7 @@ class ButtonLogin extends MaterialButton {
   final String label;
   final Color labelColor;
   final VoidCallback mOnPressed;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -155,12 +156,67 @@ class ButtonLogin extends MaterialButton {
             : Text(
                 label,
                 style: TextStyle(
-                    fontSize: 20.0,
+                    fontSize: fontSize ?? 20.0,
                     color: labelColor,
                     fontWeight: FontWeight.bold),
               ),
         onPressed: mOnPressed,
       ),
+    );
+  }
+}
+
+class ShowProgress {
+  static open({@required context, titleText, @required contentText}) {
+    showDialog(
+        context: context,
+        child: Alert(
+          titleText: titleText == null ? 'Alert' : titleText,
+          contentText: contentText,
+        ));
+  }
+}
+
+class ProgressAlert extends AlertDialog {
+  final String titleText;
+  final Widget contentText;
+
+  ProgressAlert({this.titleText, this.contentText});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18.0),
+      ),
+      elevation: 5,
+      title: titleText != null
+          ? Text(
+              titleText,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: ColorsCustom.loginScreenUp),
+            )
+          : Icon(
+              Icons.info_outline,
+              size: 60,
+              color: ColorsCustom.loginScreenUp,
+            ),
+      content: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[contentText],
+        ),
+      ),
+      actions: <Widget>[
+        RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            side: BorderSide(color: ColorsCustom.loginScreenMiddle),
+          ),
+          color: ColorsCustom.loginScreenUp,
+          onPressed: () => Navigator.pop(context),
+          child: Text('OK'),
+        )
+      ],
     );
   }
 }

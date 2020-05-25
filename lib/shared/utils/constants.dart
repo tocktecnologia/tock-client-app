@@ -1,7 +1,7 @@
 class Endpoints {
   static const NetAddress = "http://10.0.1";
 
-  static String STAGE = "dev";
+  static String STAGE = "prod";
   static String AWSBASE =
       "https://9cw57hx4ja.execute-api.us-east-1.amazonaws.com";
 }
@@ -26,4 +26,9 @@ class DeviceTypes {
   static const DIMMER = "DIMMER";
   static const CAMERA = "CAMERA";
   static const SENSOR = "SENSOR";
+}
+
+class LightStatesLogic {
+  static const String LIGHT_ON = "0";
+  static const String LIGHT_OFF = "1";
 }

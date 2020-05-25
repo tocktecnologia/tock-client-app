@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/data_user/data_user_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/schedules/schedules_bloc.dart';
 import 'package:flutter_login_setup_cognito/screens/login/main.dart';

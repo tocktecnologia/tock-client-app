@@ -27,8 +27,8 @@
 20        android:debuggable="true"
 21        android:icon="@mipmap/launcher_icon"
 21-->/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:15:9-45
-22        android:label="Condomíno" >
-22-->/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:14:9-34
+22        android:label="Condomínio" >
+22-->/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:14:9-35
 23        <activity
 23-->/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:16:9-27:20
 24            android:name="com.example.flutter_login_setup_cognito.MainActivity"

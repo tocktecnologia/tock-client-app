@@ -113,7 +113,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else {
       return LoginErrorState(
           message:
-              "Você não possui uma Central Tock na sua rede e não logou no app pela internet.\nTente validar uma dos dois requisitos para entrar!");
+              "Não foi possível fazer o login.\n Você não estava logado ou está sem conexão com a internet.");
     }
   }
 }

@@ -7,12 +7,12 @@ import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
 import 'package:flutter_login_setup_cognito/bloc/data_user/data_user_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/schedules/schedules_bloc.dart';
-import 'package:flutter_login_setup_cognito/screens/home/groups/main.dart';
 import 'package:flutter_login_setup_cognito/screens/home/panel/panel_lights.dart';
 import 'package:flutter_login_setup_cognito/screens/home/schedules/schedules_screen.dart';
 import 'package:flutter_login_setup_cognito/screens/login/main.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/open.transition.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/size.transition.dart';
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   List<Widget> _bodys = <Widget>[
     PanelScreen(),
-    GroupsScreen(),
+    // GroupsScreen(),
     SchedulesScreen()
   ];
 
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           currentIndex: _currentIndex,
           items: _bottomNavigatioItens(),
           onTap: (int idx) {
-            if (idx == 3) {
+            if (idx == _bodys.length) {
               _scaffoldKey.currentState.openDrawer();
             } else {
               setState(() {
@@ -109,7 +109,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
         BlocProvider.of<SchedulesBloc>(context).add(
             UpdateSchedulesConfigsEvent(schedules: state.dataUser.schedules));
+
         _restartApp();
+      } else if (state is LoadDataUserErrorState) {
+        ShowAlert.open(
+            context: context,
+            contentText:
+                "Não foi possível recuperar os dados: ${state.message}.");
       }
       return;
     }, builder: (context, state) {
@@ -137,10 +143,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Text("Download Concluído, reiniciando ..."),
           ],
         );
-      } else if (state is DataUserInitial) {
-        return IndexedStack(index: _currentIndex, children: _bodys);
       } else
-        return Container(child: Text('Erro carregando dados'));
+        return IndexedStack(index: _currentIndex, children: _bodys);
     });
   }
 
@@ -156,11 +160,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         title: Text('Painel',
             maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
       ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.pie_chart, color: ColorsCustom.loginScreenMiddle),
-        title: Text('Grupos',
-            maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
-      ),
+      // BottomNavigationBarItem(
+      //   icon: Icon(Icons.pie_chart, color: ColorsCustom.loginScreenMiddle),
+      //   title: Text('Grupos',
+      //       maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
+      // ),
       BottomNavigationBarItem(
         icon:
             Icon(Icons.event_available, color: ColorsCustom.loginScreenMiddle),

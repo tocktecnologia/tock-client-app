@@ -18,7 +18,7 @@ class HandleExptions {
     } else if (e.runtimeType == SocketTimeoutException) {
       return 'Time out achieved, try again later.';
     } else if (e.runtimeType == IotAwsException) {
-      return 'Não foi possível conectar com seus dispositivos. Verifique sua conexão ou contacte um paceiro Tock informando seu id em Configurações.';
+      return 'Não foi possível conectar com seus dispositivos. Verifique sua conexão ou contacte um paceiro Tock de sua região';
     } else
       return 'Error Unknownm $e';
   }

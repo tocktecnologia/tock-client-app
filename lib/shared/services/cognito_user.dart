@@ -25,7 +25,7 @@ class UserCognito {
     try {
       await Cognito.signIn(login, password).timeout(Duration(seconds: 20));
       _userAttrs =
-          await Cognito.getUserAttributes().timeout(Duration(seconds: 5));
+          await Cognito.getUserAttributes().timeout(Duration(seconds: 20));
       return true;
     } catch (e) {
       print('Log ----- catch cognito login: ${e.toString()}');
@@ -37,7 +37,7 @@ class UserCognito {
     try {
       await Cognito.isSignedIn();
       _userAttrs =
-          await Cognito.getUserAttributes().timeout(Duration(seconds: 5));
+          await Cognito.getUserAttributes().timeout(Duration(seconds: 20));
       return true;
     } catch (e) {
       print('Log ----- catch cognito verify login: ${e.toString()}');

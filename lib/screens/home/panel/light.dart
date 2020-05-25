@@ -1,7 +1,6 @@
 import 'package:aws_iot/aws_iot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/iot_aws/iot_aws_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/light/light_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
 import 'package:flutter_login_setup_cognito/shared/model/light_model.dart';
@@ -104,8 +103,6 @@ class _TockLightState extends State<TockLight> {
   }
 
   _updateLightState() {
-    print('_updateLightState');
-
     setState(() {
       showProgress = true;
     });
@@ -114,10 +111,7 @@ class _TockLightState extends State<TockLight> {
         light.state == '1' ? '0' : '1'; // : light.state == '0' ? '1' : '2';
 
     AWSIotDevice awsIotDevice = Locator.instance.get<AwsIot>().awsIotDevice;
-    // final state = light.state == "1" ? "0" : "1";
 
-    // publish mqtt
-    // print('state:$state');
     awsIotDevice.publishJson({
       'state': {
         'desired': {'pin${light.device.pin}': int.parse(state)}
@@ -146,14 +140,14 @@ class _TockLightState extends State<TockLight> {
     switch (type) {
       case DeviceTypes.LIGHT:
         return Tab(
-          icon: mState == "1"
+          icon: mState == LightStatesLogic.LIGHT_ON
               ? Image.asset("assets/icons/lampOn.png")
               : Image.asset("assets/icons/lampOff.png"),
         );
         break;
       case DeviceTypes.LIGHTS:
         return Tab(
-          icon: mState == "1"
+          icon: mState == LightStatesLogic.LIGHT_ON
               ? Image.asset("assets/icons/lampsOn.png")
               : Image.asset("assets/icons/lampsOff.png"),
         );

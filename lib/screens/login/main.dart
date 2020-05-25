@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
             height: 140,
             fit: BoxFit.fill,
           )),
-          SizedBox(height: size.height * 0.065),
+          SizedBox(height: size.height * 0.020),
           Expanded(
             child: _contentLogin(),
           ),
@@ -130,13 +130,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 textEditingController: passController,
               ),
               SizedBox(height: size.height * 0.035),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  _buttonLogin(),
-                  SizedBox(height: 15),
-                ],
-              ),
+              _buttonLogin(),
+              SizedBox(height: 10),
+              _beforeSessionButton(),
               SizedBox(height: size.height * 0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -207,6 +203,17 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       },
     );
+  }
+
+  Widget _beforeSessionButton() {
+    return ButtonLogin(
+        backgroundColor: ColorsCustom.loginScreenUp,
+        labelColor: Colors.white,
+        label: 'Coninuar na sessão anterior?',
+        fontSize: 15,
+        mOnPressed: () {
+          BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
+        });
   }
 
   _login() {

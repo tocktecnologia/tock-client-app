@@ -20,8 +20,11 @@ class UpdatedDevicesState extends LightsState {
 }
 
 //
-//
-//
+class UpdatedLightsFromCentralState extends LightsState {
+  final List<Light> lights;
+  UpdatedLightsFromCentralState({@required this.lights});
+}
+
 class UpdatedLightConfigsState extends LightsState {
   final List<Light> lights;
   UpdatedLightConfigsState({@required this.lights});

@@ -81,7 +81,7 @@ MERGED from [org.conscrypt:conscrypt-android:2.0.0] /home/izaiasjr/.gradle/cache
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.0.0] /home/izaiasjr/.gradle/caches/transforms-2/files-2.1/0a271e99b6771ad4a84318244d532fb7/core-1.0.0/AndroidManifest.xml:22:18-86
 	android:label
-		ADDED from /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:14:9-34
+		ADDED from /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:14:9-35
 	android:icon
 		ADDED from /home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:15:9-45
 	android:name

@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/schedules/schedules_bloc.dart';
 import 'package:flutter_login_setup_cognito/screens/home/schedules/schedule_card.dart';
 import 'package:flutter_login_setup_cognito/screens/home/schedules/schedule_screen.dart';
+import 'package:flutter_login_setup_cognito/shared/model/data_user_model.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/slide.transition.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:reorderables/reorderables.dart';
 
 class SchedulesScreen extends StatefulWidget {
@@ -12,6 +15,8 @@ class SchedulesScreen extends StatefulWidget {
 }
 
 class _SchedulesScreenState extends State<SchedulesScreen> {
+  List<Schedule> _schedules;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,16 +31,14 @@ class _SchedulesScreenState extends State<SchedulesScreen> {
 
   Widget _content() {
     return BlocBuilder<SchedulesBloc, SchedulesState>(
-      builder: (context, state) {
-        if (state is UpdatingSchedulesState)
-          return Container();
-        else if (state is UpdatedSchedulesState) {
-          print(state.schedules);
-          return _listWrapReorderable(state.schedules);
-        } else
-          return Container();
-      },
-    );
+        builder: (context, state) {
+      if (state is UpdatingSchedulesState)
+        return Center(
+            child: SpinKitThreeBounce(color: ColorsCustom.loginScreenMiddle));
+      else
+        _schedules = BlocProvider.of<SchedulesBloc>(context).schedules;
+      return _listWrapReorderable(_schedules);
+    });
   }
 
   Widget _listWrapReorderable(schdeules) {
@@ -56,14 +59,17 @@ class _SchedulesScreenState extends State<SchedulesScreen> {
   }
 
   void _onReorder(int oldIndex, int newIndex) {
-    // BlocProvider.of<LightsBloc>(context)
-    //     .add(UpdateIdxLightsEvent(oldIndex: oldIndex, newIndex: newIndex));
+    final w = _schedules.removeAt(oldIndex);
+    _schedules.insert(newIndex, w);
+    // BlocProvider.of<SchedulesBloc>(context)
+    //     .add(UpdateSchedulesConfigsEvent(schedules: _schedules));
   }
 
   _addSchedule() {
     return InkWell(
-        onTap: () =>
-            Navigator.push(context, SlideLeftRoute(page: ScheduleScreen())),
+        onTap: () {
+          Navigator.push(context, SlideLeftRoute(page: ScheduleScreen()));
+        },
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Icon(

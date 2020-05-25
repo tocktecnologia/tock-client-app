@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_login_setup_cognito/shared/model/data_user_model.dart';
-import 'package:flutter_login_setup_cognito/shared/services/api.dart';
+import 'package:flutter_login_setup_cognito/shared/services/api/user_aws.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
@@ -28,7 +28,8 @@ class DataUserBloc extends HydratedBloc<DataUserEvent, DataUserState> {
       //     yield DataUserInitial();
       // }
     } catch (e) {
-      yield LoadDataUserErrorState(message: e.toString);
+      print(e.hasTimeout);
+      yield LoadDataUserErrorState(message: e.message);
     }
   }
 

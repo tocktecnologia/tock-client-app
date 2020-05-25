@@ -1,4 +1,5 @@
-import 'package:flutter_login_setup_cognito/shared/services/api.dart';
+import 'package:flutter_login_setup_cognito/shared/services/api/schedules_aws.dart';
+import 'package:flutter_login_setup_cognito/shared/services/api/user_aws.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
 import 'package:flutter_login_setup_cognito/shared/services/firmware_api.dart';
@@ -18,5 +19,6 @@ class Locator {
     _i.registerSingleton<AwsIot>(AwsIot());
 
     _i.registerSingleton<AwsApi>(AwsApi());
+    _i.registerLazySingleton<AwsApiSchedules>(() => AwsApiSchedules());
   }
 }
