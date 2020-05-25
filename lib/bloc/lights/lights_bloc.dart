@@ -57,13 +57,14 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
         yield UpdatingDevicesState();
 
         String mStates = event.statesJson['states'];
+        print(mStates);
         if (_lights.length < mStates.length) {
           _lights.forEach((light) {
             light.state = mStates[int.parse(light.device.pin) - 1];
           });
         }
 
-        await Future.delayed(Duration(seconds: 1));
+        //await Future.delayed(Duration(seconds: 1));
 
         //############################ LOCAL ############################
         // final Map response =
@@ -80,6 +81,8 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
         //     .toList();
 
         // /yield UpdatedDevicesState(lights: _lights);
+        yield UpdatedLightsFromCentralState(lights: _lights);
+      } else if (event is GoToUpdatedLightsFromCentralState) {
         yield UpdatedLightsFromCentralState(lights: _lights);
       }
       //

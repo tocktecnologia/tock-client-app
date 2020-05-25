@@ -242,12 +242,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     else
-      showDialog(
+      ShowAlert.open(
         context: context,
-        builder: (context) => Alert(
-          titleText: 'Alert',
-          contentText: 'Please type a valid Email in login field',
-        ),
+        titleText: 'Alert',
+        contentText: 'Please type a valid Email in login field',
       );
   }
 
@@ -260,12 +258,10 @@ class _LoginScreenState extends State<LoginScreen> {
             email: loginController.text,
           )));
     else
-      showDialog(
+      ShowAlert.open(
         context: context,
-        builder: (context) => Alert(
-          titleText: 'Alert',
-          contentText: 'Please type a valid Email in login field.',
-        ),
+        titleText: 'Alert',
+        contentText: 'Please type a valid Email in login field.',
       );
   }
 

@@ -49,6 +49,9 @@ class _PanelScreenState extends State<PanelScreen> {
           //print("deviceid: $deviceId, pin${k[3]} ---->  $v");
           BlocProvider.of<LightBloc>(context).add(ReceiveUpdateLightEvent(
               deviceId: deviceId, pin: k.substring(3), state: v.toString()));
+
+          // BlocProvider.of<LightsBloc>(context)
+          //     .add(GoToUpdatedLightsFromCentralState());
         });
       }
     } else if (mjson.containsKey('states')) {
@@ -57,12 +60,12 @@ class _PanelScreenState extends State<PanelScreen> {
     }
   }
 
-  _updateStates() {
-    print('_updateStates()');
+  _updateStates() async {
+    await Future.delayed(Duration(milliseconds: 50));
     final AwsIot awsIot = Locator.instance.get<AwsIot>();
-    print(awsIot.awsIotDevice);
     final status = awsIot.awsIotDevice.client.connectionStatus.state;
     print(status);
+    print('_updateStates()');
     if (status == MqttConnectionState.connected) {
       BlocProvider.of<LightsBloc>(context)
           .add(GetUpdateLightsFromCentralEvent());

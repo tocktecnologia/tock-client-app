@@ -59,8 +59,8 @@ class _SchedulesScreenState extends State<SchedulesScreen> {
   }
 
   void _onReorder(int oldIndex, int newIndex) {
-    final w = _schedules.removeAt(oldIndex);
-    _schedules.insert(newIndex, w);
+    // final w = _schedules.removeAt(oldIndex);
+    // _schedules.insert(newIndex, w);
     // BlocProvider.of<SchedulesBloc>(context)
     //     .add(UpdateSchedulesConfigsEvent(schedules: _schedules));
   }

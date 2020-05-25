@@ -69,14 +69,14 @@ class _TockLightState extends State<TockLight> {
   }
 
   _showDialogHideAnimation() {
-    showDialog(
-        context: context,
-        child: Alert(
-          contentText:
-              "A animação do clique foi ${forceHideAnimation ? 'habilitada' : 'desabilitada'}.'",
-        ));
+    // showDialog(
+    //     context: context,
+    //     child: Alert(
+    //       contentText:
+    //           "A animação do clique foi ${forceHideAnimation ? 'habilitada' : 'desabilitada'}.'",
+    //     ));
 
-    setState(() => forceHideAnimation = !forceHideAnimation);
+    // setState(() => forceHideAnimation = !forceHideAnimation);
   }
 
   Widget _progress() {

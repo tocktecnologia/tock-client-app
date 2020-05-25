@@ -34,3 +34,5 @@ class ReceiveStateLightEvent extends LightsEvent {
   final pin;
   ReceiveStateLightEvent({this.state, this.deviceId, this.pin});
 }
+
+class GoToUpdatedLightsFromCentralState extends LightsEvent {}

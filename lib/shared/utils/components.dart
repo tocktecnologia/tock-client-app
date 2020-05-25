@@ -166,114 +166,106 @@ class ButtonLogin extends MaterialButton {
   }
 }
 
-class ShowProgress {
+class ShowAlert {
   static open({@required context, titleText, @required contentText}) {
     showDialog(
-        context: context,
-        child: Alert(
-          titleText: titleText == null ? 'Alert' : titleText,
-          contentText: contentText,
-        ));
-  }
-}
-
-class ProgressAlert extends AlertDialog {
-  final String titleText;
-  final Widget contentText;
-
-  ProgressAlert({this.titleText, this.contentText});
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18.0),
-      ),
-      elevation: 5,
-      title: titleText != null
-          ? Text(
-              titleText,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: ColorsCustom.loginScreenUp),
-            )
-          : Icon(
-              Icons.info_outline,
-              size: 60,
-              color: ColorsCustom.loginScreenUp,
-            ),
-      content: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[contentText],
+      context: context,
+      child: AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.0),
         ),
-      ),
-      actions: <Widget>[
-        RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-            side: BorderSide(color: ColorsCustom.loginScreenMiddle),
+        elevation: 5,
+        title: titleText != null
+            ? Text(
+                titleText,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: ColorsCustom.loginScreenUp),
+              )
+            : Icon(
+                Icons.info_outline,
+                size: 60,
+                color: ColorsCustom.loginScreenUp,
+              ),
+        content: SingleChildScrollView(
+          child: Text(
+            contentText,
+            style: TextStyle(color: Colors.black54),
+            textAlign: TextAlign.center,
           ),
-          color: ColorsCustom.loginScreenUp,
-          onPressed: () => Navigator.pop(context),
-          child: Text('OK'),
-        )
-      ],
+        ),
+        actions: <Widget>[
+          RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              side: BorderSide(color: ColorsCustom.loginScreenMiddle),
+            ),
+            color: ColorsCustom.loginScreenUp,
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          )
+        ],
+      ),
     );
   }
 }
 
-class ShowAlert {
-  static open({@required context, titleText, @required contentText}) {
+class ShowAlertOptions {
+  static open(
+      {@required context,
+      titleText,
+      @required contentText,
+      VoidCallback action}) {
     showDialog(
-        context: context,
-        child: Alert(
-          titleText: titleText == null ? 'Alert' : titleText,
-          contentText: contentText,
-        ));
-  }
-}
-
-class Alert extends AlertDialog {
-  final String titleText;
-  final String contentText;
-
-  Alert({this.titleText, this.contentText});
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18.0),
-      ),
-      elevation: 5,
-      title: titleText != null
-          ? Text(
-              titleText,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: ColorsCustom.loginScreenUp),
-            )
-          : Icon(
-              Icons.info_outline,
-              size: 60,
-              color: ColorsCustom.loginScreenUp,
-            ),
-      content: SingleChildScrollView(
-        child: Text(
-          contentText,
-          style: TextStyle(color: Colors.black54),
-          textAlign: TextAlign.center,
+      context: context,
+      child: AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.0),
         ),
-      ),
-      actions: <Widget>[
-        RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-            side: BorderSide(color: ColorsCustom.loginScreenMiddle),
+        elevation: 5,
+        title: titleText != null
+            ? Text(
+                titleText,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: ColorsCustom.loginScreenUp),
+              )
+            : Icon(
+                Icons.info_outline,
+                size: 60,
+                color: ColorsCustom.loginScreenUp,
+              ),
+        content: SingleChildScrollView(
+          child: Text(
+            contentText,
+            style: TextStyle(color: Colors.black54),
+            textAlign: TextAlign.center,
           ),
-          color: ColorsCustom.loginScreenUp,
-          onPressed: () => Navigator.pop(context),
-          child: Text('OK'),
-        )
-      ],
+        ),
+        actions: <Widget>[
+          RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              side: BorderSide(color: ColorsCustom.loginScreenMiddle),
+            ),
+            color: ColorsCustom.loginScreenUp,
+            onPressed: () {
+              action();
+              Navigator.pop(context);
+            },
+            child: Text('Sim'),
+          ),
+          RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              side: BorderSide(color: ColorsCustom.loginScreenMiddle),
+            ),
+            color: ColorsCustom.loginScreenUp,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Não'),
+          )
+        ],
+      ),
     );
   }
 }
