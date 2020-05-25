@@ -7,10 +7,14 @@ class Endpoints {
 }
 
 class MqttTopics {
-  static const getStates = '\$aws/things/${Central.remoteId}/states';
-  static const update = '\$aws/things/${Central.remoteId}/shadow/update';
-  static const accepted =
+  static const shadowGet = '\$aws/things/${Central.remoteId}/shadow/get';
+  static const shadowUpdate = '\$aws/things/${Central.remoteId}/shadow/update';
+  static const shadowGetAccepted =
+      '\$aws/things/${Central.remoteId}/shadow/get/accepted';
+  static const shadowUpdateAccepted =
       '\$aws/things/${Central.remoteId}/shadow/update/accepted';
+
+  static const getStates = '\$aws/things/${Central.remoteId}/states';
 }
 
 class Central {

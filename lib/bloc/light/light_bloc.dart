@@ -18,7 +18,6 @@ class LightBloc extends Bloc<LightEvent, LightState> {
       if (event is ReceiveUpdateLightEvent) {
         // yield UpdatingLighState(
         //     deviceId: event.deviceId, pin: event.pin, state: event.state);
-        print('changing state to getted');
         yield GettedLighState(
             deviceId: event.deviceId, pin: event.pin, state: event.state);
       }

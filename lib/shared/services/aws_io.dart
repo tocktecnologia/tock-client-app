@@ -32,12 +32,11 @@ class AwsIot {
 
   _subscribing() {
     print('conectou abestado, subscribing ...!!!');
-    final shadow = '\$aws/things/${Central.remoteId}/shadow/update/accepted';
-    final states = '\$aws/things/${Central.remoteId}/states';
-    final statesCentral = '\$aws/things/${Central.remoteId}/states/ret';
-    print('shadow:$shadow \nstate:$states');
-    _awsIotDevice.subscribe(shadow);
-    _awsIotDevice.subscribe(states);
-    _awsIotDevice.subscribe(statesCentral);
+
+    print(
+        'shadowUpdated:${MqttTopics.shadowUpdateAccepted} \ngetShadow:${MqttTopics.shadowGetAccepted}');
+    _awsIotDevice.subscribe(MqttTopics.shadowUpdateAccepted);
+    _awsIotDevice.subscribe(MqttTopics.shadowGetAccepted);
+    // _awsIotDevice.subscribe(statesCentral);
   }
 }

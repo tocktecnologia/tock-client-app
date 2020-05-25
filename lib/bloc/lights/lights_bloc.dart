@@ -82,9 +82,19 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
 
         // /yield UpdatedDevicesState(lights: _lights);
         yield UpdatedLightsFromCentralState(lights: _lights);
-      } else if (event is GoToUpdatedLightsFromCentralState) {
-        yield UpdatedLightsFromCentralState(lights: _lights);
       }
+      // else if (event is UpdateLightsFromShadowEvent) {
+      //   yield UpdatingDevicesState();
+
+      //   final Map mStates = event.statesJson['reported'];
+      //   print(mStates);
+      //   _lights.forEach((light) {
+      //     if (mStates.containsKey('pin${light.device.pin}'))
+      //       light.state = mStates['pin${int.parse(light.device.pin)}'];
+      //   });
+
+      //   yield UpdatedLightsFromCentralState(lights: _lights);
+      // }
       //
       else if (event is ReconnectAwsIotEvent) {
         yield UpdatingDevicesState();

@@ -15,6 +15,13 @@ class ConnectionErrorIotAwsState extends IotAwsState {
   ConnectionErrorIotAwsState({this.mesage, this.type});
 }
 
+class UpdatingLightsFromShadowState extends IotAwsState {}
+
+class UpdatedLightsFromShadowState extends IotAwsState {
+  final List<Light> lights;
+  UpdatedLightsFromShadowState({this.lights});
+}
+
 // class GettingLighState extends IotAwsState {
 //   final state;
 //   final deviceId;

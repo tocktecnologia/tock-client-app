@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter_login_setup_cognito/shared/model/light_model.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/handle_exceptions.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'package:meta/meta.dart';
@@ -22,6 +24,29 @@ class IotAwsBloc extends Bloc<IotAwsEvent, IotAwsState> {
         yield ConnectingIotAwsState();
         await Locator.instance.get<AwsIot>().intialize();
         yield ConnectedIotAwsState();
+      }
+      //
+      else if (event is UpdateLightsFromShadowEvent) {
+        yield UpdatingLightsFromShadowState();
+
+        final Map mStates = event.statesJson['reported'];
+        print(mStates);
+        event.lights.forEach((light) {
+          if (mStates.containsKey('pin${light.device.pin}'))
+            light.state = mStates['pin${int.parse(light.device.pin)}'];
+        });
+
+        yield UpdatedLightsFromShadowState(lights: event.lights);
+      }
+
+      ///
+      else if (event is GetUpdateLightsFromShadowEvent) {
+        yield UpdatingLightsFromShadowState();
+        await Future.delayed(Duration(milliseconds: 200));
+        Locator.instance
+            .get<AwsIot>()
+            .awsIotDevice
+            .publishJson({}, topic: MqttTopics.shadowGet);
       }
       //
       // else if (event is ReceiveUpdateIotAwsEvent) {

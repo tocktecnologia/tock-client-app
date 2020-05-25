@@ -5,6 +5,15 @@ abstract class IotAwsEvent {}
 
 class ConnectIotAwsEvent extends IotAwsEvent {}
 
+class UpdateLightsFromShadowEvent extends IotAwsEvent {
+  final statesJson;
+  final List<Light> lights;
+  UpdateLightsFromShadowEvent(
+      {@required this.lights, @required this.statesJson});
+}
+
+class GetUpdateLightsFromShadowEvent extends IotAwsEvent {}
+
 // class ReceiveUpdateIotAwsEvent extends IotAwsEvent {
 //   final state;
 //   final deviceId;
