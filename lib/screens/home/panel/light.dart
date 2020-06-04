@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/light/light_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
+import 'package:flutter_login_setup_cognito/bloc/local_network/local_network_bloc.dart';
 import 'package:flutter_login_setup_cognito/shared/model/light_model.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
+import 'package:flutter_login_setup_cognito/shared/services/firmware_api.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
@@ -102,16 +104,42 @@ class _TockLightState extends State<TockLight> {
     setState(() {});
   }
 
-  _updateLightState() {
+  _updateLightState() async {
     setState(() {
       showProgress = true;
     });
 
-    final state =
-        light.state == '1' ? '0' : '1'; // : light.state == '0' ? '1' : '2';
+    final state = light.state == '1' ? '0' : '1';
 
+    BlocProvider.of<LocalConfigBloc>(context).state.value
+        ? _publishCentral(state)
+        : _publishMqtt(state);
+  }
+
+  _publishCentral(state) async {
+    print('publishing local');
+    final status = await Locator.instance
+        .get<FirmwareApi>()
+        .updateState(light: this.light, newState: state);
+    if (status) {
+      setState(() {
+        light.state = state;
+        showProgress = false;
+      });
+    } else {
+      ShowAlert.open(
+          context: context,
+          contentText:
+              "Você não está conectado na central!\n Verifique sua conexão coma rede local.");
+      setState(() {
+        showProgress = false;
+      });
+    }
+  }
+
+  _publishMqtt(state) {
+    print('publishing mqtt');
     AWSIotDevice awsIotDevice = Locator.instance.get<AwsIot>().awsIotDevice;
-
     awsIotDevice.publishJson({
       'state': {
         'desired': {'pin${light.device.pin}': int.parse(state)}

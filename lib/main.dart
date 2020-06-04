@@ -7,8 +7,10 @@ import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'bloc/auth/auth_bloc.dart';
 import 'bloc/auth/auth_event.dart';
+import 'bloc/central/central_bloc.dart';
 import 'bloc/iot_aws/iot_aws_bloc.dart';
 import 'bloc/light/light_bloc.dart';
+import 'bloc/local_network/local_network_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +25,10 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<CentralBloc>(
+            create: (BuildContext context) => CentralBloc()),
+        BlocProvider<LocalConfigBloc>(
+            create: (BuildContext context) => LocalConfigBloc()),
         BlocProvider<IotAwsBloc>(
             create: (BuildContext context) => IotAwsBloc()),
         BlocProvider<SchedulesBloc>(

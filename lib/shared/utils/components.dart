@@ -248,22 +248,22 @@ class ShowAlertOptions {
             ),
             color: ColorsCustom.loginScreenUp,
             onPressed: () {
-              action();
               Navigator.pop(context);
             },
-            child: Text('Sim'),
+            child: Text('Não'),
           ),
           RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
               side: BorderSide(color: ColorsCustom.loginScreenMiddle),
             ),
-            color: ColorsCustom.loginScreenUp,
+            color: ColorsCustom.loginScreenMiddle,
             onPressed: () {
-              Navigator.pop(context);
+              action();
+              // Navigator.pop(context);
             },
-            child: Text('Não'),
-          )
+            child: Text('Sim'),
+          ),
         ],
       ),
     );

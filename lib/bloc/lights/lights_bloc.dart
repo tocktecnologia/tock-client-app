@@ -30,7 +30,7 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
 
         _lights.clear();
         _lights = event.devices
-            .map<Light>((device) => Light(device: device, state: '0'))
+            .map<Light>((device) => Light(device: device, state: '1'))
             .toList();
 
         // ###################### LOCAL (pega os estados da central) ###############
@@ -48,10 +48,7 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
 
         yield UpdatedDevicesState(lights: _lights);
       }
-      //
-      else if (event is GetUpdateLightsFromCentralEvent) {
-        yield UpdatingDevicesState();
-      }
+
       //
       else if (event is UpdateLightsFromCentralEvent) {
         yield UpdatingDevicesState();

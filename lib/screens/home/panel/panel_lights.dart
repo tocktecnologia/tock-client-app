@@ -4,14 +4,19 @@ import 'package:aws_iot/aws_iot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
+import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
+import 'package:flutter_login_setup_cognito/bloc/central/central_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/iot_aws/iot_aws_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/light/light_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
+import 'package:flutter_login_setup_cognito/bloc/local_network/local_network_bloc.dart';
+import 'package:flutter_login_setup_cognito/screens/login/main.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/size.transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:reorderables/reorderables.dart';
@@ -29,14 +34,15 @@ class PanelScreen extends StatefulWidget {
 
 class _PanelScreenState extends State<PanelScreen> {
   bool isConfigMode = false;
+  bool isLocalEnabled = false;
   @override
   void initState() {
     super.initState();
+    isLocalEnabled = BlocProvider.of<LocalConfigBloc>(context).state.value;
   }
 
   // listinning from aws mqtt
   _onReceive(awsIotDevice) async {
-    print('awsIotDevice: $awsIotDevice');
     final AWSIotMsg lastMsg = await awsIotDevice.messages.elementAt(0);
     final mjson = jsonDecode(lastMsg.asStr); // for get states
     print(mjson);
@@ -65,23 +71,30 @@ class _PanelScreenState extends State<PanelScreen> {
   }
 
   _updateStates() {
+    if (isLocalEnabled) {
+      final lights = BlocProvider.of<LightsBloc>(context).lights;
+      BlocProvider.of<CentralBloc>(context)
+          .add(GetUpdateLightsFromCentralEvent(lights: lights));
+    } else {
+      _updateStatesFromShadow();
+    }
+  }
+
+  _updateStatesFromShadow() {
     final AwsIot awsIot = Locator.instance.get<AwsIot>();
     final status = awsIot.awsIotDevice.client.connectionStatus.state;
-    print(status);
-    print('_updateStates()');
+    print('status connection : $status');
+    print('_updateStatesFromShadow()');
     if (status == MqttConnectionState.connected) {
-      // BlocProvider.of<LightsBloc>(context)
-      //     .add(GetUpdateLightsFromCentralEvent());
-      // awsIot.awsIotDevice.publishJson({"estados": "000,160"},
-      // topic: '\$aws/things/${Central.remoteId}/states');
-
-      // Ao inves de buscar da central , ele ira buscar do shadow
       BlocProvider.of<IotAwsBloc>(context)
           .add(GetUpdateLightsFromShadowEvent());
     }
     //
-    else if (status == MqttConnectionState.disconnected)
-      BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
+    else if (status == MqttConnectionState.disconnected) {
+      // BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
+      // BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
+      // Navigator.pushReplacement(context, SizeRoute(page: LoginScreen()));
+    }
   }
 
   @override
@@ -176,7 +189,12 @@ class _PanelScreenState extends State<PanelScreen> {
             ],
           );
         } else if (state is UpdatedDevicesState) {
-          return iotConnectionDevices(state);
+          if (!isLocalEnabled) {
+            return iotConnectionDevices(state);
+          } else {
+            print('asking central...');
+            return centralConnectionDevices(state);
+          }
         } else
           return Padding(
             padding: const EdgeInsets.all(30.0),
@@ -186,10 +204,45 @@ class _PanelScreenState extends State<PanelScreen> {
     );
   }
 
+  Widget centralConnectionDevices(UpdatedDevicesState stateLights) {
+    BlocProvider.of<CentralBloc>(context)
+        .add(GetUpdateLightsFromCentralEvent(lights: stateLights.lights));
+
+    return BlocBuilder<CentralBloc, CentralState>(
+      condition: (prevState, state) {
+        if (state is UpdateLightsFromCentralErrorState) {
+          ShowAlert.open(context: context, contentText: state.message);
+        }
+        return;
+      },
+      builder: (context, state) {
+        if (state is UpdatingLightsFromCentralState) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Center(
+                child:
+                    SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Text("Atualizando estados da central... ",
+                    style: TextStyle(
+                        fontSize: 17, color: ColorsCustom.loginScreenUp)),
+              ),
+            ],
+          );
+        } else {
+          return _listWrapReorderable(stateLights);
+        }
+      },
+    );
+  }
+
   Widget iotConnectionDevices(stateLights) {
     return BlocBuilder<IotAwsBloc, IotAwsState>(condition: (prevState, state) {
       if (state is ConnectedIotAwsState) {
-        // init listenning aws iot
+        // init listenning aws iot if not local choiced
         final AWSIotDevice awsIotDevice =
             Locator.instance.get<AwsIot>().awsIotDevice;
         awsIotDevice.client.updates.listen((_) {
@@ -224,7 +277,7 @@ class _PanelScreenState extends State<PanelScreen> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Text("Atualizando estados ... ",
+              child: Text("Atualizando estados da nuvem... ",
                   style: TextStyle(
                       fontSize: 17, color: ColorsCustom.loginScreenUp)),
             ),
@@ -304,10 +357,34 @@ class _PanelScreenState extends State<PanelScreen> {
   }
 
   Widget _iconLocal() {
-    return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: BlocProvider.of<AuthBloc>(context).isConnectedLocal
-            ? Icon(Icons.wifi_tethering, color: Colors.white)
-            : Icon(Icons.portable_wifi_off, color: Colors.white30));
+    return InkWell(
+      onTap: () {
+        ShowAlertOptions.open(
+          context: context,
+          contentText:
+              "Tem certeza que deseja ${isLocalEnabled ? 'desabilitar' : 'habilitar'} o mode operação local?",
+          action: () {
+            isLocalEnabled
+                ? BlocProvider.of<LocalConfigBloc>(context)
+                    .add(ConfigEvent.disableLocal)
+                : BlocProvider.of<LocalConfigBloc>(context)
+                    .add(ConfigEvent.enableLocal);
+
+            //restart app
+            BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
+            Navigator.pushReplacement(context, SizeRoute(page: LoginScreen()));
+          },
+        );
+      },
+      child: BlocBuilder<LocalConfigBloc, ConfigState>(
+          builder: (BuildContext context, ConfigState state) {
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: state.value
+              ? Icon(Icons.wifi_tethering, color: Colors.white)
+              : Icon(Icons.portable_wifi_off, color: Colors.white30),
+        );
+      }),
+    );
   }
 }

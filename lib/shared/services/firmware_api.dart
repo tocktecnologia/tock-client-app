@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_login_setup_cognito/shared/model/light_model.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 import 'package:http/http.dart';
@@ -11,7 +12,7 @@ class FirmwareApi {
   String idTest = '10';
 
   Future isDeviceConnected() async {
-    final url = '${Endpoints.NetAddress}.$idTest:80/tock';
+    final url = 'http://10.0.1.10:80/tock';
     final basicAuth =
         'Basic ' + base64Encode(utf8.encode('$username:$password'));
     final headers = {
@@ -35,7 +36,7 @@ class FirmwareApi {
   }
 
   Future<Map> getStates() async {
-    final url = '${Endpoints.NetAddress}.$idTest:80/tock/states';
+    final url = 'http://10.0.1.10:80/tock/update';
     final basicAuth =
         'Basic ' + base64Encode(utf8.encode('$username:$password'));
     final headers = {
@@ -43,11 +44,15 @@ class FirmwareApi {
       'content-type': 'application/json'
     };
 
+    final body = {"estados": "001,120"};
+
     try {
       final response =
-          await post(url, headers: headers).timeout(Duration(seconds: 4));
+          await post(url, headers: headers, body: json.encode(body))
+              .timeout(Duration(seconds: 4));
       if (response.statusCode == 200) {
-        return {"status": "sucesso", "message": json.decode(response.body)};
+        return json.decode(response.body);
+        //return {"status": "sucesso", "message": json.decode(response.body)};
       } else {
         return {"status": "falha"};
       }
@@ -63,31 +68,32 @@ class FirmwareApi {
     }
   }
 
-  Future<Map> updateState({Light light}) async {
-    final url = '${Endpoints.NetAddress}.$idTest:80/tock/update';
+  Future<bool> updateState({@required Light light, @required newState}) async {
+    final url = 'http://10.0.1.10:80/tock/update';
     final basicAuth =
         'Basic ' + base64Encode(utf8.encode('$username:$password'));
     final headers = {
       'authorization': basicAuth,
       'content-type': 'application/json'
     };
-    final body = {"${light.device.pin}": light.state};
+    final body = {"pin${light.device.pin}": newState};
 
     try {
       final response =
           await post(url, headers: headers, body: json.encode(body))
-              .timeout(Duration(seconds: 4));
+              .timeout(Duration(seconds: 3));
       if (response.statusCode == 200) {
-        return {"status": "sucesso", "message": (response.body)};
+        print(response.body);
+        return true;
       } else {
-        return {"status": "falha"};
+        return false; //{"status": "falha"};
       }
     } on TimeoutException catch (_) {
-      return {"status": "falha", "message": "timeout"};
+      return false; //{"status": "falha", "message": "timeout"};
     } on SocketException catch (_) {
-      return {"status": "falha", "message": "no-internet"};
+      return false; //{"status": "falha", "message": "no-internet"};
     } catch (e) {
-      return {"status": "falha", "message": e.toString()};
+      return false; // {"status": "falha", "message": e.toString()};
     }
   }
 }
