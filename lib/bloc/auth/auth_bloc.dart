@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';
+import 'package:flutter_login_setup_cognito/shared/services/firmware_api.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/handle_exceptions.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'auth_event.dart';
@@ -33,8 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         //     await Locator.instance.get<FirmwareApi>().isDeviceConnected();
 
         yield _handleLogin(
-            isConnectedLocal: _isConnectedLocal,
-            isConnectedRemote: _isConnectedRemote);
+            isConnectedLocal: false, isConnectedRemote: _isConnectedRemote);
       }
       // Logout event
       else if (event is LogoutEvent) {
@@ -51,8 +51,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _isConnectedRemote =
             await Locator.instance.get<UserCognito>().verifyLogin();
 
-        // _isConnectedLocal =
-        //     await Locator.instance.get<FirmwareApi>().isDeviceConnected();
+        _isConnectedLocal =
+            await Locator.instance.get<FirmwareApi>().isDeviceConnected();
 
         yield _handleLogin(
             isConnectedLocal: _isConnectedLocal,

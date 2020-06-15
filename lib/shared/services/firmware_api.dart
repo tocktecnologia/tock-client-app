@@ -9,10 +9,10 @@ import 'package:http/http.dart';
 class FirmwareApi {
   String username = 'tock';
   String password = 'tocktecnologia30130';
-  String idTest = '10';
+  String central = 'http://192.168.0.10';
 
   Future isDeviceConnected() async {
-    final url = 'http://10.0.1.10:80/tock';
+    final url = '$central:80/tock';
     final basicAuth =
         'Basic ' + base64Encode(utf8.encode('$username:$password'));
     final headers = {
@@ -36,7 +36,7 @@ class FirmwareApi {
   }
 
   Future<Map> getStates() async {
-    final url = 'http://10.0.1.10:80/tock/update';
+    final url = '$central:80/tock/update';
     final basicAuth =
         'Basic ' + base64Encode(utf8.encode('$username:$password'));
     final headers = {
@@ -69,7 +69,7 @@ class FirmwareApi {
   }
 
   Future<bool> updateState({@required Light light, @required newState}) async {
-    final url = 'http://10.0.1.10:80/tock/update';
+    final url = '$central:80/tock/update';
     final basicAuth =
         'Basic ' + base64Encode(utf8.encode('$username:$password'));
     final headers = {
