@@ -1,8 +1,8 @@
 class Endpoints {
   static const NetAddress = "http://10.0.1";
 
-  static String STAGE = "prod";
-  static String AWSBASE =
+  static const String STAGE = "prod";
+  static const String AWSBASE =
       "https://9cw57hx4ja.execute-api.us-east-1.amazonaws.com";
 }
 
@@ -24,6 +24,7 @@ class Central {
 
 class DeviceTypes {
   static const LIGHT = "LIGHT";
+  static const BOMB = "BOMB";
   static const LIGHTS = "LIGHTS";
   static const PLUG = "PLUG";
   static const CONTROL = "CONTROL";
@@ -33,6 +34,6 @@ class DeviceTypes {
 }
 
 class LightStatesLogic {
-  static const String LIGHT_ON = "0";
-  static const String LIGHT_OFF = "1";
+  static const String LIGHT_ON = "1";
+  static const String LIGHT_OFF = "0";
 }

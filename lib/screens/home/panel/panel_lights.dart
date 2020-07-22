@@ -4,19 +4,16 @@ import 'package:aws_iot/aws_iot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
 import 'package:flutter_login_setup_cognito/bloc/central/central_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/iot_aws/iot_aws_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/light/light_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/local_network/local_network_bloc.dart';
-import 'package:flutter_login_setup_cognito/screens/login/main.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/size.transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:reorderables/reorderables.dart';
@@ -25,7 +22,7 @@ import 'light.dart';
 
 const PADDING_HORIZ_INTERN = 10.0;
 const PADDING_HORIZ_EXTERN = 10.0;
-const NUM_LAMPS_ROW = 3;
+const NUM_LAMPS_ROW = 4;
 
 class PanelScreen extends StatefulWidget {
   @override
@@ -146,7 +143,7 @@ class _PanelScreenState extends State<PanelScreen> {
                     ),
                   ),
                   Text(
-                    "Iluminação",
+                    "Dispositivos",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: ColorsCustom.loginScreenMiddle,
@@ -331,7 +328,7 @@ class _PanelScreenState extends State<PanelScreen> {
 
     return ReorderableWrap(
       spacing: (MediaQuery.of(context).size.width -
-              3 * SIZE_WIDTH_LAMP -
+              NUM_LAMPS_ROW * SIZE_WIDTH_LAMP -
               2 * PADDING_HORIZ_EXTERN -
               2 * PADDING_HORIZ_INTERN) /
           (NUM_LAMPS_ROW - 1),
@@ -343,10 +340,17 @@ class _PanelScreenState extends State<PanelScreen> {
   }
 
   void _onReorder(int oldIndex, int newIndex) {
+    // get lights
     final lights = BlocProvider.of<LightsBloc>(context).lights;
+
+    // change index
     final w = lights.removeAt(oldIndex);
     lights.insert(newIndex, w);
+
+    // update  lights in bloc
     BlocProvider.of<LightsBloc>(context).setLights(lights);
+
+    //update view
     setState(() {});
   }
 
@@ -358,33 +362,35 @@ class _PanelScreenState extends State<PanelScreen> {
 
   Widget _iconLocal() {
     return InkWell(
-      onTap: () {
-        ShowAlertOptions.open(
-          context: context,
-          contentText:
-              "Tem certeza que deseja ${isLocalEnabled ? 'desabilitar' : 'habilitar'} o mode operação local?",
-          action: () {
-            isLocalEnabled
-                ? BlocProvider.of<LocalConfigBloc>(context)
-                    .add(ConfigEvent.disableLocal)
-                : BlocProvider.of<LocalConfigBloc>(context)
-                    .add(ConfigEvent.enableLocal);
+      onTap: null,
+      // () {
+      //   ShowAlertOptions.open(
+      //     context: context,
+      //     contentText:
+      //         "Tem certeza que deseja ${isLocalEnabled ? 'desabilitar' : 'habilitar'} o mode operação local?",
+      //     action: () {
+      //       isLocalEnabled
+      //           ? BlocProvider.of<LocalConfigBloc>(context)
+      //               .add(ConfigEvent.disableLocal)
+      //           : BlocProvider.of<LocalConfigBloc>(context)
+      //               .add(ConfigEvent.enableLocal);
 
-            //restart app
-            BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
-            Navigator.pushReplacement(context, SizeRoute(page: LoginScreen()));
-          },
-        );
-      },
+      //       //restart app
+      //       BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
+      //       Navigator.pushReplacement(context, SizeRoute(page: LoginScreen()));
+      //     },
+      //   );
+      // },
       child: BlocBuilder<LocalConfigBloc, ConfigState>(
-          builder: (BuildContext context, ConfigState state) {
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: state.value
-              ? Icon(Icons.wifi_tethering, color: Colors.white)
-              : Icon(Icons.portable_wifi_off, color: Colors.white30),
-        );
-      }),
+        builder: (BuildContext context, ConfigState state) {
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: state.value
+                ? Icon(Icons.wifi_tethering, color: Colors.white)
+                : Icon(Icons.portable_wifi_off, color: Colors.white30),
+          );
+        },
+      ),
     );
   }
 }

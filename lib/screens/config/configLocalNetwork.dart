@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/local_network/local_network_bloc.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ConfigLocalNetworkScreen extends StatefulWidget {
   @override

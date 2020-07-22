@@ -1,10 +1,6 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
-import 'package:flutter_login_setup_cognito/shared/services/firmware_api.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:meta/meta.dart';
 
 class LocalConfigBloc extends HydratedBloc<ConfigEvent, ConfigState> {
   // Use previously cached initialState if it's available

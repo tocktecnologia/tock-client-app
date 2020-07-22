@@ -1,4 +1,4 @@
-#Thu Jun 04 19:20:07 BRT 2020
+#Mon Jun 22 12:43:32 BRT 2020
 base.0=/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/app/intermediates/dex/release/mergeDexRelease/out/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex

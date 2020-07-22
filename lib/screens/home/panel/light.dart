@@ -50,7 +50,6 @@ class _TockLightState extends State<TockLight> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               _icon(),
-              // _getIcon(light.device.type ?? DeviceTypes.LIGHT, light.state),
               _progress(),
               SizedBox(height: 5),
               InkWell(
@@ -113,7 +112,7 @@ class _TockLightState extends State<TockLight> {
 
     BlocProvider.of<LocalConfigBloc>(context).state.value
         ? _publishCentral(state)
-        : _publishMqtt(state);
+        : _publishMqtt(state, int.parse(light.device.pin));
   }
 
   _publishCentral(state) async {
@@ -137,12 +136,11 @@ class _TockLightState extends State<TockLight> {
     }
   }
 
-  _publishMqtt(state) {
-    print('publishing mqtt');
+  _publishMqtt(state, pinNumber) {
     AWSIotDevice awsIotDevice = Locator.instance.get<AwsIot>().awsIotDevice;
     awsIotDevice.publishJson({
       'state': {
-        'desired': {'pin${light.device.pin}': int.parse(state)}
+        'desired': {'pin$pinNumber': int.parse(state)}
       }
     }, topic: '\$aws/things/${light.device.remoteId}/shadow/update');
   }
@@ -168,11 +166,21 @@ class _TockLightState extends State<TockLight> {
     switch (type) {
       case DeviceTypes.LIGHT:
         return Tab(
-          icon: mState == LightStatesLogic.LIGHT_ON
+          icon: mState == LightStatesLogic.LIGHT_OFF
               ? Image.asset("assets/icons/lampOn.png")
               : Image.asset("assets/icons/lampOff.png"),
         );
         break;
+      case DeviceTypes.BOMB:
+        return SizedBox(
+          width: 60,
+          height: 60,
+          child: Tab(
+            icon: mState == LightStatesLogic.LIGHT_ON
+                ? Image.asset("assets/icons/bombOn.png")
+                : Image.asset("assets/icons/bombOff.png"),
+          ),
+        );
       case DeviceTypes.LIGHTS:
         return Tab(
           icon: mState == LightStatesLogic.LIGHT_ON

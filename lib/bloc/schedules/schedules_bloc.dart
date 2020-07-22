@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter_login_setup_cognito/shared/model/data_user_model.dart';
 import 'package:flutter_login_setup_cognito/shared/services/api/schedules_aws.dart';
@@ -110,7 +109,7 @@ class SchedulesBloc extends HydratedBloc<SchedulesEvent, SchedulesState> {
 
         yield UpdatedSchedulesState(schedules: _schedules);
       }
-    } on TimeoutException catch (e) {
+    } on TimeoutException catch (_) {
       yield UpdateSchedulesErrorState(
           message: 'Tempo máximo de requisição alcançado.');
     } on ApiGatewayException catch (e) {

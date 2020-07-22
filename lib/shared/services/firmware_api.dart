@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_setup_cognito/shared/model/light_model.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 import 'package:http/http.dart';
 
 class FirmwareApi {

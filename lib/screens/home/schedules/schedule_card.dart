@@ -5,7 +5,6 @@ import 'package:flutter_login_setup_cognito/screens/home/schedules/schedule_scre
 import 'package:flutter_login_setup_cognito/shared/model/data_user_model.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/conversions.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/size.transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 

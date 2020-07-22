@@ -28,7 +28,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   TextEditingController sheduleNameController = TextEditingController();
 
   Schedule scheduleRecurrent;
-  TimeOfDay _selectedTime;
   List<ScheduleAction> scheduleAction = List<ScheduleAction>();
   var uuid;
 
@@ -159,10 +158,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             InkWell(
               onTap: () => _updateEventAction(scheduleAction),
               child: Tab(
-                  child:
-                      scheduleAction.action.event == LightStatesLogic.LIGHT_ON
-                          ? Image.asset("assets/icons/lampOn.png")
-                          : Image.asset("assets/icons/lampOff.png")),
+                  child: _getIconAction(
+                      scheduleAction.action.type, scheduleAction.action.event)),
             ),
             Text(
               scheduleAction.action.label,
@@ -182,6 +179,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         ),
       ),
     );
+  }
+
+  Widget _getIconAction(type, state) {
+    if (type == "LIGHT") {
+      return state == LightStatesLogic.LIGHT_OFF
+          ? Image.asset("assets/icons/lampOn.png")
+          : Image.asset("assets/icons/lampOff.png");
+    } else if (type == DeviceTypes.BOMB) {
+      return state == LightStatesLogic.LIGHT_ON
+          ? Image.asset("assets/icons/bombOn.png")
+          : Image.asset("assets/icons/bombOff.png");
+    } else {
+      return state == LightStatesLogic.LIGHT_ON
+          ? Image.asset("assets/icons/bombOn.png")
+          : Image.asset("assets/icons/bombOff.png");
+    }
   }
 
   _deletEventAction(ScheduleAction mScheduleAction) {
@@ -288,9 +301,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Tab(
-                child: light.state == LightStatesLogic.LIGHT_ON
-                    ? Image.asset("assets/icons/lampOn.png")
-                    : Image.asset("assets/icons/lampOff.png")),
+              child: _getIconAction(light.device.type, light.state),
+            ),
             SizedBox(height: 7),
             Text(
               light.device.label,
