@@ -23,7 +23,7 @@
 18        android:name="io.flutter.app.FlutterApplication"
 18-->/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:13:9-57
 19        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-19-->[androidx.core:core:1.0.0] /home/izaiasjr/.gradle/caches/transforms-2/files-2.1/0a271e99b6771ad4a84318244d532fb7/core-1.0.0/AndroidManifest.xml:22:18-86
+19-->[androidx.core:core:1.1.0] /home/izaiasjr/.gradle/caches/transforms-2/files-2.1/a528b13ac93e64cafa3d0480e2c93207/core-1.1.0/AndroidManifest.xml:24:18-86
 20        android:debuggable="true"
 21        android:icon="@mipmap/launcher_icon"
 21-->/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/android/app/src/main/AndroidManifest.xml:15:9-45

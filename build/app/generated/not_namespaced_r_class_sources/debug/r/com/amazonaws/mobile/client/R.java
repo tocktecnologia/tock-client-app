@@ -13,7 +13,7 @@ public final class R {
         private attr() {}
 
         public static final int button_style = 0x7f010001;
-        public static final int text = 0x7f010015;
+        public static final int text = 0x7f01000c;
     }
     public static final class color {
         private color() {}
@@ -36,26 +36,19 @@ public final class R {
     public static final class id {
         private id() {}
 
-        public static final int action_divider = 0x7f050001;
-        public static final int bottom = 0x7f050008;
-        public static final int center = 0x7f050009;
-        public static final int chronometer = 0x7f05000c;
-        public static final int end = 0x7f05000f;
-        public static final int icon = 0x7f050014;
-        public static final int info = 0x7f050016;
-        public static final int large = 0x7f050018;
-        public static final int left = 0x7f050019;
-        public static final int line1 = 0x7f05001a;
-        public static final int line3 = 0x7f05001b;
-        public static final int none = 0x7f05001c;
-        public static final int normal = 0x7f05001d;
-        public static final int right = 0x7f050021;
-        public static final int small = 0x7f050024;
-        public static final int text = 0x7f050029;
-        public static final int text2 = 0x7f05002a;
-        public static final int time = 0x7f05002b;
-        public static final int title = 0x7f05002c;
-        public static final int top = 0x7f05002d;
+        public static final int action_divider = 0x7f050022;
+        public static final int chronometer = 0x7f050028;
+        public static final int icon = 0x7f05002b;
+        public static final int info = 0x7f05002d;
+        public static final int large = 0x7f05002f;
+        public static final int line1 = 0x7f050030;
+        public static final int line3 = 0x7f050031;
+        public static final int normal = 0x7f050032;
+        public static final int small = 0x7f050038;
+        public static final int text = 0x7f050041;
+        public static final int text2 = 0x7f050042;
+        public static final int time = 0x7f050043;
+        public static final int title = 0x7f050044;
     }
     public static final class integer {
         private integer() {}
@@ -65,8 +58,8 @@ public final class R {
     public static final class layout {
         private layout() {}
 
-        public static final int notification_template_part_chronometer = 0x7f070004;
-        public static final int notification_template_part_time = 0x7f070005;
+        public static final int notification_template_part_chronometer = 0x7f070005;
+        public static final int notification_template_part_time = 0x7f070006;
     }
     public static final class raw {
         private raw() {}
@@ -83,7 +76,7 @@ public final class R {
     public static final class styleable {
         private styleable() {}
 
-        public static final int[] SignInButton = { 0x7f010001, 0x7f010015 };
+        public static final int[] SignInButton = { 0x7f010001, 0x7f01000c };
         public static final int SignInButton_button_style = 0;
         public static final int SignInButton_text = 1;
     }

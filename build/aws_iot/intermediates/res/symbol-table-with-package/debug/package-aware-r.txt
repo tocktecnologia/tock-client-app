@@ -105,7 +105,6 @@ attr contentInsetLeft
 attr contentInsetRight
 attr contentInsetStart
 attr controlBackground
-attr coordinatorLayoutStyle
 attr customNavigationLayout
 attr defaultQueryHint
 attr dialogPreferredPadding
@@ -149,14 +148,7 @@ attr indeterminateProgressStyle
 attr initialActivityCount
 attr isLightTheme
 attr itemPadding
-attr keylines
 attr layout
-attr layout_anchor
-attr layout_anchorGravity
-attr layout_behavior
-attr layout_dodgeInsetEdges
-attr layout_insetEdge
-attr layout_keyline
 attr listChoiceBackgroundIndicator
 attr listDividerAlertDialog
 attr listItemLayout
@@ -213,7 +205,6 @@ attr spinnerDropDownItemStyle
 attr spinnerStyle
 attr splitTrack
 attr state_above_anchor
-attr statusBarBackground
 attr submitBackground
 attr subtitle
 attr subtitleTextAppearance
@@ -608,6 +599,39 @@ drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
+id accessibility_action_clickable_span
+id accessibility_custom_action_0
+id accessibility_custom_action_1
+id accessibility_custom_action_10
+id accessibility_custom_action_11
+id accessibility_custom_action_12
+id accessibility_custom_action_13
+id accessibility_custom_action_14
+id accessibility_custom_action_15
+id accessibility_custom_action_16
+id accessibility_custom_action_17
+id accessibility_custom_action_18
+id accessibility_custom_action_19
+id accessibility_custom_action_2
+id accessibility_custom_action_20
+id accessibility_custom_action_21
+id accessibility_custom_action_22
+id accessibility_custom_action_23
+id accessibility_custom_action_24
+id accessibility_custom_action_25
+id accessibility_custom_action_26
+id accessibility_custom_action_27
+id accessibility_custom_action_28
+id accessibility_custom_action_29
+id accessibility_custom_action_3
+id accessibility_custom_action_30
+id accessibility_custom_action_31
+id accessibility_custom_action_4
+id accessibility_custom_action_5
+id accessibility_custom_action_6
+id accessibility_custom_action_7
+id accessibility_custom_action_8
+id accessibility_custom_action_9
 id action0
 id action_bar
 id action_bar_activity_content
@@ -663,6 +687,7 @@ id customPanel
 id dark
 id decor_content_parent
 id default_activity_button
+id dialog_button
 id disableHome
 id display_always
 id edit_query
@@ -753,10 +778,14 @@ id src_atop
 id src_in
 id src_over
 id standard
-id start
 id status_bar_latest_event_content
 id submit_area
 id tabMode
+id tag_accessibility_actions
+id tag_accessibility_clickable_spans
+id tag_accessibility_heading
+id tag_accessibility_pane_title
+id tag_screen_reader_focusable
 id tag_transition_group
 id tag_unhandled_key_event_manager
 id tag_unhandled_key_listeners
@@ -814,6 +843,7 @@ layout activity_sign_up_confirm
 layout com_facebook_activity_layout
 layout com_facebook_login_fragment
 layout com_facebook_tooltip_bubble
+layout custom_dialog
 layout horizontal_or_sign_in_divider
 layout horizontal_sign_in_divider
 layout messenger_button_send_blue_large
@@ -1274,7 +1304,6 @@ style Widget_AppCompat_Toolbar
 style Widget_AppCompat_Toolbar_Button_Navigation
 style Widget_Compat_NotificationActionContainer
 style Widget_Compat_NotificationActionText
-style Widget_Support_CoordinatorLayout
 style com_facebook_button
 style com_facebook_button_like
 style com_facebook_button_send
@@ -1293,8 +1322,6 @@ styleable AppCompatTextView android_textAppearance textAllCaps
 styleable ButtonBarContainerTheme metaButtonBarButtonStyle metaButtonBarStyle
 styleable ColorStateListItem alpha android_alpha android_color
 styleable CompoundButton android_button buttonTint buttonTintMode
-styleable CoordinatorLayout keylines statusBarBackground
-styleable CoordinatorLayout_Layout android_layout_gravity layout_anchor layout_anchorGravity layout_behavior layout_dodgeInsetEdges layout_insetEdge layout_keyline
 styleable DrawerArrowToggle arrowHeadLength arrowShaftLength barLength color drawableSize gapBetweenBars spinBars thickness
 styleable FontFamily fontProviderAuthority fontProviderCerts fontProviderFetchStrategy fontProviderFetchTimeout fontProviderPackage fontProviderQuery
 styleable FontFamilyFont android_font android_fontStyle android_fontVariationSettings android_fontWeight android_ttcIndex font fontStyle fontVariationSettings fontWeight ttcIndex
