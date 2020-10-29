@@ -43,7 +43,7 @@ class Application extends StatelessWidget {
       child: MaterialApp(
         color: Colors.white,
         debugShowCheckedModeBanner: false,
-        title: 'Tock Tecnologia',
+        title: 'Tock',
         home: FirstScreen(),
       ),
     );
