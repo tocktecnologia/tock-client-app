@@ -1,4 +1,0 @@
-#Sat Oct 24 15:36:39 BRT 2020
-base.0=/home/izaiasjr/Documentos/EMPRESA/condomínio/app_condominio/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
-path.0=classes.dex
-renamed.0=classes.dex
