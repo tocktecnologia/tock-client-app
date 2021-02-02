@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _controller = AnimationController(
-      vsync: this,
+      value: this,
       duration: const Duration(milliseconds: 200),
     );
     _drawerContentsOpacity = CurvedAnimation(

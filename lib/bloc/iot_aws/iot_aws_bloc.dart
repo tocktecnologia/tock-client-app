@@ -39,6 +39,18 @@ class IotAwsBloc extends Bloc<IotAwsEvent, IotAwsState> {
         });
 
         yield UpdatedLightsFromShadowState(lights: event.lights);
+      } else if (event is UpdateLightsFromNodeCentralEvent) {
+        yield UpdatingLightsFromNodeCentralState();
+
+        String mStates = event.statesJson['states'];
+        print(mStates);
+        if (event.lights.length < mStates.length) {
+          event.lights.forEach((light) {
+            light.state = mStates[int.parse(light.device.pin) - 1];
+          });
+        }
+
+        yield UpdatedLightsFromNodeCentralState(lights: event.lights);
       }
 
       //
@@ -49,6 +61,13 @@ class IotAwsBloc extends Bloc<IotAwsEvent, IotAwsState> {
             .get<AwsIot>()
             .awsIotDevice
             .publishJson({}, topic: MqttTopics.shadowGet);
+      } else if (event is GetUpdateLightsFromNodeCentralEvent) {
+        yield UpdatingLightsFromShadowState();
+        await Future.delayed(Duration(milliseconds: 200));
+        Locator.instance
+            .get<AwsIot>()
+            .awsIotDevice
+            .publishJson({}, topic: MqttTopics.getStates);
       }
       //
       // else if (event is ReceiveUpdateIotAwsEvent) {
