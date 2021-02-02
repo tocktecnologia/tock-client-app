@@ -4,16 +4,19 @@ import 'package:aws_iot/aws_iot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
+import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
 import 'package:flutter_login_setup_cognito/bloc/central/central_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/iot_aws/iot_aws_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/light/light_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/local_network/local_network_bloc.dart';
+import 'package:flutter_login_setup_cognito/screens/login/main.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/constants.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
+import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/size.transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:reorderables/reorderables.dart';
@@ -56,8 +59,9 @@ class _PanelScreenState extends State<PanelScreen> {
         });
       }
     } else if (mjson.containsKey('states')) {
-      // BlocProvider.of<LightsBloc>(context)
-      //     .add(UpdateLightsFromCentralEvent(statesJson: mjson));
+      final lights = BlocProvider.of<LightsBloc>(context).lights;
+      BlocProvider.of<IotAwsBloc>(context).add(
+          UpdateLightsFromNodeCentralEvent(statesJson: mjson, lights: lights));
       //
     } else if (lastMsg.asJson.containsKey('state') &&
         lastMsg.topic == MqttTopics.shadowGetAccepted) {
@@ -73,24 +77,20 @@ class _PanelScreenState extends State<PanelScreen> {
       BlocProvider.of<CentralBloc>(context)
           .add(GetUpdateLightsFromCentralEvent(lights: lights));
     } else {
-      _updateStatesFromShadow();
-    }
-  }
-
-  _updateStatesFromShadow() {
-    final AwsIot awsIot = Locator.instance.get<AwsIot>();
-    final status = awsIot.awsIotDevice.client.connectionStatus.state;
-    print('status connection : $status');
-    print('_updateStatesFromShadow()');
-    if (status == MqttConnectionState.connected) {
-      BlocProvider.of<IotAwsBloc>(context)
-          .add(GetUpdateLightsFromShadowEvent());
-    }
-    //
-    else if (status == MqttConnectionState.disconnected) {
-      // BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
-      // BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
-      // Navigator.pushReplacement(context, SizeRoute(page: LoginScreen()));
+      final AwsIot awsIot = Locator.instance.get<AwsIot>();
+      final status = awsIot.awsIotDevice.client.connectionStatus.state;
+      print('status connection : $status');
+      print('_updateStatesFromShadow()');
+      if (status == MqttConnectionState.connected) {
+        // BlocProvider.of<IotAwsBloc>(context)
+        //     .add(GetUpdateLightsFromShadowEvent());
+        BlocProvider.of<IotAwsBloc>(context)
+            .add(GetUpdateLightsFromNodeCentralEvent());
+      } else if (status == MqttConnectionState.disconnected) {
+        BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
+        BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
+        Navigator.pushReplacement(context, SizeRoute(page: LoginScreen()));
+      }
     }
   }
 

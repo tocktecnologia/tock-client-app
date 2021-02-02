@@ -37,6 +37,6 @@ class AwsIot {
         'shadowUpdated:${MqttTopics.shadowUpdateAccepted} \ngetShadow:${MqttTopics.shadowGetAccepted}');
     _awsIotDevice.subscribe(MqttTopics.shadowUpdateAccepted);
     _awsIotDevice.subscribe(MqttTopics.shadowGetAccepted);
-    // _awsIotDevice.subscribe(statesCentral);
+    _awsIotDevice.subscribe('${MqttTopics.getStates}/ret');
   }
 }

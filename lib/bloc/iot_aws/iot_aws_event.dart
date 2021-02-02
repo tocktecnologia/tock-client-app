@@ -12,7 +12,16 @@ class UpdateLightsFromShadowEvent extends IotAwsEvent {
       {@required this.lights, @required this.statesJson});
 }
 
+class UpdateLightsFromNodeCentralEvent extends IotAwsEvent {
+  final statesJson;
+  final List<Light> lights;
+  UpdateLightsFromNodeCentralEvent(
+      {@required this.lights, @required this.statesJson});
+}
+
 class GetUpdateLightsFromShadowEvent extends IotAwsEvent {}
+
+class GetUpdateLightsFromNodeCentralEvent extends IotAwsEvent {}
 
 // class ReceiveUpdateIotAwsEvent extends IotAwsEvent {
 //   final state;
