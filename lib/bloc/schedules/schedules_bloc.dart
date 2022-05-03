@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:aws_iot/aws_iot.dart';
+import 'package:aws_iot/aws_iot.dart';
 import 'package:flutter_login_setup_cognito/shared/model/data_user_model.dart';
 import 'package:flutter_login_setup_cognito/shared/services/api/schedules_aws.dart';
+import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/conversions.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/exceptions_tock.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
@@ -107,6 +110,27 @@ class SchedulesBloc extends HydratedBloc<SchedulesEvent, SchedulesState> {
         _schedules.elementAt(index).scheduleState =
             event.schedule.scheduleState;
 
+        yield UpdatedSchedulesState(schedules: _schedules);
+      } else if (event is ExecuteScheduleActionsEvent) {
+        yield ExecutingScheduleActionsState();
+        event.scheduleAction.forEach((element) {
+          final deviceId = element.action.deviceId;
+          final pinNumber = element.action.section;
+          int stateToExecute = int.parse(element.action.event);
+          stateToExecute =
+              event.reverse ? (stateToExecute == 0 ? 1 : 0) : stateToExecute;
+
+          AWSIotDevice awsIotDevice =
+              Locator.instance.get<AwsIot>().awsIotDevice;
+          awsIotDevice.publishJson(
+            {
+              'state': {
+                'desired': {'pin$pinNumber': stateToExecute}
+              }
+            },
+            topic: '\$aws/things/$deviceId/shadow/update',
+          );
+        });
         yield UpdatedSchedulesState(schedules: _schedules);
       }
     } on TimeoutException catch (_) {

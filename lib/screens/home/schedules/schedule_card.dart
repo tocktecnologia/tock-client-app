@@ -57,17 +57,46 @@ class _ScheduleCardState extends State<ScheduleCard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  widget.schedule.scheduleName,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 20, color: ColorsCustom.loginScreenUp),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(),
+                    Text(
+                      widget.schedule.scheduleName,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 20, color: ColorsCustom.loginScreenUp),
+                    ),
+                    InkWell(
+                      child: Icon(
+                        Icons.settings_backup_restore_sharp,
+                        size: 30,
+                      ),
+                      onTap: () {
+                        ShowAlert.open(
+                          context: context,
+                          contentText:
+                              "Tem certeza que deseja REVERTER esse agendamento?",
+                          confirmationText: "sim",
+                          onConfirmation: () {
+                            BlocProvider.of<SchedulesBloc>(context).add(
+                              ExecuteScheduleActionsEvent(
+                                scheduleAction: schedule.scheduleAction,
+                                reverse: true,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 80),
                   child: Divider(
-                      color: ColorsCustom.loginScreenMiddle.withAlpha(100),
-                      thickness: 1.5),
+                    color: ColorsCustom.loginScreenMiddle.withAlpha(100),
+                    thickness: 1.5,
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -75,7 +104,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                     Flexible(
                         child: Container(
                       child: SizedBox(
-                          width: 70, height: 50, child: _deleteSchedule()),
+                          width: 70, height: 80, child: _deleteSchedule()),
                     )),
                     Flexible(
                       child: Text(
@@ -87,8 +116,12 @@ class _ScheduleCardState extends State<ScheduleCard> {
                       ),
                     ),
                     Flexible(
-                        child: SizedBox(
-                            width: 65, height: 50, child: _switchSchedule()))
+                      child: SizedBox(
+                          width: 65,
+                          height: 80,
+                          child: _executeActions() // _switchSchedule()
+                          ),
+                    )
                   ],
                 ),
                 Padding(
@@ -104,6 +137,36 @@ class _ScheduleCardState extends State<ScheduleCard> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _executeActions() {
+    return Column(
+      children: [
+        Container(
+          child: InkWell(
+            child: Icon(
+              Icons.play_circle_outline_rounded,
+              size: 70,
+              color: Colors.blue,
+            ),
+            onTap: () => {
+              ShowAlert.open(
+                context: context,
+                contentText:
+                    "Tem certeza que deseja EXECUTAR esse agendamento?",
+                confirmationText: "sim",
+                onConfirmation: () {
+                  BlocProvider.of<SchedulesBloc>(context).add(
+                    ExecuteScheduleActionsEvent(
+                        scheduleAction: schedule.scheduleAction),
+                  );
+                },
+              ),
+            },
+          ),
+        ),
+      ],
     );
   }
 

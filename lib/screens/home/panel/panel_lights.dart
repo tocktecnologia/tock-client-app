@@ -82,10 +82,10 @@ class _PanelScreenState extends State<PanelScreen> {
       print('status connection : $status');
       print('_updateStatesFromShadow()');
       if (status == MqttConnectionState.connected) {
-        // BlocProvider.of<IotAwsBloc>(context)
-        //     .add(GetUpdateLightsFromShadowEvent());
         BlocProvider.of<IotAwsBloc>(context)
-            .add(GetUpdateLightsFromNodeCentralEvent());
+            .add(GetUpdateLightsFromShadowEvent());
+        // BlocProvider.of<IotAwsBloc>(context)
+        //     .add(GetUpdateLightsFromNodeCentralEvent());
       } else if (status == MqttConnectionState.disconnected) {
         BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
         BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());

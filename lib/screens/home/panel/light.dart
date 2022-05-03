@@ -138,11 +138,14 @@ class _TockLightState extends State<TockLight> {
 
   _publishMqtt(state, pinNumber) {
     AWSIotDevice awsIotDevice = Locator.instance.get<AwsIot>().awsIotDevice;
-    awsIotDevice.publishJson({
-      'state': {
-        'desired': {'pin$pinNumber': int.parse(state)}
-      }
-    }, topic: '\$aws/things/${light.device.remoteId}/shadow/update');
+    awsIotDevice.publishJson(
+      {
+        'state': {
+          'desired': {'pin$pinNumber': int.parse(state)}
+        }
+      },
+      topic: '\$aws/things/${light.device.remoteId}/shadow/update',
+    );
   }
 
   Widget _icon() {

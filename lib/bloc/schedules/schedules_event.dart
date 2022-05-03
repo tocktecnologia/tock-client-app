@@ -23,3 +23,10 @@ class EnableScheduleEvent extends SchedulesEvent {
   final newState;
   EnableScheduleEvent({@required this.schedule, this.newState});
 }
+
+class ExecuteScheduleActionsEvent extends SchedulesEvent {
+  final List<ScheduleAction> scheduleAction;
+  final bool reverse;
+  ExecuteScheduleActionsEvent(
+      {@required this.scheduleAction, this.reverse = false});
+}

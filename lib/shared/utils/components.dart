@@ -167,7 +167,12 @@ class ButtonLogin extends MaterialButton {
 }
 
 class ShowAlert {
-  static open({@required context, titleText, @required contentText}) {
+  static open(
+      {@required context,
+      titleText,
+      @required contentText,
+      confirmationText,
+      onConfirmation}) {
     showDialog(
       context: context,
       child: AlertDialog(
@@ -200,8 +205,11 @@ class ShowAlert {
               side: BorderSide(color: ColorsCustom.loginScreenMiddle),
             ),
             color: ColorsCustom.loginScreenUp,
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
+            onPressed: () {
+              Navigator.pop(context);
+              if (onConfirmation != null) onConfirmation();
+            },
+            child: Text(confirmationText ?? 'OK'),
           )
         ],
       ),

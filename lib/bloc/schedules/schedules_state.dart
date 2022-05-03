@@ -35,3 +35,5 @@ class EnablingScheduleState extends SchedulesState {
 }
 
 class EnabledScheduleState extends SchedulesState {}
+
+class ExecutingScheduleActionsState extends SchedulesState {}
