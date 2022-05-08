@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:aws_iot/aws_iot.dart';
-import 'package:aws_iot/aws_iot.dart';
 import 'package:flutter_login_setup_cognito/shared/model/data_user_model.dart';
 import 'package:flutter_login_setup_cognito/shared/services/api/schedules_aws.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';

@@ -42,13 +42,13 @@ class IotAwsBloc extends Bloc<IotAwsEvent, IotAwsState> {
       } else if (event is UpdateLightsFromNodeCentralEvent) {
         yield UpdatingLightsFromNodeCentralState();
 
-        String mStates = event.statesJson['states'];
-        print(mStates);
-        if (event.lights.length < mStates.length) {
-          event.lights.forEach((light) {
-            light.state = mStates[int.parse(light.device.pin) - 1];
-          });
-        }
+        Map mStates = event.statesJson['reported'];
+        // print('mStates:\n$mStates');
+        event.lights.forEach((light) {
+          if (mStates.containsKey('pin${light.device.pin}')) {
+            light.state = mStates['pin${light.device.pin}'];
+          }
+        });
 
         yield UpdatedLightsFromNodeCentralState(lights: event.lights);
       }

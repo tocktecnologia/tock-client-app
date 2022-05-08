@@ -44,8 +44,8 @@ class _PanelScreenState extends State<PanelScreen> {
   // listinning from aws mqtt
   _onReceive(awsIotDevice) async {
     final AWSIotMsg lastMsg = await awsIotDevice.messages.elementAt(0);
-    final mjson = jsonDecode(lastMsg.asStr); // for get states
-    print(mjson);
+    // print('_onReceive:  msg: ${lastMsg.asStr}; topic: ${lastMsg.topic}');
+
     // verify if is aws shadow message and topic update
     if (lastMsg.asJson.containsKey('state') &&
         lastMsg.topic == MqttTopics.shadowUpdateAccepted) {
@@ -58,13 +58,18 @@ class _PanelScreenState extends State<PanelScreen> {
               deviceId: deviceId, pin: k.substring(3), state: v.toString()));
         });
       }
-    } else if (mjson.containsKey('states')) {
+    } else if (lastMsg.asJson.containsKey('state') &&
+        lastMsg.topic == MqttTopics.getStatesFromCentral) {
       final lights = BlocProvider.of<LightsBloc>(context).lights;
-      BlocProvider.of<IotAwsBloc>(context).add(
-          UpdateLightsFromNodeCentralEvent(statesJson: mjson, lights: lights));
+      print(
+          'Message receive on ${MqttTopics.getStatesFromCentral}: ${lastMsg.asJson['state']}');
+      BlocProvider.of<IotAwsBloc>(context).add(UpdateLightsFromNodeCentralEvent(
+          statesJson: lastMsg.asJson['state'], lights: lights));
       //
     } else if (lastMsg.asJson.containsKey('state') &&
         lastMsg.topic == MqttTopics.shadowGetAccepted) {
+      print(
+          'Message receive on ${MqttTopics.shadowGetAccepted}: ${lastMsg.asJson}');
       final lights = BlocProvider.of<LightsBloc>(context).lights;
       BlocProvider.of<IotAwsBloc>(context).add(UpdateLightsFromShadowEvent(
           statesJson: lastMsg.asJson['state'], lights: lights));
@@ -82,10 +87,10 @@ class _PanelScreenState extends State<PanelScreen> {
       print('status connection : $status');
       print('_updateStatesFromShadow()');
       if (status == MqttConnectionState.connected) {
-        BlocProvider.of<IotAwsBloc>(context)
-            .add(GetUpdateLightsFromShadowEvent());
         // BlocProvider.of<IotAwsBloc>(context)
-        //     .add(GetUpdateLightsFromNodeCentralEvent());
+        //     .add(GetUpdateLightsFromShadowEvent());
+        BlocProvider.of<IotAwsBloc>(context)
+            .add(GetUpdateLightsFromNodeCentralEvent());
       } else if (status == MqttConnectionState.disconnected) {
         BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
         BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());

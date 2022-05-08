@@ -213,20 +213,30 @@ class _TockLightState extends State<TockLight> {
         ],
         title: Text('Alterar Nome',
             style: TextStyle(color: ColorsCustom.loginScreenUp)),
-        content: TextFormField(
-          controller: lightNameController,
-          decoration: InputDecoration(
-              hintText: "Nome da luz",
-              contentPadding: EdgeInsets.all(5),
-              isDense: true,
-              enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey)),
-              focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.lightBlue))),
-          onFieldSubmitted: (text) {
-            _changeLightName();
-            Navigator.pop(context);
-          },
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Pin ${light.device.pin}',
+              style: TextStyle(color: Colors.grey),
+            ),
+            TextFormField(
+              controller: lightNameController,
+              decoration: InputDecoration(
+                  hintText: "Nome da luz",
+                  contentPadding: EdgeInsets.all(5),
+                  isDense: true,
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey)),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.lightBlue))),
+              onFieldSubmitted: (text) {
+                _changeLightName();
+                Navigator.pop(context);
+              },
+            ),
+          ],
         ),
       ),
     );

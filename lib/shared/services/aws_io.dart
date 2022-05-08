@@ -34,9 +34,9 @@ class AwsIot {
     print('conectou abestado, subscribing ...!!!');
 
     print(
-        'shadowUpdated:${MqttTopics.shadowUpdateAccepted} \ngetShadow:${MqttTopics.shadowGetAccepted}');
+        'shadowUpdated:${MqttTopics.shadowUpdateAccepted} \ngetShadow:${MqttTopics.shadowGetAccepted} \n${MqttTopics.getStatesFromCentral}');
     _awsIotDevice.subscribe(MqttTopics.shadowUpdateAccepted);
     _awsIotDevice.subscribe(MqttTopics.shadowGetAccepted);
-    _awsIotDevice.subscribe('${MqttTopics.getStates}/ret');
+    _awsIotDevice.subscribe(MqttTopics.getStatesFromCentral);
   }
 }

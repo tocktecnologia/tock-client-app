@@ -15,6 +15,8 @@ class MqttTopics {
       '\$aws/things/${Central.remoteId}/shadow/update/accepted';
 
   static const getStates = '\$aws/things/${Central.remoteId}/states';
+  static const getStatesFromCentral =
+      '\$aws/things/${Central.remoteId}/states/ret';
 }
 
 class Central {
