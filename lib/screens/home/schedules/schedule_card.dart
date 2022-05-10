@@ -60,13 +60,6 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(),
-                    Text(
-                      widget.schedule.scheduleName,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 20, color: ColorsCustom.loginScreenUp),
-                    ),
                     InkWell(
                       child: Icon(
                         Icons.settings_backup_restore_sharp,
@@ -89,6 +82,13 @@ class _ScheduleCardState extends State<ScheduleCard> {
                         );
                       },
                     ),
+                    Text(
+                      widget.schedule.scheduleName,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 20, color: ColorsCustom.loginScreenUp),
+                    ),
+                    SizedBox(),
                   ],
                 ),
                 Padding(
