@@ -7,7 +7,7 @@ import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
 import 'package:flutter_login_setup_cognito/bloc/data_user/data_user_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/schedules/schedules_bloc.dart';
-import 'package:flutter_login_setup_cognito/screens/home/panel/panel_lights.dart';
+import 'package:flutter_login_setup_cognito/screens/home/panel/panel_devices.dart';
 import 'package:flutter_login_setup_cognito/screens/home/schedules/schedules_screen.dart';
 import 'package:flutter_login_setup_cognito/screens/login/main.dart';
 import 'package:flutter_login_setup_cognito/shared/services/cognito_user.dart';

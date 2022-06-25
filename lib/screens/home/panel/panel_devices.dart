@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:aws_iot/aws_iot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +19,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:reorderables/reorderables.dart';
 
-import 'light.dart';
+import 'device.dart';
 
 const PADDING_HORIZ_INTERN = 10.0;
 const PADDING_HORIZ_EXTERN = 10.0;
@@ -44,11 +42,12 @@ class _PanelScreenState extends State<PanelScreen> {
   // listinning from aws mqtt
   _onReceive(awsIotDevice) async {
     final AWSIotMsg lastMsg = await awsIotDevice.messages.elementAt(0);
-    // print('_onReceive:  msg: ${lastMsg.asStr}; topic: ${lastMsg.topic}');
+    print('_onReceive: \ntopic: ${lastMsg.topic}; \nmsg: ${lastMsg.asStr}\n\n');
 
     // verify if is aws shadow message and topic update
     if (lastMsg.asJson.containsKey('state') &&
-        lastMsg.topic == MqttTopics.shadowUpdateAccepted) {
+        (lastMsg.topic == MqttTopics.shadowUpdateAccepted ||
+            lastMsg.topic == MqttTopics.tockUpdateReturn)) {
       // verify if exist reported
       if (lastMsg.asJson['state'].containsKey('reported')) {
         final deviceId = lastMsg.topic.split('/')[2];
@@ -327,8 +326,8 @@ class _PanelScreenState extends State<PanelScreen> {
   Widget _listWrapReorderable(state) {
     // final lights = BlocProvider.of<LightsBloc>(context).lights;
     final tockLights = state.lights
-        .map<TockLight>(
-            (light) => TockLight(light: light, isConfigMode: isConfigMode))
+        .map<TockDevice>(
+            (light) => TockDevice(light: light, isConfigMode: isConfigMode))
         .toList();
 
     return ReorderableWrap(

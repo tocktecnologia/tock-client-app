@@ -24,8 +24,7 @@ class IotAwsBloc extends Bloc<IotAwsEvent, IotAwsState> {
         yield ConnectingIotAwsState();
         await Locator.instance.get<AwsIot>().intialize();
         yield ConnectedIotAwsState();
-      }
-      //
+      } //
       else if (event is UpdateLightsFromShadowEvent) {
         yield UpdatingLightsFromShadowState();
 

@@ -170,42 +170,42 @@ class _ScheduleCardState extends State<ScheduleCard> {
     );
   }
 
-  _switchSchedule() {
-    var schdeuleId;
-    return BlocBuilder<SchedulesBloc, SchedulesState>(
-      condition: (prevState, state) {
-        if (prevState is EnablingScheduleState &&
-            state is UpdateSchedulesErrorState) {
-          if (schdeuleId == schedule.scheduleId)
-            ShowAlert.open(context: context, contentText: state.message);
-        }
-        return;
-      },
-      builder: (context, state) {
-        if (state is EnablingScheduleState) {
-          if (state.schedule.scheduleId == schedule.scheduleId) {
-            schdeuleId = state.schedule.scheduleId;
-            return SpinKitWave(color: ColorsCustom.loginScreenUp, size: 30);
-          } else
-            return _switchButton();
-        } else {
-          return _switchButton();
-        }
-      },
-    );
-  }
+  // _switchSchedule() {
+  //   var schdeuleId;
+  //   return BlocBuilder<SchedulesBloc, SchedulesState>(
+  //     condition: (prevState, state) {
+  //       if (prevState is EnablingScheduleState &&
+  //           state is UpdateSchedulesErrorState) {
+  //         if (schdeuleId == schedule.scheduleId)
+  //           ShowAlert.open(context: context, contentText: state.message);
+  //       }
+  //       return;
+  //     },
+  //     builder: (context, state) {
+  //       if (state is EnablingScheduleState) {
+  //         if (state.schedule.scheduleId == schedule.scheduleId) {
+  //           schdeuleId = state.schedule.scheduleId;
+  //           return SpinKitWave(color: ColorsCustom.loginScreenUp, size: 30);
+  //         } else
+  //           return _switchButton();
+  //       } else {
+  //         return _switchButton();
+  //       }
+  //     },
+  //   );
+  // }
 
-  _switchButton() {
-    return Switch(
-      value: widget.schedule.scheduleState == 'ENABLED',
-      onChanged: (value) {
-        final scheduleState = value ? 'ENABLED' : 'DISABLED';
-        print(scheduleState);
-        BlocProvider.of<SchedulesBloc>(context).add(
-            EnableScheduleEvent(schedule: schedule, newState: scheduleState));
-      },
-    );
-  }
+  // _switchButton() {
+  //   return Switch(
+  //     value: widget.schedule.scheduleState == 'ENABLED',
+  //     onChanged: (value) {
+  //       final scheduleState = value ? 'ENABLED' : 'DISABLED';
+  //       print(scheduleState);
+  //       BlocProvider.of<SchedulesBloc>(context).add(
+  //           EnableScheduleEvent(schedule: schedule, newState: scheduleState));
+  //     },
+  //   );
+  // }
 
   _deleteSchedule() {
     var idSchdeule;

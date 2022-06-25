@@ -31,12 +31,12 @@ class AwsIot {
   }
 
   _subscribing() {
-    print('conectou abestado, subscribing ...!!!');
-
-    print(
-        'shadowUpdated:${MqttTopics.shadowUpdateAccepted} \ngetShadow:${MqttTopics.shadowGetAccepted} \n${MqttTopics.getStatesFromCentral}');
     _awsIotDevice.subscribe(MqttTopics.shadowUpdateAccepted);
     _awsIotDevice.subscribe(MqttTopics.shadowGetAccepted);
     _awsIotDevice.subscribe(MqttTopics.getStatesFromCentral);
+    _awsIotDevice.subscribe(MqttTopics.tockUpdateReturn);
+
+    print(
+        'Subscribed at: \n${MqttTopics.shadowUpdateAccepted} \n${MqttTopics.shadowGetAccepted}  \n${MqttTopics.getStatesFromCentral}  \n${MqttTopics.tockUpdateReturn}');
   }
 }

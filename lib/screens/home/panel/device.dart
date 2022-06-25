@@ -14,16 +14,16 @@ import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
 
 const SIZE_WIDTH_LAMP = 70.0;
 
-class TockLight extends StatefulWidget {
+class TockDevice extends StatefulWidget {
   final Light light;
   final bool isConfigMode;
 
-  const TockLight({Key key, this.light, this.isConfigMode}) : super(key: key);
+  const TockDevice({Key key, this.light, this.isConfigMode}) : super(key: key);
   @override
-  _TockLightState createState() => _TockLightState();
+  _TockDeviceState createState() => _TockDeviceState();
 }
 
-class _TockLightState extends State<TockLight> {
+class _TockDeviceState extends State<TockDevice> {
   final TextEditingController lightNameController = TextEditingController();
   Light light;
   bool forceHideAnimation = false;
@@ -43,8 +43,7 @@ class _TockLightState extends State<TockLight> {
       child: SizedBox(
         width: SIZE_WIDTH_LAMP,
         child: InkWell(
-          onTap: () =>
-              widget.isConfigMode ? _configLight() : _updateLightState(),
+          onTap: () => widget.isConfigMode ? _configLight() : _onActionDevice(),
           splashColor: ColorsCustom.loginScreenMiddle,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -103,13 +102,39 @@ class _TockLightState extends State<TockLight> {
     setState(() {});
   }
 
+  _onActionDevice() {
+    final type = light.device.type;
+    if (type == DeviceTypes.BOMB || type == DeviceTypes.LIGHT) {
+      _updateLightState();
+    } else if (type == DeviceTypes.PULSE_ONOFF ||
+        type == DeviceTypes.PULSE_COLOR) {
+      _updateTockState();
+    } else {
+      // no actions for a while
+    }
+  }
+
+  _updateTockState() async {
+    setState(() {
+      showProgress = true;
+    });
+    AWSIotDevice awsIotDevice = Locator.instance.get<AwsIot>().awsIotDevice;
+    final msg = {
+      'state': {
+        'desired': {'pin${light.device.pin}': 'x'}
+      }
+    };
+    awsIotDevice.publishJson(
+      msg,
+      topic: MqttTopics.tockUpdate,
+    );
+  }
+
   _updateLightState() async {
     setState(() {
       showProgress = true;
     });
-
     final state = light.state == '1' ? '0' : '1';
-
     BlocProvider.of<LocalConfigBloc>(context).state.value
         ? _publishCentral(state)
         : _publishMqtt(state, int.parse(light.device.pin));
@@ -191,6 +216,17 @@ class _TockLightState extends State<TockLight> {
               : Image.asset("assets/icons/lampsOff.png"),
         );
         break;
+      case DeviceTypes.PULSE_ONOFF:
+        return Tab(
+          icon: Image.asset("assets/icons/pulse-onoff.png"),
+        );
+        break;
+      case DeviceTypes.PULSE_COLOR:
+        return Tab(
+          icon: Image.asset("assets/icons/pulse-color.png"),
+        );
+        break;
+
       default:
         return Icon(Icons.sentiment_dissatisfied, size: 40, color: Colors.grey);
     }
