@@ -1,4 +1,22 @@
-build/
+# except this
+!build/
+
+# ignore all in this and after except subfolder
+build/*
+!build/app/
+
+# ignore all in this and after except subfolder
+build/app/*
+!build/app/outputs/
+
+# ignore all in this and after except subfolder
+build/app/outputs/*
+!build/app/outputs/apk
+
+# ignore all in this and after except subfolder
+build/app/outputs/apk/*
+!build/app/outputs/apk/release
+
 .dart_tool/
 .flutter-plugins
 .packages
