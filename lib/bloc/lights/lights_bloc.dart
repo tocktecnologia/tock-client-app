@@ -13,7 +13,7 @@ class LightsBloc extends HydratedBloc<LightsEvent, LightsState> {
   @override
   LightsState get initialState => super.initialState ?? LightsInitial();
 
-  List<Light> _lights = List<Light>();
+  List<Light> _lights = [];
   get lights => _lights;
 
   setLights(lights) {

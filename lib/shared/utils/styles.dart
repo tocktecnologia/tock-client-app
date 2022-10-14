@@ -44,4 +44,9 @@ class TextStylesLogin {
     decoration: TextDecoration.underline,
     fontWeight: FontWeight.bold,
   );
+  static TextStyle textPattern = TextStyle(
+    fontSize: 14,
+    color: Colors.white,
+    fontWeight: FontWeight.w800,
+  );
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_login_setup_cognito/bloc/data_user/data_user_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/lights/lights_bloc.dart';
 import 'package:flutter_login_setup_cognito/bloc/schedules/schedules_bloc.dart';
 import 'package:flutter_login_setup_cognito/screens/login/main.dart';
@@ -37,8 +38,8 @@ class Application extends StatelessWidget {
         BlocProvider<LightsBloc>(
             create: (BuildContext context) => LightsBloc()),
         BlocProvider<AuthBloc>(create: (BuildContext context) => AuthBloc()),
-        // BlocProvider<DataUserBloc>(
-        //     create: (BuildContext context) => DataUserBloc()),
+        BlocProvider<DataUserBloc>(
+            create: (BuildContext context) => DataUserBloc()),
       ],
       child: MaterialApp(
         color: Colors.white,

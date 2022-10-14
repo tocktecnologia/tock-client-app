@@ -111,7 +111,7 @@ class ButtonLogin extends MaterialButton {
       this.isLoading = false,
       this.height,
       this.minWidth,
-      this.fontSize});
+      this.fontSize}) : super(onPressed: mOnPressed);
   final minWidth;
   final height;
   final bool isLoading;
@@ -175,7 +175,7 @@ class ShowAlert {
       onConfirmation}) {
     showDialog(
       context: context,
-      child: AlertDialog(
+      builder: (context) =>  AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.0),
         ),
@@ -223,9 +223,9 @@ class ShowAlertOptions {
       titleText,
       @required contentText,
       VoidCallback action}) {
-    showDialog(
+    showDialog( 
       context: context,
-      child: AlertDialog(
+      builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.0),
         ),

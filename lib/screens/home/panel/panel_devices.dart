@@ -42,7 +42,7 @@ class _PanelScreenState extends State<PanelScreen> {
   // listinning from aws mqtt
   _onReceive(awsIotDevice) async {
     final AWSIotMsg lastMsg = await awsIotDevice.messages.elementAt(0);
-    print('_onReceive: \ntopic: ${lastMsg.topic}; \nmsg: ${lastMsg.asStr}\n\n');
+    // print('_onReceive: \ntopic: ${lastMsg.topic}; \nmsg: ${lastMsg.asStr}\n\n');
 
     // verify if is aws shadow message and topic update
     if (lastMsg.asJson.containsKey('state') &&

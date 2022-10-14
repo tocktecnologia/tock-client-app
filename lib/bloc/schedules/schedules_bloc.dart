@@ -17,7 +17,7 @@ class SchedulesBloc extends HydratedBloc<SchedulesEvent, SchedulesState> {
   @override
   SchedulesState get initialState => super.initialState ?? SchedulesInitial();
 
-  List<Schedule> _schedules = List<Schedule>();
+  List<Schedule> _schedules = [];
   get schedules => _schedules;
 
   @override
@@ -79,7 +79,7 @@ class SchedulesBloc extends HydratedBloc<SchedulesEvent, SchedulesState> {
 
         if (_schedules.length == 1) {
           await Future.delayed(Duration(seconds: 1));
-          _schedules = List<Schedule>();
+          _schedules = [];
           yield UpdatedSchedulesState(schedules: _schedules);
           return;
         }

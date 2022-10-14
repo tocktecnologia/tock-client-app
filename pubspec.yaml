@@ -36,6 +36,7 @@ dependencies:
   flutter_cognito_plugin: ^1.0.2
   aws_iot: ^0.1.0
   udp: ^3.0.3
+  sleek_circular_slider: ^1.1.0
 
 
 

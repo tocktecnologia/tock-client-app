@@ -150,7 +150,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
               size: 70,
               color: Colors.blue,
             ),
-            onTap: () => {
+            onTap: () => 
               ShowAlert.open(
                 context: context,
                 contentText:
@@ -163,7 +163,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                   );
                 },
               ),
-            },
+            
           ),
         ),
       ],
