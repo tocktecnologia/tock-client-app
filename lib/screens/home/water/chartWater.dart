@@ -100,9 +100,9 @@ class _ChartCircularState extends State<ChartCircular> {
   _onReceive(AWSIotDevice awsIotDevice) async {
     final AWSIotMsg lastMsg = await awsIotDevice.messages.elementAt(0);
 
-    if (lastMsg.asJson.containsKey("disAverage")) {
+    if (lastMsg.asJson.containsKey("dist")) {
       setState(() {
-        percentValue = lastMsg.asJson["disAverage"];
+        percentValue = lastMsg.asJson["dist"];
       });
     }
   }
