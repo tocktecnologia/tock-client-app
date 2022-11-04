@@ -1,4 +1,4 @@
-package com.example.flutter_login_setup_cognito
+package tocktec.com.br.client
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

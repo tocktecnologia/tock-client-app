@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:578690645325:android:1bd473c23bab55b71bcb04",
         "android_client_info": {
-          "package_name": "com.example.flutter_login_setup_cognito"
+          "package_name": "tocktec.com.br.client"
         }
       },
       "oauth_client": [

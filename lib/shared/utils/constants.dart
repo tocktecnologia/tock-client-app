@@ -10,14 +10,30 @@ class MqttTopics {
   static const tockUpdate = 'tock/things/${ThingAWS.piscinaRemoteId}/update';
   static const tockUpdateReturn = '$tockUpdate/return';
 
-  static const shadowGet =
-      '\$aws/things/${ThingAWS.centralRemoteId}/shadow/get';
-  static const shadowUpdate =
-      '\$aws/things/${ThingAWS.centralRemoteId}/shadow/update';
-  static const shadowGetAccepted =
-      '\$aws/things/${ThingAWS.centralRemoteId}/shadow/get/accepted';
-  static const shadowUpdateAccepted =
-      '\$aws/things/${ThingAWS.centralRemoteId}/shadow/update/accepted';
+  static String topicShadowGet(thingId) {
+    return '\$aws/things/${thingId}/shadow/get';
+  }
+
+  static String topicShadowUpdate(thingId) {
+    return '\$aws/things/${thingId}/shadow/update';
+  }
+
+  static String topicShadowGetAccepted(thingId) {
+    return '\$aws/things/${thingId}/shadow/get/accepted';
+  }
+
+  static String topicShadowUpdateAccepted(thingId) {
+    return '\$aws/things/${thingId}/shadow/update/accepted';
+  }
+
+  // static const shadowGet =
+  //     '\$aws/things/${ThingAWS.centralRemoteId}/shadow/get';
+  // static const shadowUpdate =
+  //     '\$aws/things/${ThingAWS.centralRemoteId}/shadow/update';
+  // static const shadowGetAccepted =
+  //     '\$aws/things/${ThingAWS.centralRemoteId}/shadow/get/accepted';
+  // static const shadowUpdateAccepted =
+  //     '\$aws/things/${ThingAWS.centralRemoteId}/shadow/update/accepted';
 
   static const getStates = '\$aws/things/${ThingAWS.centralRemoteId}/states';
   static const getStatesFromCentral =
@@ -25,7 +41,13 @@ class MqttTopics {
 }
 
 class ThingAWS {
-  static const centralRemoteId = "E82723EB"; //"E821C76A";
+  static List<String> getThingIds() {
+    // return ["3A9F416A"];
+
+    return ["e3704f79", "fadc60ef", "3A9F416A"];
+  }
+
+  static const centralRemoteId = "3A9F416A"; //"fadc60ef"; //"E821C76A";
   static const piscinaRemoteId = "pool-green2b"; //"E821C76A";
   static const localId = '10.0.1.10';
 }

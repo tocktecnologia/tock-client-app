@@ -20,23 +20,24 @@ class ChartCircular extends StatefulWidget {
 }
 
 class _ChartCircularState extends State<ChartCircular> {
-  double percentValue;
-  var limitCritic;
+  double percentValue = 0;
+  var limitCritic = 20;
   AWSIotDevice awsIotDevice;
 
   @override
   void initState() {
-    percentValue = 50;
-    limitCritic = 20;
     awsIotDevice = Locator.instance.get<AwsIot>().awsIotDevice;
 
+    subscribeDevices();
+    super.initState();
+  }
+
+  void subscribeDevices() async {
     final status = awsIotDevice.client.connectionStatus.state;
     if (status == MqttConnectionState.connected) {
       awsIotDevice.subscribe("tock/${widget.waterTank.thingId}/pub");
       print("subscribed at tock/${widget.waterTank.thingId}/pub");
     }
-
-    super.initState();
   }
 
   @override
@@ -95,22 +96,20 @@ class _ChartCircularState extends State<ChartCircular> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: PADDING_HORIZ_INTERN),
             child: Flexible(
-              child: Container(
-                child: Center(
-                  child: SleekCircularSlider(
-                    appearance: CircularSliderAppearance(
-                      size: MediaQuery.of(context).size.height / 3,
-                      customColors: CustomSliderColors(
-                        dotColor: Colors.white,
-                        progressBarColor: percentValue < limitCritic
-                            ? Colors.red.shade300
-                            : ColorsCustom.loginScreenMiddle,
-                        trackColor: ColorsCustom.loginScreenDown,
-                        shadowColor: ColorsCustom.loginScreenUp,
-                      ),
+              child: Center(
+                child: SleekCircularSlider(
+                  appearance: CircularSliderAppearance(
+                    size: MediaQuery.of(context).size.height / 3,
+                    customColors: CustomSliderColors(
+                      dotColor: Colors.white,
+                      progressBarColor: percentValue < limitCritic
+                          ? Colors.red.shade300
+                          : ColorsCustom.loginScreenMiddle,
+                      trackColor: ColorsCustom.loginScreenDown,
+                      shadowColor: ColorsCustom.loginScreenUp,
                     ),
-                    initialValue: percentValue,
                   ),
+                  initialValue: percentValue ?? 0,
                 ),
               ),
             ),
@@ -124,8 +123,10 @@ class _ChartCircularState extends State<ChartCircular> {
     final AWSIotMsg lastMsg = await awsIotDevice.messages.elementAt(0);
 
     if (lastMsg.asJson.containsKey("dist")) {
+      final value = lastMsg.asJson["dist"];
+      if (value > 100 || value < 0) return;
       setState(() {
-        percentValue = lastMsg.asJson["dist"];
+        percentValue = value;
       });
     }
   }

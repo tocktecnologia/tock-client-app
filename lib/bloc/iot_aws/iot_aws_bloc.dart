@@ -56,13 +56,21 @@ class IotAwsBloc extends Bloc<IotAwsEvent, IotAwsState> {
       else if (event is GetUpdateLightsFromShadowEvent) {
         yield UpdatingLightsFromShadowState();
         await Future.delayed(Duration(milliseconds: 200));
-        Locator.instance
-            .get<AwsIot>()
-            .awsIotDevice
-            .publishJson({}, topic: MqttTopics.shadowGet);
+
+        ThingAWS.getThingIds().forEach((thingId) {
+          Locator.instance.get<AwsIot>().awsIotDevice.publishJson(
+            {},
+            topic: MqttTopics.topicShadowGet(thingId),
+          );
+        });
+        // Locator.instance
+        //     .get<AwsIot>()
+        //     .awsIotDevice
+        //     .publishJson({}, topic: MqttTopics.shadowGet);
       } else if (event is GetUpdateLightsFromNodeCentralEvent) {
         yield UpdatingLightsFromShadowState();
         await Future.delayed(Duration(milliseconds: 200));
+
         Locator.instance
             .get<AwsIot>()
             .awsIotDevice

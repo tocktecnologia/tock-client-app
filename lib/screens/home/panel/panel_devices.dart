@@ -46,13 +46,15 @@ class _PanelScreenState extends State<PanelScreen> {
 
     // verify if is aws shadow message and topic update
     if (lastMsg.asJson.containsKey('state') &&
-        (lastMsg.topic == MqttTopics.shadowUpdateAccepted ||
+        (lastMsg.topic.endsWith("update/accepted")
+            // lastMsg.topic == MqttTopics.shadowUpdateAccepted
+            ||
             lastMsg.topic == MqttTopics.tockUpdateReturn)) {
       // verify if exist reported
       if (lastMsg.asJson['state'].containsKey('reported')) {
         final deviceId = lastMsg.topic.split('/')[2];
         lastMsg.asJson['state']['reported'].forEach((k, v) {
-          //print("deviceid: $deviceId, pin${k[3]} ---->  $v");
+          print("deviceid: $deviceId, pin${k[3]} ---->  $v");
           BlocProvider.of<LightBloc>(context).add(ReceiveUpdateLightEvent(
               deviceId: deviceId, pin: k.substring(3), state: v.toString()));
         });
@@ -66,9 +68,11 @@ class _PanelScreenState extends State<PanelScreen> {
           statesJson: lastMsg.asJson['state'], lights: lights));
       //
     } else if (lastMsg.asJson.containsKey('state') &&
-        lastMsg.topic == MqttTopics.shadowGetAccepted) {
-      print(
-          'Message receive on ${MqttTopics.shadowGetAccepted}: ${lastMsg.asJson}');
+            lastMsg.topic.endsWith("get/accepted")
+        //lastMsg.topic == MqttTopics.shadowGetAccepted
+        ) {
+      // print(
+      // 'Message receive on ${MqttTopics.shadowGetAccepted}: ${lastMsg.asJson}');
       final lights = BlocProvider.of<LightsBloc>(context).lights;
       BlocProvider.of<IotAwsBloc>(context).add(UpdateLightsFromShadowEvent(
           statesJson: lastMsg.asJson['state'], lights: lights));

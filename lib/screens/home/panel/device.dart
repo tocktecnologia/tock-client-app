@@ -195,8 +195,8 @@ class _TockDeviceState extends State<TockDevice> {
       case DeviceTypes.LIGHT:
         return Tab(
           icon: mState == LightStatesLogic.LIGHT_OFF
-              ? Image.asset("assets/icons/lampOn.png")
-              : Image.asset("assets/icons/lampOff.png"),
+              ? Image.asset("assets/icons/lampOff.png")
+              : Image.asset("assets/icons/lampOn.png"),
         );
         break;
       case DeviceTypes.BOMB:
@@ -205,15 +205,15 @@ class _TockDeviceState extends State<TockDevice> {
           height: 60,
           child: Tab(
             icon: mState == LightStatesLogic.LIGHT_ON
-                ? Image.asset("assets/icons/bombOn.png")
-                : Image.asset("assets/icons/bombOff.png"),
+                ? Image.asset("assets/icons/bombOff.png")
+                : Image.asset("assets/icons/bombOn.png"),
           ),
         );
       case DeviceTypes.LIGHTS:
         return Tab(
           icon: mState == LightStatesLogic.LIGHT_ON
-              ? Image.asset("assets/icons/lampsOn.png")
-              : Image.asset("assets/icons/lampsOff.png"),
+              ? Image.asset("assets/icons/lampsOff.png")
+              : Image.asset("assets/icons/lampsOn.png"),
         );
         break;
       case DeviceTypes.PULSE_ONOFF:

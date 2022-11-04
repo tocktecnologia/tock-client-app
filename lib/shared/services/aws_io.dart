@@ -31,12 +31,14 @@ class AwsIot {
   }
 
   _subscribing() {
-    _awsIotDevice.subscribe(MqttTopics.shadowUpdateAccepted);
-    _awsIotDevice.subscribe(MqttTopics.shadowGetAccepted);
-    _awsIotDevice.subscribe(MqttTopics.getStatesFromCentral);
-    _awsIotDevice.subscribe(MqttTopics.tockUpdateReturn);
+    ThingAWS.getThingIds().forEach((thingId) {
+      _awsIotDevice.subscribe(MqttTopics.topicShadowUpdateAccepted(thingId));
+      _awsIotDevice.subscribe(MqttTopics.topicShadowGetAccepted(thingId));
+    });
 
-    print(
-        'Subscribed at: \n${MqttTopics.shadowUpdateAccepted} \n${MqttTopics.shadowGetAccepted}  \n${MqttTopics.getStatesFromCentral}  \n${MqttTopics.tockUpdateReturn}');
+    // _awsIotDevice.subscribe(MqttTopics.shadowUpdateAccepted);
+    // _awsIotDevice.subscribe(MqttTopics.shadowGetAccepted);
+    // _awsIotDevice.subscribe(MqttTopics.getStatesFromCentral);
+    // _awsIotDevice.subscribe(MqttTopics.tockUpdateReturn);
   }
 }
