@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: size.height * 0.035),
               _buttonLogin(),
               SizedBox(height: 10),
-              _beforeSessionButton(),
+              _feiraDoConhecimento(),
               SizedBox(height: size.height * 0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -190,7 +190,8 @@ class _LoginScreenState extends State<LoginScreen> {
           return ButtonLogin(
             backgroundColor: Colors.white,
             label: 'Entrar',
-            mOnPressed: () => _login(),
+            mOnPressed: () => BlocProvider.of<AuthBloc>(context).add(LoginEvent(
+                login: loginController.text, password: passController.text)),
           );
         }
       },
@@ -208,12 +209,16 @@ class _LoginScreenState extends State<LoginScreen> {
         });
   }
 
-  _login() {
-    // not validate email cause the user can want to login in local
-    //if (_formKey.currentState.validate()) {
-    BlocProvider.of<AuthBloc>(context).add(
-        LoginEvent(login: loginController.text, password: passController.text));
-    //}
+  Widget _feiraDoConhecimento() {
+    return ButtonLogin(
+        backgroundColor: ColorsCustom.loginScreenUp,
+        labelColor: Colors.white,
+        label: 'Estou na Feira!',
+        fontSize: 15,
+        mOnPressed: () {
+          BlocProvider.of<AuthBloc>(context).add(LoginEvent(
+              login: "tocktec@gmail.com", password: "tock30130tecnologia"));
+        });
   }
 
   String _validatorEmail(value) {

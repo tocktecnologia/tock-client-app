@@ -5,5 +5,7 @@ gradle-wrapper.jar
 /gradlew.bat
 /local.properties
 GeneratedPluginRegistrant.java
+tock-keystore.jks
 app-condominio.jks
 key.properties
+

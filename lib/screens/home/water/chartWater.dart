@@ -4,6 +4,7 @@ import 'package:flutter_login_setup_cognito/shared/model/data_user_model.dart';
 import 'package:flutter_login_setup_cognito/shared/services/aws_io.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
 import 'package:flutter_login_setup_cognito/shared/utils/locator.dart';
+import 'package:mqtt_client/mqtt_client.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 const PADDING_HORIZ_INTERN = 10.0;
@@ -20,14 +21,20 @@ class ChartCircular extends StatefulWidget {
 
 class _ChartCircularState extends State<ChartCircular> {
   double percentValue;
+  var limitCritic;
   AWSIotDevice awsIotDevice;
+
   @override
   void initState() {
     percentValue = 50;
-
+    limitCritic = 20;
     awsIotDevice = Locator.instance.get<AwsIot>().awsIotDevice;
-    awsIotDevice.subscribe("tock/${widget.waterTank.thingId}/pub");
-    print("subscribed at tock/${widget.waterTank.thingId}/pub");
+
+    final status = awsIotDevice.client.connectionStatus.state;
+    if (status == MqttConnectionState.connected) {
+      awsIotDevice.subscribe("tock/${widget.waterTank.thingId}/pub");
+      print("subscribed at tock/${widget.waterTank.thingId}/pub");
+    }
 
     super.initState();
   }
@@ -64,9 +71,18 @@ class _ChartCircularState extends State<ChartCircular> {
                   this.widget.waterTank.label,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: ColorsCustom.loginScreenMiddle,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
+                    color: ColorsCustom.loginScreenMiddle,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  " ($limitCritic %)",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.red.shade300,
+                    fontSize: 20,
+                  ),
                 ),
                 // _updateButton()
               ],
@@ -78,16 +94,23 @@ class _ChartCircularState extends State<ChartCircular> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: PADDING_HORIZ_INTERN),
-            child: Container(
-              child: Center(
-                child: SleekCircularSlider(
-                  // onChangeStart: (double value) {},
-                  // onChangeEnd: (double value) {},
-                  // innerWidget: viewModel.innerWidget,
-                  // appearance: viewModel.appearance,
-                  // min: viewModel.min,
-                  // max: viewModel.max
-                  initialValue: percentValue,
+            child: Flexible(
+              child: Container(
+                child: Center(
+                  child: SleekCircularSlider(
+                    appearance: CircularSliderAppearance(
+                      size: MediaQuery.of(context).size.height / 3,
+                      customColors: CustomSliderColors(
+                        dotColor: Colors.white,
+                        progressBarColor: percentValue < limitCritic
+                            ? Colors.red.shade300
+                            : ColorsCustom.loginScreenMiddle,
+                        trackColor: ColorsCustom.loginScreenDown,
+                        shadowColor: ColorsCustom.loginScreenUp,
+                      ),
+                    ),
+                    initialValue: percentValue,
+                  ),
                 ),
               ),
             ),
