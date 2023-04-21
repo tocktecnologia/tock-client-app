@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
-import 'package:flutter_login_setup_cognito/screens/login/signUp/confirmation_signUp.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/slide.transition.dart';
+import 'package:client/bloc/auth/auth_bloc.dart';
+import 'package:client/bloc/auth/auth_event.dart';
+import 'package:client/bloc/auth/auth_state.dart';
+import 'package:client/screens/login/signUp/confirmation_signUp.dart';
+import 'package:client/shared/utils/colors.dart';
+import 'package:client/shared/utils/components.dart';
+import 'package:client/shared/utils/screen_transitions/slide.transition.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -28,41 +28,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     passController.dispose();
   }
 
-  String _validatorEmail(value) {
-    RegExp regExp = RegExp(
-        "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\$");
-    if (!regExp.hasMatch(value)) {
-      return "type a valid email";
-    }
-    return null;
-  }
-
-  _signUp() {
-    if (_formKey.currentState.validate()) {
-      BlocProvider.of<AuthBloc>(context).add(
-        SignUpEvent(
-          login: emailController.text, password: passController.text,
-          // if you want more attributes, just do add in json
-          jsonAttrs: {
-            'email': emailController.text,
-            'locale': localeController.text
-          },
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorsCustom.loginScreenUp,
-      appBar: new AppBar(
-        leading: Icon(
+      appBar: AppBar(
+        leading: const Icon(
           Icons.arrow_back,
           color: Colors.white,
         ),
         centerTitle: true,
-        title: new Text(
+        title: const Text(
           'Cadastro',
           style: TextStyle(color: Colors.white),
         ),
@@ -88,7 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 keyboardType: TextInputType.emailAddress,
                 textEditingController: emailController,
               ),
-              SizedBox(height: 30.0),
+              const SizedBox(height: 30.0),
               InputLogin(
                 prefixIcon: Icons.home,
                 hint: 'Local (Casa, Condomínio, AP ...)',
@@ -112,8 +88,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget _buttonSignUp() {
-    return BlocBuilder<AuthBloc, AuthState>(
-      condition: (previusState, state) {
+    return BlocBuilder<AuthCubit, AuthState>(
+      buildWhen: (previusState, state) {
         if (state is LoadedSignUpState) {
           Navigator.pushReplacement(
               context,
@@ -134,6 +110,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             backgroundColor: Colors.white,
             label: 'loading ...',
             mOnPressed: () => {},
+            fontSize: 18,
           );
         } else if (state is LoadedSignUpState) {
           return ButtonLogin(
@@ -150,5 +127,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
       },
     );
+  }
+
+  String? _validatorEmail(value) {
+    RegExp regExp = RegExp(
+        "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\$");
+    if (!regExp.hasMatch(value)) {
+      return "type a valid email";
+    }
+    return null;
+  }
+
+  _signUp() {
+    if (_formKey.currentState!.validate()) {
+      // BlocProvider.of<AuthBloc>(context).add(
+      //   SignUpEvent(
+      //     login: emailController.text, password: passController.text,
+      //     // if you want more attributes, just do add in json
+      //     jsonAttrs: {
+      //       'email': emailController.text,
+      //       'locale': localeController.text
+      //     },
+      //   ),
+      // );
+    }
   }
 }

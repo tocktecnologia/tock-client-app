@@ -24,7 +24,7 @@ class DecorationsLogin {
   );
 
   static InputDecoration inputDecorationLogin(
-      {@required prefixIcon, suffixIcon, hint = 'your test', label = 'test'}) {
+      {required prefixIcon, suffixIcon, hint = 'your test', label = 'test'}) {
     return InputDecoration(
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon,

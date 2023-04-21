@@ -1,4 +1,4 @@
-# flutter_login_setup_cognito
+# client
 
 A new Flutter project.
 

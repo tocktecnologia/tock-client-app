@@ -5,15 +5,21 @@ class TockHttpClient extends http.BaseClient {
   final Duration timeout = Duration(seconds: 15);
   final Map<String, String> defaultHeaders;
 
-  TockHttpClient({this.defaultHeaders});
+  TockHttpClient({required this.defaultHeaders});
 
   @override
   Future<StreamedResponse> send(BaseRequest request) {
-    return null;
+    // TODO: implement send
+    throw UnimplementedError();
   }
 
-  @override
-  Future<http.Response> get(url, {Map<String, String> headers}) async {
-    return null;
-  }
+  // @override
+  // Future<StreamedResponse> send(BaseRequest request) {
+  //   return StreamedResponse;
+  // }
+
+  // @override
+  // Future<http.Response> get(url, {Map<String, String> headers}) async {
+  //   return null;
+  // }
 }

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
-import 'package:flutter_login_setup_cognito/screens/login/main.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/slide.transition.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/styles.dart';
+import 'package:client/bloc/auth/auth_bloc.dart';
+import 'package:client/bloc/auth/auth_event.dart';
+import 'package:client/bloc/auth/auth_state.dart';
+import 'package:client/screens/login/main.dart';
+import 'package:client/shared/utils/colors.dart';
+import 'package:client/shared/utils/components.dart';
+import 'package:client/shared/utils/screen_transitions/slide.transition.dart';
+import 'package:client/shared/utils/styles.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ConfirmSignUpScreen extends StatefulWidget {
   final email;
 
-  const ConfirmSignUpScreen({Key key, @required this.email}) : super(key: key);
+  const ConfirmSignUpScreen({Key? key, required this.email}) : super(key: key);
 
   @override
   _ConfirmSignUpScreenState createState() => _ConfirmSignUpScreenState();
@@ -84,22 +84,22 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
   }
 
   _confirmSignUp() {
-    if (_formKey.currentState.validate()) {
-      BlocProvider.of<AuthBloc>(context).add(
-        ConfirmSignUpEvent(
-            email: widget.email,
-            confirmationCode: numConfirmationController.text),
-      );
+    if (_formKey.currentState!.validate()) {
+      // BlocProvider.of<AuthBloc>(context).add(
+      //   ConfirmSignUpEvent(
+      //       email: widget.email,
+      //       confirmationCode: numConfirmationController.text),
+      // );
     }
   }
 
   _resendConfirmationCode() {
-    BlocProvider.of<AuthBloc>(context)
-        .add(SendCodeConfirmSignUpEvent(email: widget.email));
+    // BlocProvider.of<AuthBloc>(context)
+    //     .add(SendCodeConfirmSignUpEvent(email: widget.email));
   }
 
   Widget _textTitle() {
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocBuilder<AuthCubit, AuthState>(
       builder: (previusState, state) {
         if (state is LoadingSendCodeConfirmSignUpState) {
           return ListView(
@@ -136,15 +136,15 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
   }
 
   Widget _buttonSignUp() {
-    return BlocBuilder<AuthBloc, AuthState>(
-      condition: (previusState, state) {
+    return BlocBuilder<AuthCubit, AuthState>(
+      buildWhen: (previusState, state) {
         if (state is LoadedConfirmSignUpState) {
           Navigator.pushReplacement(
               context, SlideDownRoute(page: LoginScreen()));
         } else if (state is LoginErrorState) {
           ShowAlert.open(context: context, contentText: state.message);
         }
-        return;
+        return true;
       },
       builder: (context, state) {
         if (state is LoadingConfirmSignUpState) {

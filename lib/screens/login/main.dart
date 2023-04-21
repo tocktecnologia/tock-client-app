@@ -1,43 +1,45 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
+import 'package:client/bloc/mqtt/mqtt_bloc.dart';
+import 'package:client/shared/services/cognito/user.dart';
+import 'package:client/shared/services/cognito/user_service.dart';
+import 'package:client/shared/utils/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_cognito_plugin/flutter_cognito_plugin.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
-import 'package:flutter_login_setup_cognito/bloc/iot_aws/iot_aws_bloc.dart';
-import 'package:flutter_login_setup_cognito/screens/home/main.dart';
-import 'package:flutter_login_setup_cognito/screens/login/signUp/confirmation_signUp.dart';
-import 'package:flutter_login_setup_cognito/screens/login/signUp/signUp.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/open.transition.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/slide.transition.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/styles.dart';
+import 'package:client/bloc/auth/auth_bloc.dart';
+import 'package:client/bloc/auth/auth_state.dart';
+import 'package:client/screens/home/main.dart';
+import 'package:client/screens/login/signUp/confirmation_signUp.dart';
+import 'package:client/screens/login/signUp/signUp.dart';
+import 'package:client/shared/utils/colors.dart';
+import 'package:client/shared/utils/components.dart';
+import 'package:client/shared/utils/screen_transitions/open.transition.dart';
+import 'package:client/shared/utils/screen_transitions/slide.transition.dart';
+import 'package:client/shared/utils/styles.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'forgotPassword.dart';
 
 class LoginScreen extends StatefulWidget {
-  final login;
-  LoginScreen({this.login, Key key}) : super(key: key);
+  final String? login;
+  const LoginScreen({this.login, Key? key}) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final loginController = TextEditingController();
   final passController = TextEditingController();
-  var size;
+  late Size size;
   final regExp = RegExp(
       "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\$");
 
   @override
   void initState() {
     super.initState();
-    loginController.text = widget.login ?? '';
-    passController.text = '';
+    loginController.text = widget.login ?? 'junymn.ufc@gmail.com';
+    passController.text = 'junymqwe';
   }
 
   @override
@@ -45,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
     loginController.dispose();
     passController.dispose();
-    Cognito.registerCallback(null);
+    // Cognito.registerCallback(null);
   }
 
   @override
@@ -57,12 +59,11 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Column(
         children: <Widget>[
           SizedBox(height: size.height * 0.0871),
-          Container(
-              child: Image.asset(
+          Image.asset(
             'assets/images/logo.png',
             height: 140,
             fit: BoxFit.fill,
-          )),
+          ),
           SizedBox(height: size.height * 0.020),
           Expanded(
             child: _contentLogin(),
@@ -73,13 +74,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _contentLogin() {
-    return BlocBuilder<AuthBloc, AuthState>(condition: (previousState, state) {
+    return BlocBuilder<AuthCubit, AuthState>(buildWhen: (previousState, state) {
       if (state is LoggedState) {
-        BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
+        // BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
+        context.read<MqttCubit>().mqttConnect();
         Navigator.pushReplacement(
           context,
           OpenAndFadeTransition(
-            HomeScreen(),
+            const HomeScreen(),
           ),
         );
       } else if (state is LoginErrorState) {
@@ -91,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return true;
     }, builder: (context, state) {
       if (state is ForcingLoginState || state is LoggedState) {
-        return SizedBox(child: SpinKitWave(color: Colors.white));
+        return const SizedBox(child: SpinKitWave(color: Colors.white));
       } else {
         return _formLogin();
       }
@@ -102,11 +104,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return Form(
       key: _formKey,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               InputLogin(
                 validator: _validatorEmail,
                 prefixIcon: Icons.account_circle,
@@ -123,8 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: size.height * 0.035),
               _buttonLogin(),
-              SizedBox(height: 10),
-              _feiraDoConhecimento(),
               SizedBox(height: size.height * 0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -171,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buttonLogin() {
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         if (state is LoadingLoginState) {
           return ButtonLogin(
@@ -190,38 +190,21 @@ class _LoginScreenState extends State<LoginScreen> {
           return ButtonLogin(
             backgroundColor: Colors.white,
             label: 'Entrar',
-            mOnPressed: () => BlocProvider.of<AuthBloc>(context).add(LoginEvent(
-                login: loginController.text, password: passController.text)),
+            mOnPressed: () {
+              // _loginCognito();
+              // BlocProvider.of<AuthBloc>(context).add(LoginEvent(
+              //     login: loginController.text, password: passController.text)),
+              context
+                  .read<AuthCubit>()
+                  .loginEvent(loginController.text, passController.text);
+            },
           );
         }
       },
     );
   }
 
-  Widget _beforeSessionButton() {
-    return ButtonLogin(
-        backgroundColor: ColorsCustom.loginScreenUp,
-        labelColor: Colors.white,
-        label: 'Coninuar na sessão anterior?',
-        fontSize: 15,
-        mOnPressed: () {
-          BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
-        });
-  }
-
-  Widget _feiraDoConhecimento() {
-    return ButtonLogin(
-        backgroundColor: ColorsCustom.loginScreenUp,
-        labelColor: Colors.white,
-        label: 'Estou na Feira!',
-        fontSize: 15,
-        mOnPressed: () {
-          BlocProvider.of<AuthBloc>(context).add(LoginEvent(
-              login: "tocktec@gmail.com", password: "tock30130tecnologia"));
-        });
-  }
-
-  String _validatorEmail(value) {
+  String? _validatorEmail(value) {
     if (!regExp.hasMatch(value)) {
       return "type a valid email";
     }
@@ -229,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _forgotPassword() {
-    if (regExp.hasMatch(loginController.text))
+    if (regExp.hasMatch(loginController.text)) {
       Navigator.push(
         context,
         SlideDownRoute(
@@ -238,12 +221,13 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       );
-    else
+    } else {
       ShowAlert.open(
         context: context,
         titleText: 'Alert',
         contentText: 'Please type a valid Email in login field',
       );
+    }
   }
 
   _confirmAccount() {

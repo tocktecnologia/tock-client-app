@@ -22,3 +22,8 @@ build/app/outputs/apk/*
 .packages
 .flutter-plugins-dependencies
 *.log
+
+
+# secrets
+/assets/.env
+/lib/shared/utils/secrets.dart

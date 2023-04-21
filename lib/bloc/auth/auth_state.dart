@@ -1,3 +1,5 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
+
 abstract class AuthState {}
 
 class LoadingLogoutState extends AuthState {}
@@ -12,8 +14,7 @@ class LoggedOutState extends AuthState {
 }
 
 class LoggedState extends AuthState {
-  final message;
-  LoggedState({this.message});
+  LoggedState();
 }
 
 class LoadingSignUpState extends AuthState {}

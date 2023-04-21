@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/styles.dart';
+import 'package:client/shared/utils/styles.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'colors.dart';
@@ -35,12 +34,12 @@ class _InputLoginState extends State<InputLogin> {
       if (value == null || value.isEmpty) {
         return 'type a ${widget.hint}';
       }
-      return null;
+      return "";
     } else {
       if (value == null || value.isEmpty) {
         return 'type a ${widget.hint}';
       }
-      return null;
+      return "";
     }
   }
 
@@ -102,38 +101,38 @@ class _InputLoginState extends State<InputLogin> {
 }
 
 class ButtonLogin extends MaterialButton {
-  ButtonLogin(
-      {this.backgroundColor = Colors.transparent,
+  const ButtonLogin(
+      {super.key,
+      this.backgroundColor = Colors.transparent,
       this.borderColor = ColorsCustom.loginScreenMiddle,
       this.label = 'OK',
-      this.labelColor = ColorsCustom.loginScreenUp,
-      this.mOnPressed,
+      this.labelColor = ColorsCustom.loginScreenDown,
+      required this.mOnPressed,
       this.isLoading = false,
-      this.height,
-      this.minWidth,
-      this.fontSize}) : super(onPressed: mOnPressed);
-  final minWidth;
-  final height;
+      // this.height,
+      // this.minWidth,
+      this.fontSize})
+      : super(onPressed: mOnPressed);
+  // final double? minWidth;
+  // final double? height;
   final bool isLoading;
   final Color backgroundColor;
   final Color borderColor;
   final String label;
   final Color labelColor;
   final VoidCallback mOnPressed;
-  final double fontSize;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return ButtonTheme(
-      minWidth: minWidth ?? size.width * 0.316,
-      height: height ?? size.height * 0.053,
       child: RaisedButton(
         elevation: 0.0,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-            side: BorderSide(color: this.borderColor)),
-        color: backgroundColor,
+          borderRadius: BorderRadius.circular(8.0),
+          side: BorderSide(color: borderColor),
+        ),
+        onPressed: mOnPressed,
         child: isLoading
             ? FittedBox(
                 fit: BoxFit.cover,
@@ -146,9 +145,9 @@ class ButtonLogin extends MaterialButton {
                           color: labelColor,
                           fontWeight: FontWeight.bold),
                     ),
-                    SpinKitThreeBounce(
+                    const SpinKitThreeBounce(
                       size: 20,
-                      color: ColorsCustom.loginScreenUp,
+                      color: ColorsCustom.loginScreenDown,
                     ),
                   ],
                 ),
@@ -156,11 +155,11 @@ class ButtonLogin extends MaterialButton {
             : Text(
                 label,
                 style: TextStyle(
-                    fontSize: fontSize ?? 20.0,
-                    color: labelColor,
-                    fontWeight: FontWeight.bold),
+                  fontSize: fontSize ?? 20.0,
+                  // color: labelColor,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-        onPressed: mOnPressed,
       ),
     );
   }
@@ -175,7 +174,7 @@ class ShowAlert {
       onConfirmation}) {
     showDialog(
       context: context,
-      builder: (context) =>  AlertDialog(
+      builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.0),
         ),
@@ -186,7 +185,7 @@ class ShowAlert {
                 textAlign: TextAlign.center,
                 style: TextStyle(color: ColorsCustom.loginScreenUp),
               )
-            : Icon(
+            : const Icon(
                 Icons.info_outline,
                 size: 60,
                 color: ColorsCustom.loginScreenUp,
@@ -194,7 +193,7 @@ class ShowAlert {
         content: SingleChildScrollView(
           child: Text(
             contentText,
-            style: TextStyle(color: Colors.black54),
+            style: const TextStyle(color: Colors.black54),
             textAlign: TextAlign.center,
           ),
         ),
@@ -204,7 +203,6 @@ class ShowAlert {
               borderRadius: BorderRadius.circular(15.0),
               side: BorderSide(color: ColorsCustom.loginScreenMiddle),
             ),
-            color: ColorsCustom.loginScreenUp,
             onPressed: () {
               Navigator.pop(context);
               if (onConfirmation != null) onConfirmation();
@@ -219,11 +217,11 @@ class ShowAlert {
 
 class ShowAlertOptions {
   static open(
-      {@required context,
+      {required context,
       titleText,
-      @required contentText,
-      VoidCallback action}) {
-    showDialog( 
+      required contentText,
+      required VoidCallback action}) {
+    showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
@@ -236,7 +234,7 @@ class ShowAlertOptions {
                 textAlign: TextAlign.center,
                 style: TextStyle(color: ColorsCustom.loginScreenUp),
               )
-            : Icon(
+            : const Icon(
                 Icons.info_outline,
                 size: 60,
                 color: ColorsCustom.loginScreenUp,
@@ -254,26 +252,53 @@ class ShowAlertOptions {
               borderRadius: BorderRadius.circular(15.0),
               side: BorderSide(color: ColorsCustom.loginScreenMiddle),
             ),
-            color: ColorsCustom.loginScreenUp,
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('Não'),
+            child: const Text('Não'),
           ),
           RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
               side: BorderSide(color: ColorsCustom.loginScreenMiddle),
             ),
-            color: ColorsCustom.loginScreenMiddle,
             onPressed: () {
               action();
               // Navigator.pop(context);
             },
-            child: Text('Sim'),
+            child: const Text('Sim'),
           ),
         ],
       ),
+    );
+  }
+}
+
+class RaisedButton extends ElevatedButton {
+  final RoundedRectangleBorder? shape;
+  final double? elevation;
+
+  const RaisedButton({
+    super.key,
+    this.elevation,
+    this.shape,
+    required super.onPressed,
+    required super.child,
+  });
+
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ButtonStyle(
+        elevation: MaterialStateProperty.all(elevation ?? 1),
+        shape: MaterialStateProperty.all(
+          shape ??
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+        ),
+      ),
+      child: child,
     );
   }
 }

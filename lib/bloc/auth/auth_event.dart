@@ -3,10 +3,10 @@ import 'package:flutter/widgets.dart';
 abstract class AuthEvent {}
 
 class LoginEvent extends AuthEvent {
-  final login;
-  final password;
+  final String login;
+  final String password;
 
-  LoginEvent({this.login, this.password});
+  LoginEvent({required this.login, required this.password});
 }
 
 class ForceLoginEvent extends AuthEvent {}
@@ -19,9 +19,7 @@ class SignUpEvent extends AuthEvent {
   final jsonAttrs;
 
   SignUpEvent(
-      {@required this.login,
-      @required this.password,
-      @required this.jsonAttrs});
+      {required this.login, required this.password, required this.jsonAttrs});
 }
 
 class ForgotPasswordEvent extends AuthEvent {
@@ -29,9 +27,9 @@ class ForgotPasswordEvent extends AuthEvent {
   final newPassowrd;
   final confirmationCode;
   ForgotPasswordEvent(
-      {@required this.email,
-      @required this.newPassowrd,
-      @required this.confirmationCode});
+      {required this.email,
+      required this.newPassowrd,
+      required this.confirmationCode});
 }
 
 class SendCodeForgotPasswordEvent extends AuthEvent {
@@ -48,5 +46,5 @@ class ConfirmSignUpEvent extends AuthEvent {
   final email;
   final confirmationCode;
 
-  ConfirmSignUpEvent({@required this.email, @required this.confirmationCode});
+  ConfirmSignUpEvent({required this.email, required this.confirmationCode});
 }

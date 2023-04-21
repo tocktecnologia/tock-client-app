@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_bloc.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_event.dart';
-import 'package:flutter_login_setup_cognito/bloc/auth/auth_state.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/colors.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/components.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/screen_transitions/slide.transition.dart';
-import 'package:flutter_login_setup_cognito/shared/utils/styles.dart';
+import 'package:client/bloc/auth/auth_bloc.dart';
+import 'package:client/bloc/auth/auth_event.dart';
+import 'package:client/bloc/auth/auth_state.dart';
+import 'package:client/shared/utils/colors.dart';
+import 'package:client/shared/utils/components.dart';
+import 'package:client/shared/utils/screen_transitions/slide.transition.dart';
+import 'package:client/shared/utils/styles.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'main.dart';
@@ -15,7 +15,7 @@ import 'main.dart';
 class ForgotPasswordScreen extends StatefulWidget {
   final email;
 
-  const ForgotPasswordScreen({Key key, @required this.email}) : super(key: key);
+  const ForgotPasswordScreen({Key? key, required this.email}) : super(key: key);
 
   @override
   _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
@@ -27,19 +27,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
 
   _forgotPassword() {
-    if (_formKey.currentState.validate()) {
-      BlocProvider.of<AuthBloc>(context).add(
-        ForgotPasswordEvent(
-            email: widget.email,
-            newPassowrd: newPassController.text,
-            confirmationCode: numConfirmationController.text),
-      );
+    if (_formKey.currentState!.validate()) {
+      // BlocProvider.of<AuthBloc>(context).add(
+      //   ForgotPasswordEvent(
+      //       email: widget.email,
+      //       newPassowrd: newPassController.text,
+      //       confirmationCode: numConfirmationController.text),
+      // );
     }
   }
 
   _resendCode() {
-    BlocProvider.of<AuthBloc>(context)
-        .add(SendCodeForgotPasswordEvent(email: widget.email));
+    // BlocProvider.of<AuthBloc>(context)
+    //     .add(SendCodeForgotPasswordEvent(email: widget.email));
   }
 
   @override
@@ -52,8 +52,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<AuthBloc>(context)
-        .add(SendCodeForgotPasswordEvent(email: widget.email));
+    // BlocProvider.of<AuthBloc>(context)
+    //     .add(SendCodeForgotPasswordEvent(email: widget.email));
   }
 
   @override
@@ -106,7 +106,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Widget _textTitle() {
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocBuilder<AuthCubit, AuthState>(
       builder: (previusState, state) {
         if (state is LoadingSendCodeState) {
           return ListView(
@@ -143,15 +143,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Widget _buttonSignUp() {
-    return BlocBuilder<AuthBloc, AuthState>(
-      condition: (previusState, state) {
+    return BlocBuilder<AuthCubit, AuthState>(
+      buildWhen: (previusState, state) {
         if (state is LoadedForgotPasswordState) {
           Navigator.pushReplacement(
               context, SlideDownRoute(page: LoginScreen()));
         } else if (state is LoginErrorState) {
           ShowAlert.open(context: context, contentText: state.message);
         }
-        return;
+        return true;
       },
       builder: (context, state) {
         if (state is LoadingForgotPasswordState) {
