@@ -1,15 +1,15 @@
 import 'package:client/bloc/data_user/data_user_bloc.dart';
 import 'package:client/bloc/mqtt/mqtt_bloc.dart';
-import 'package:client/screens/home/devices_screen/drop_down_hosts.dart';
-import 'package:client/shared/services/api/user_aws.dart';
-import 'package:client/shared/services/mqtt/mqtt_service.dart';
+import 'package:client/screens/home/devices/device_state.dart';
+import 'package:client/screens/home/devices/device_widget.dart';
+import 'package:client/screens/home/devices/drop_down_hosts.dart';
+import 'package:client/shared/model/data_user_model.dart';
 import 'package:client/shared/utils/secrets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:client/shared/utils/colors.dart';
-import 'package:client/shared/utils/locator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:reorderables/reorderables.dart';
 
 const PADDING_HORIZ_INTERN = 10.0;
 const PADDING_HORIZ_EXTERN = 10.0;
@@ -61,7 +61,7 @@ class _DevicesScreenState extends State<DevicesScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Painel"),
+        title: const Text("Olá!"),
         actions: [_iconLocal()],
         leading: _iconRemote(),
         centerTitle: true,
@@ -166,7 +166,16 @@ class _DevicesScreenState extends State<DevicesScreen>
 
   Widget _panelLights() {
     return BlocBuilder<DataUserCubit, DataUserState>(
+      buildWhen: (previous, current) {
+        if (current is LoadDataUserErrorState) {
+          showAboutDialog(context: context, children: <Widget>[
+            Text(current.message!),
+          ]);
+        }
+        return true;
+      },
       builder: (context, state) {
+        print("state: $state");
         if (state is LoadingDataUserState) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -177,54 +186,20 @@ class _DevicesScreenState extends State<DevicesScreen>
               ),
               Padding(
                 padding: EdgeInsets.all(20),
-                child: Text("Recuperando Estados  ... ",
+                child: Text("Recuperando dados  ... ",
                     style: TextStyle(
                         fontSize: 17, color: ColorsCustom.loginScreenUp)),
               ),
             ],
           );
         } else if (state is LoadedDataUserState) {
-          return Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Text('Você tem ${state.dataUser.devices?.length} devices'),
-          );
+          return _listWrapReorderable(state.dataUser.devices!);
         } else {
+          print("return container ...");
           return Container();
         }
       },
     );
-
-    // return BlocBuilder<LightsBloc, LightsState>(
-    //   builder: (context, state) {
-    //     if (state is UpdatingDevicesState ||
-    //         state is UpdatingDevicesFromAwsState) {
-    //       return Column(
-    //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //         children: <Widget>[
-    //           Center(
-    //             child:
-    //                 SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
-    //           ),
-    //           SizedBox(height: 20),
-    //           Text("Recuperando Estados  ... ",
-    //               style: TextStyle(
-    //                   fontSize: 17, color: ColorsCustom.loginScreenUp)),
-    //         ],
-    //       );
-    //     } else if (state is UpdatedDevicesState) {
-    //       if (!isLocalEnabled) {
-    //         return iotConnectionDevices(state);
-    //       } else {
-    //         print('asking central...');
-    //         return centralConnectionDevices(state);
-    //       }
-    //     } else
-    //       return Padding(
-    //         padding: const EdgeInsets.all(30.0),
-    //         child: Text('Você ainda não confgurou seus dispositivos!'),
-    //       );
-    //   },
-    // );
   }
 
   // Widget centralConnectionDevices(UpdatedDevicesState stateLights) {
@@ -355,40 +330,45 @@ class _DevicesScreenState extends State<DevicesScreen>
     // });
   }
 
-  // Widget _listWrapReorderable(state) {
-  //   // final lights = BlocProvider.of<LightsBloc>(context).lights;
-  //   final tockLights = state.lights
-  //       .map<TockDevice>(
-  //           (light) => TockDevice(light: light, isConfigMode: isConfigMode))
-  //       .toList();
+  Widget _listWrapReorderable(List<Device> devices) {
+    // final lights = BlocProvider.of<LightsBloc>(context).lights;
+    final devicesWidget = devices
+        .map<DeviceWidget>(
+          (device) => DeviceWidget(
+            deviceState: DeviceState(device: device),
+            isConfigMode: isConfigMode,
+          ),
+        )
+        .toList();
 
-  //   return ReorderableWrap(
-  //     spacing: (MediaQuery.of(context).size.width -
-  //             NUM_LAMPS_ROW * SIZE_WIDTH_LAMP -
-  //             2 * PADDING_HORIZ_EXTERN -
-  //             2 * PADDING_HORIZ_INTERN) /
-  //         (NUM_LAMPS_ROW - 1),
-  //     runSpacing: 20,
-  //     padding: EdgeInsets.only(top: 20, bottom: 10),
-  //     children: tockLights,
-  //     onReorder: _onReorder,
-  //   );
-  // }
+    return ReorderableWrap(
+      spacing: (MediaQuery.of(context).size.width -
+              NUM_LAMPS_ROW * SIZE_WIDTH_LAMP -
+              2 * PADDING_HORIZ_EXTERN -
+              2 * PADDING_HORIZ_INTERN) /
+          (NUM_LAMPS_ROW - 1),
+      runSpacing: 20,
+      padding: const EdgeInsets.only(top: 20, bottom: 10),
+      onReorder: _onReorder,
+      enableReorder: false,
+      children: devicesWidget,
+    );
+  }
 
-  // void _onReorder(int oldIndex, int newIndex) {
-  //   // get lights
-  //   final lights = BlocProvider.of<LightsBloc>(context).lights;
+  void _onReorder(int oldIndex, int newIndex) {
+    // // get lights
+    // final lights = BlocProvider.of<LightsBloc>(context).lights;
 
-  //   // change index
-  //   final w = lights.removeAt(oldIndex);
-  //   lights.insert(newIndex, w);
+    // // change index
+    // final w = lights.removeAt(oldIndex);
+    // lights.insert(newIndex, w);
 
-  //   // update  lights in bloc
-  //   BlocProvider.of<LightsBloc>(context).setLights(lights);
+    // // update  lights in bloc
+    // BlocProvider.of<LightsBloc>(context).setLights(lights);
 
-  //   //update view
-  //   setState(() {});
-  // }
+    // //update view
+    // setState(() {});
+  }
 
   Widget _iconRemote() {
     return const Icon(Icons.cloud_off, color: Colors.white30);

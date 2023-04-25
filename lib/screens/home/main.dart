@@ -1,4 +1,8 @@
-import 'package:client/screens/home/devices_screen/main.dart';
+import 'package:client/bloc/data_user/data_user_bloc.dart';
+import 'package:client/screens/home/devices/main.dart';
+import 'package:client/screens/home/schedules/main.dart';
+import 'package:client/shared/services/cognito/user_service.dart';
+import 'package:client/shared/utils/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,8 +37,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   final List<Widget> _bodys = <Widget>[
     const DevicesScreen(),
-    const DevicesScreen(),
-    // SchedulesScreen()
+    const SchedulesScreen()
   ];
 
   @override
@@ -168,15 +171,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   _restartApp() {
+    context.read<DataUserCubit>().getDataUser(forceCloud: true);
     // BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
     // Navigator.pushReplacement(context, SizeRoute(page: LoginScreen()));
   }
 
   List<BottomNavigationBarItem> _bottomNavigatioItens() {
     return <BottomNavigationBarItem>[
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(Icons.home, color: ColorsCustom.loginScreenMiddle),
-        label: 'Painel',
+        label: 'Home',
         // title: Text('Painel',
         //     maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
       ),
@@ -185,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       //   title: Text('Grupos',
       //       maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
       // ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon:
             Icon(Icons.event_available, color: ColorsCustom.loginScreenMiddle),
         label: 'Agenda',
@@ -193,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         // title: Text('Agenda',
         //     maxLines: 2, style: TextStyle(color: ColorsCustom.loginScreenUp)),
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(Icons.menu, color: ColorsCustom.loginScreenMiddle),
         label: 'Menu',
 
@@ -204,16 +208,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _drawer() {
-    const email =
-        "test"; //Locator.instance.get<UserCognito>().userAttrs['email'];
-    const locale =
-        "casa"; //Locator.instance.get<UserCognito>().userAttrs['locale'];
+    final email = Locator.instance.get<CognitoUserService>().user?.email ?? "";
+    final locale =
+        Locator.instance.get<CognitoUserService>().user?.locale ?? "";
     return Drawer(
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: const Text('$locale'),
-            accountEmail: const Text('$email'),
+            accountName: Text(locale),
+            accountEmail: Text(email),
             currentAccountPicture: const CircleAvatar(
               backgroundImage: AssetImage('assets/images/cond.png'),
             ),
@@ -296,6 +299,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           leading: const CircleAvatar(child: Icon(Icons.cloud_download)),
           title: const Text('Download Configurações'),
           onTap: () {
+            _restartApp();
             //   BlocProvider.of<DataUserBloc>(context).add(GetDataUserEvent());
             //   Navigator.pop(context);
           },

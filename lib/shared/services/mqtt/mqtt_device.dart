@@ -78,11 +78,11 @@ class MQttDevice {
 
     /// Check we are connected
     if (_client?.connectionStatus?.state == MqttConnectionState.connected) {
-      print('EXAMPLE::Mosquitto client connected');
+      // print('EXAMPLE::Mosquitto client connected');
     } else {
       /// Use status here rather than state if you also want the broker return code.
-      print(
-          'EXAMPLE::ERROR Mosquitto client connection failed - disconnecting, status is ${_client?.connectionStatus}');
+      // print(
+      //     'EXAMPLE::ERROR Mosquitto client connection failed - disconnecting, status is ${_client?.connectionStatus}');
       _client?.disconnect();
 
       try {
@@ -213,7 +213,7 @@ class MQttDevice {
       [MqttQos qosLevel = MqttQos.atMostOnce]) {
     /// Check we are connected
     if (_client?.connectionStatus?.state == MqttConnectionState.connected) {
-      print('MQTT Connect now subscribe to topic');
+      print("Subscribing to topic '${topic}'' ");
       return _client?.subscribe(topic, qosLevel);
     } else {
       /// Use status here rather than state if you also want the broker return code.

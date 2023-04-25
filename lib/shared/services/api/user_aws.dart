@@ -25,7 +25,6 @@ class AwsApi {
     final response = await post(Uri.https(url, '${Endpoints.STAGE}/user'),
             headers: headers, body: body)
         .timeout(const Duration(seconds: 15));
-    print(response.body);
 
     final Map<String, dynamic> responseJson = jsonDecode(response.body);
 

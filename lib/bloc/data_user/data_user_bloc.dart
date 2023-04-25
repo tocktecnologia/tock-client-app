@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:client/shared/model/data_user_model.dart';
 import 'package:client/shared/services/api/user_aws.dart';
 import 'package:client/shared/utils/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 part 'data_user_state.dart';
 
 // class DataUserBloc extends HydratedBloc<DataUserEvent, DataUserState> {
@@ -53,13 +55,31 @@ part 'data_user_state.dart';
 class DataUserCubit extends Cubit<DataUserState> {
   DataUserCubit() : super(DataUserInitial());
 
-  Future getDataUser() async {
+  // DataUser? _dataUser;
+  // DataUser? get dataUser => _dataUser;
+
+  Future getDataUser({bool forceCloud = false}) async {
     emit(LoadingDataUserState());
+
     try {
-      final dataUser = await Locator.instance.get<AwsApi>().getDataUser();
-      print(dataUser);
-      emit(LoadedDataUserState(dataUser: dataUser));
+      SharedPreferences? pref = await SharedPreferences.getInstance();
+      String? userPref = pref.getString('dataUser');
+
+      // if has data in memory
+      if (userPref != null && !forceCloud) {
+        Map<String, dynamic> dataUserjson =
+            jsonDecode(userPref) as Map<String, dynamic>;
+        final dataUser = DataUser.fromJson(dataUserjson);
+        emit(LoadedDataUserState(dataUser: dataUser));
+      }
+      // else, get from cloud
+      else {
+        final dataUser = await Locator.instance.get<AwsApi>().getDataUser();
+        print("dataUser: ${dataUser.devices?.first.label}");
+        emit(LoadedDataUserState(dataUser: dataUser));
+      }
     } catch (e) {
+      print('msg: ${e.toString()}');
       emit(LoadDataUserErrorState(message: e.toString()));
     }
   }

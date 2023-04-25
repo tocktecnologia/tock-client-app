@@ -20,7 +20,6 @@ class MqttCubit extends Cubit<MqttState> {
   Future<void> changeHost(host) async {
     emit(ConnectingMqttState());
     _host = host;
-    print(host);
     await mqttConnect();
   }
 
