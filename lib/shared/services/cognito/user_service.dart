@@ -12,8 +12,10 @@ class CognitoUserService {
   CognitoUserPool? _userPool;
   CognitoUser? _cognitoUser;
   CognitoUserSession? _session;
-  CognitoCredentials? credentials;
-
+  CognitoCredentials? _credentials;
+  CognitoCredentials? get credentials => _credentials;
+  User? _user;
+  User? get user => _user;
   CognitoUserService();
 
   /// Initiate user session from local storage if present
@@ -45,13 +47,16 @@ class CognitoUserService {
     if (!_session!.isValid()) {
       return null;
     }
+
+    if (_user != null) return _user;
+
     final attributes = await _cognitoUser?.getUserAttributes();
     if (attributes == null) {
       return null;
     }
-    final user = User.fromUserAttributes(attributes);
-    user.hasAccess = true;
-    return user;
+    _user = User.fromUserAttributes(attributes);
+    _user?.hasAccess = true;
+    return _user;
   }
 
   /// Retrieve user credentials -- for use with other AWS services
@@ -60,10 +65,10 @@ class CognitoUserService {
       return null;
     }
 
-    credentials =
+    _credentials =
         CognitoCredentials(CognitoSecrets.cognitoIdentityPoolId, _userPool!);
-    await credentials!.getAwsCredentials(_session?.getIdToken().getJwtToken());
-    return credentials!;
+    await _credentials!.getAwsCredentials(_session?.getIdToken().getJwtToken());
+    return _credentials!;
   }
 
   /// Login user

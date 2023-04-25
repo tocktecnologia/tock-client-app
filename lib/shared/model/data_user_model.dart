@@ -5,8 +5,8 @@ class DataUser {
   String? environmentName;
   List<void>? groups;
   String? identityId;
-  List<void>? objects;
-  List<void>? scenarios;
+  List? objects;
+  List? scenarios;
   List<Schedule>? schedules;
   List<WaterTank>? waterTanks;
   DataUser({

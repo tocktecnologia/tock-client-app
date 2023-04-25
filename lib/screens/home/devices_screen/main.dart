@@ -1,28 +1,23 @@
+import 'package:client/bloc/data_user/data_user_bloc.dart';
 import 'package:client/bloc/mqtt/mqtt_bloc.dart';
 import 'package:client/screens/home/devices_screen/drop_down_hosts.dart';
-import 'package:client/shared/services/mqtt/mqtt_device.dart';
+import 'package:client/shared/services/api/user_aws.dart';
 import 'package:client/shared/services/mqtt/mqtt_service.dart';
 import 'package:client/shared/utils/secrets.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:client/bloc/auth/auth_bloc.dart';
-import 'package:client/bloc/auth/auth_event.dart';
-import 'package:client/screens/login/main.dart';
 import 'package:client/shared/utils/colors.dart';
-import 'package:client/shared/utils/components.dart';
-import 'package:client/shared/utils/constants.dart';
 import 'package:client/shared/utils/locator.dart';
-import 'package:client/shared/utils/screen_transitions/size.transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:reorderables/reorderables.dart';
 
 const PADDING_HORIZ_INTERN = 10.0;
 const PADDING_HORIZ_EXTERN = 10.0;
 const NUM_LAMPS_ROW = 4;
 
 class DevicesScreen extends StatefulWidget {
+  const DevicesScreen({super.key});
+
   @override
   State<DevicesScreen> createState() => _DevicesScreenState();
 }
@@ -36,7 +31,7 @@ class _DevicesScreenState extends State<DevicesScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     // isLocalEnabled = BlocProvider.of<LocalConfigBloc>(context).state.value;
   }
 
@@ -44,7 +39,16 @@ class _DevicesScreenState extends State<DevicesScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
       _notification = state;
+      print("state: $state");
     });
+
+    // if (state == AppLifecycleState.resumed) {
+    //   final bool isConnected =
+    //       Locator.instance.get<MqttService>().isConnected();
+    //   if (!isConnected) {
+    //     context.read<MqttCubit>().mqttConnect();
+    //   }
+    // }
   }
 
   @override
@@ -70,11 +74,13 @@ class _DevicesScreenState extends State<DevicesScreen>
     // context
     //     .read<MqttCubit>()
     //     .mqttPublish("/test", "{\"message\":\"debug bloc\"}");
-    Locator.instance
-        .get<MqttService>()
-        .awsClient
-        ?.publishMessage("/test", "{\"message\":\"teste\"}");
+    // Locator.instance
+    //     .get<MqttService>()
+    //     .awsClient
+    //     ?.publishMessage("/test", "{\"message\":\"teste\"}");
 
+    // final dataUser = await Locator.instance.get<AwsApi>().getDataUser();
+    // print(dataUser);
     // await testMosquitto();
     // if (isLocalEnabled) {
     //   final lights = BlocProvider.of<LightsBloc>(context).lights;
@@ -159,10 +165,35 @@ class _DevicesScreenState extends State<DevicesScreen>
   }
 
   Widget _panelLights() {
-    return const Padding(
-      padding: EdgeInsets.all(30.0),
-      child: Text('Você ainda não confgurou seus dispositivos!'),
+    return BlocBuilder<DataUserCubit, DataUserState>(
+      builder: (context, state) {
+        if (state is LoadingDataUserState) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: const <Widget>[
+              Center(
+                child:
+                    SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
+              ),
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Text("Recuperando Estados  ... ",
+                    style: TextStyle(
+                        fontSize: 17, color: ColorsCustom.loginScreenUp)),
+              ),
+            ],
+          );
+        } else if (state is LoadedDataUserState) {
+          return Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Text('Você tem ${state.dataUser.devices?.length} devices'),
+          );
+        } else {
+          return Container();
+        }
+      },
     );
+
     // return BlocBuilder<LightsBloc, LightsState>(
     //   builder: (context, state) {
     //     if (state is UpdatingDevicesState ||

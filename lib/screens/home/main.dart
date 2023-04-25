@@ -3,17 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:client/bloc/auth/auth_bloc.dart';
-import 'package:client/bloc/auth/auth_event.dart';
 import 'package:client/bloc/auth/auth_state.dart';
 import 'package:client/screens/login/main.dart';
 import 'package:client/shared/utils/colors.dart';
-import 'package:client/shared/utils/components.dart';
-import 'package:client/shared/utils/locator.dart';
 import 'package:client/shared/utils/screen_transitions/open.transition.dart';
-import 'package:client/shared/utils/screen_transitions/size.transition.dart';
-import 'package:client/shared/utils/screen_transitions/slide.transition.dart';
-import 'package:client/shared/utils/styles.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,9 +31,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     curve: Curves.fastOutSlowIn,
   ));
 
-  List<Widget> _bodys = <Widget>[
-    DevicesScreen(),
-    DevicesScreen(),
+  final List<Widget> _bodys = <Widget>[
+    const DevicesScreen(),
+    const DevicesScreen(),
     // SchedulesScreen()
   ];
 
@@ -74,10 +67,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is LoadingLogoutState) {
-            final email = "test";
             // Locator.instance.get<UserCognito>().userAttrs['email'];
             Navigator.pushReplacement(
-                context, OpenAndFadeTransition(LoginScreen(login: email)));
+                context, OpenAndFadeTransition(const LoginScreen()));
           }
         },
         child: _body());

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:client/bloc/data_user/data_user_bloc.dart';
 import 'package:client/screens/login/main.dart';
 import 'package:client/shared/utils/locator.dart';
 import 'package:flutter/foundation.dart';
@@ -34,6 +35,7 @@ class Application extends StatelessWidget {
         //     LoggedOutState(),
         //   ),
         // ),
+        BlocProvider(create: (_) => DataUserCubit()),
         BlocProvider(create: (_) => AuthCubit()),
         BlocProvider(create: (_) => MqttCubit())
       ],

@@ -1,5 +1,7 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
+import 'package:client/bloc/data_user/data_user_bloc.dart';
 import 'package:client/bloc/mqtt/mqtt_bloc.dart';
+import 'package:client/shared/services/api/user_aws.dart';
 import 'package:client/shared/services/cognito/user.dart';
 import 'package:client/shared/services/cognito/user_service.dart';
 import 'package:client/shared/utils/locator.dart';
@@ -77,6 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocBuilder<AuthCubit, AuthState>(buildWhen: (previousState, state) {
       if (state is LoggedState) {
         // BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
+        context.read<DataUserCubit>().getDataUser();
         context.read<MqttCubit>().mqttConnect();
         Navigator.pushReplacement(
           context,

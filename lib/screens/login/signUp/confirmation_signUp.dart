@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:client/bloc/auth/auth_bloc.dart';
-import 'package:client/bloc/auth/auth_event.dart';
 import 'package:client/bloc/auth/auth_state.dart';
 import 'package:client/screens/login/main.dart';
 import 'package:client/shared/utils/colors.dart';
@@ -12,12 +10,12 @@ import 'package:client/shared/utils/styles.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ConfirmSignUpScreen extends StatefulWidget {
-  final email;
+  final String email;
 
   const ConfirmSignUpScreen({Key? key, required this.email}) : super(key: key);
 
   @override
-  _ConfirmSignUpScreenState createState() => _ConfirmSignUpScreenState();
+  State<ConfirmSignUpScreen> createState() => _ConfirmSignUpScreenState();
 }
 
 class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
@@ -39,8 +37,8 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorsCustom.loginScreenUp,
-      appBar: new AppBar(
-        title: new Text('Coinfirm your SignUp'),
+      appBar: AppBar(
+        title: const Text('Coinfirm your SignUp'),
         backgroundColor: ColorsCustom.loginScreenUp,
       ),
       body: _form(),
@@ -52,21 +50,21 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
       child: Form(
         key: _formKey,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
                 _textTitle(),
-                SizedBox(height: 40.0),
+                const SizedBox(height: 40.0),
                 InputLogin(
                   prefixIcon: Icons.local_offer,
                   hint: 'Code',
                   keyboardType: TextInputType.number,
                   textEditingController: numConfirmationController,
                 ),
-                SizedBox(height: 30.0),
+                const SizedBox(height: 30.0),
                 _buttonSignUp(),
-                SizedBox(height: 10.0),
+                const SizedBox(height: 10.0),
                 InkWell(
                   onTap: () => _resendConfirmationCode(),
                   child: Text(
@@ -106,12 +104,12 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
             shrinkWrap: true,
             primary: false,
             children: <Widget>[
-              SizedBox(
+              const SizedBox(
                 child: SpinKitWave(
                   color: Colors.white,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 'Resend code for ${widget.email} ...',
                 style: TextStyle(

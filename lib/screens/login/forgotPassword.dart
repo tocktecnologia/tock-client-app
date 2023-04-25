@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:client/bloc/auth/auth_bloc.dart';
-import 'package:client/bloc/auth/auth_event.dart';
 import 'package:client/bloc/auth/auth_state.dart';
 import 'package:client/shared/utils/colors.dart';
 import 'package:client/shared/utils/components.dart';
@@ -13,12 +11,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'main.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  final email;
+  final String email;
 
   const ForgotPasswordScreen({Key? key, required this.email}) : super(key: key);
 
   @override
-  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {

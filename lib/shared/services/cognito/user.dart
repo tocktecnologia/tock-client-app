@@ -1,6 +1,7 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 
 class User {
+  String? locale;
   String? email;
   String? name;
   String? password;
@@ -15,10 +16,14 @@ class User {
     attributes.forEach((attribute) {
       if (attribute.getName() == 'email') {
         user.email = attribute.getValue();
+      } else if (attribute.getName() == 'locale') {
+        user.locale = attribute.getValue();
       } else if (attribute.getName() == 'name') {
         user.name = attribute.getValue();
-      } else if (attribute.getName() != null && attribute.getName()!.toLowerCase().contains('verified')) {
-        if (attribute.getValue() != null && attribute.getValue()!.toLowerCase() == 'true') {
+      } else if (attribute.getName() != null &&
+          attribute.getName()!.toLowerCase().contains('verified')) {
+        if (attribute.getValue() != null &&
+            attribute.getValue()!.toLowerCase() == 'true') {
           user.confirmed = true;
         }
       }

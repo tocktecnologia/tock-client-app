@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:client/bloc/auth/auth_bloc.dart';
-import 'package:client/bloc/auth/auth_event.dart';
 import 'package:client/bloc/auth/auth_state.dart';
 import 'package:client/screens/login/signUp/confirmation_signUp.dart';
 import 'package:client/shared/utils/colors.dart';
@@ -11,7 +9,7 @@ import 'package:client/shared/utils/screen_transitions/slide.transition.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {

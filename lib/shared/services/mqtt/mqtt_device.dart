@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:amazon_cognito_identity_dart_2/sig_v4.dart';
 import 'package:client/shared/utils/secrets.dart';
-import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'server.dart' if (dart.library.html) 'browser.dart' as mqttsetup;
 
 class MQttDevice {
   final _SERVICE_NAME = 'iotdevicegateway';
@@ -106,21 +105,19 @@ class MQttDevice {
   }
 
   _prepare(clientId) {
-    _client?.logging(on: _logging == true);
-    _client?.autoReconnect = true;
-
     if (_host == MqttSecrets.localHost) {
       _prepareMosquitto(clientId);
     } else if (_host == MqttSecrets.awsHost) {
       _prepareAws(clientId);
     }
+
+    _client?.logging(on: _logging == true);
+    _client?.autoReconnect = true;
   }
 
   _prepareAws(String clientId) {
     final url = _prepareWebSocketUrl();
-    _client = kIsWeb
-        ? MqttBrowserClient(url, clientId)
-        : MqttServerClient(url, clientId);
+    _client = mqttsetup.setup(url, clientId, 443);
     _client?.port = 443;
     _client?.keepAlivePeriod = 300;
     if (!kIsWeb) {
@@ -131,8 +128,8 @@ class MQttDevice {
   _prepareMosquitto(clientId) {
     if (kIsWeb) {
       _client = kIsWeb
-          ? MqttBrowserClient('ws://localhost', clientId)
-          : MqttServerClient('localhost', clientId);
+          ? mqttsetup.setup('ws://localhost', clientId, 8080)
+          : mqttsetup.setup('localhost', clientId, 1883);
       _client?.port = kIsWeb ? 8080 : 1883;
     }
     _client?.keepAlivePeriod = 30;

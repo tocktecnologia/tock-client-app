@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:client/shared/services/mqtt/mqtt_device.dart';
 import 'package:client/shared/utils/secrets.dart';
+import 'package:mqtt_client/mqtt_client.dart';
 import 'package:uuid/uuid.dart';
 
 class MqttService {
@@ -17,7 +18,7 @@ class MqttService {
       host,
       onConnected: onConnected,
       onDisconnected: onDisconnected,
-      logging: true,
+      logging: false,
     );
   }
 
@@ -41,5 +42,9 @@ class MqttService {
 
   Future suibscribe(String topic) async {
     _awsClient?.subscribe(topic);
+  }
+
+  bool isConnected() {
+    return _awsClient?.connectionStatus == MqttConnectionState.connected;
   }
 }

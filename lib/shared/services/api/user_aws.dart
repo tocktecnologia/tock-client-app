@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:client/shared/model/data_user_model.dart';
+import 'package:client/shared/services/cognito/user_service.dart';
 import 'package:client/shared/utils/constants.dart';
 import 'package:client/shared/utils/exceptions_tock.dart';
 import 'package:client/shared/utils/locator.dart';
@@ -6,45 +8,37 @@ import 'package:http/http.dart';
 
 class AwsApi {
   Future<DataUser> getDataUser() async {
-    // final email = Locator.instance.get<UserCognito>().userAttrs['email'];
-    // final locale = Locator.instance.get<UserCognito>().userAttrs['locale'];
-    // final identityId = await Cognito.getIdentityId();
-    // Tokens tokens = await Cognito.getTokens();
+    final user =
+        await Locator.instance.get<CognitoUserService>().getCurrentUser();
+    final credentials = Locator.instance.get<CognitoUserService>().credentials;
 
-    // print('size id token: ${tokens.idToken.length}');
-    // print('id token: ${tokens.idToken}');
+    String url = '9cw57hx4ja.execute-api.us-east-1.amazonaws.com';
 
-    // String url =
-    //     'https://9cw57hx4ja.execute-api.us-east-1.amazonaws.com/${Endpoints.STAGE}/user';
+    String body =
+        '{"email":"${user?.email}","identity_id":"${credentials?.userIdentityId}","environment_name":"${user?.locale}"}';
+    Map<String, String> headers = {
+      "Content-type": "application/json",
+      "auth": '${credentials?.sessionToken}'
+    };
 
-    // String body =
-    //     '{"email":"$email","identity_id":"$identityId","environment_name":"$locale"}';
-    // Map<String, String> headers = {
-    //   "Content-type": "application/json",
-    //   "auth": '${tokens.idToken}'
-    // };
+    //try {
+    final response = await post(Uri.https(url, '${Endpoints.STAGE}/user'),
+            headers: headers, body: body)
+        .timeout(const Duration(seconds: 15));
+    print(response.body);
 
-    // //try {
-    // final response = await post(url, headers: headers, body: body)
-    //     .timeout(Duration(seconds: 15));
+    final Map<String, dynamic> responseJson = jsonDecode(response.body);
 
-    // final Map responseJson = jsonDecode(response.body);
-    // print(responseJson);
-
-    // if (responseJson['Message'] == "Unauthorized" ||
-    //     responseJson['Message'] == "Access Denied") {
-    //   print('entrei throw ApiGatewayException');
-    //   throw ApiGatewayException(
-    //     hasTimeout: false,
-    //     message: "Usuário não autorizado",
-    //   );
-    // } else {
-    //   DataUser dataUser = DataUser.fromJson(responseJson);
-    //   // dataUser.schedules = List<Schedule>();
-    //   return dataUser;
-    // }
-    return DataUser();
+    if (responseJson['Message'] == "Unauthorized" ||
+        responseJson['Message'] == "Access Denied") {
+      throw ApiGatewayException(
+        hasTimeout: false,
+        message: "Usuário não autorizado",
+      );
+    } else {
+      DataUser dataUser = DataUser.fromJson(responseJson);
+      // dataUser.schedules = List<Schedule>();
+      return dataUser;
+    }
   }
 }
-
-class DataUser {}
