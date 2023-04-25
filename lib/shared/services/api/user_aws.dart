@@ -10,7 +10,8 @@ class AwsApi {
   Future<DataUser> getDataUser() async {
     final user =
         await Locator.instance.get<CognitoUserService>().getCurrentUser();
-    final credentials = Locator.instance.get<CognitoUserService>().credentials;
+    final credentials =
+        await Locator.instance.get<CognitoUserService>().getCredentials();
 
     String url = '9cw57hx4ja.execute-api.us-east-1.amazonaws.com';
 

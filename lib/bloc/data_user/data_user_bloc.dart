@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 part 'data_user_state.dart';
 
+const keyDataUser = "dataUser";
 // class DataUserBloc extends HydratedBloc<DataUserEvent, DataUserState> {
 //   @override
 //   DataUserState get initialState => super.initialState ?? DataUserInitial();
@@ -63,10 +64,11 @@ class DataUserCubit extends Cubit<DataUserState> {
 
     try {
       SharedPreferences? pref = await SharedPreferences.getInstance();
-      String? userPref = pref.getString('dataUser');
+      String? userPref = pref.getString(keyDataUser);
 
       // if has data in memory
       if (userPref != null && !forceCloud) {
+        print("getting userData from shared preferences");
         Map<String, dynamic> dataUserjson =
             jsonDecode(userPref) as Map<String, dynamic>;
         final dataUser = DataUser.fromJson(dataUserjson);
@@ -74,12 +76,12 @@ class DataUserCubit extends Cubit<DataUserState> {
       }
       // else, get from cloud
       else {
+        print("getting userData from cloud");
         final dataUser = await Locator.instance.get<AwsApi>().getDataUser();
-        print("dataUser: ${dataUser.devices?.first.label}");
+        await pref.setString(keyDataUser, jsonEncode(dataUser.toJson()));
         emit(LoadedDataUserState(dataUser: dataUser));
       }
     } catch (e) {
-      print('msg: ${e.toString()}');
       emit(LoadDataUserErrorState(message: e.toString()));
     }
   }

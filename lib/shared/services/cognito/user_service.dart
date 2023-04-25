@@ -27,7 +27,6 @@ class CognitoUserService {
 
     final prefs = await SharedPreferences.getInstance();
     final storage = Storage(prefs);
-
     // final storage = CognitoMemoryStorage();
     _userPool?.storage = storage;
 

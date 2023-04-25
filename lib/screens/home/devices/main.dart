@@ -175,7 +175,6 @@ class _DevicesScreenState extends State<DevicesScreen>
         return true;
       },
       builder: (context, state) {
-        print("state: $state");
         if (state is LoadingDataUserState) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -195,7 +194,6 @@ class _DevicesScreenState extends State<DevicesScreen>
         } else if (state is LoadedDataUserState) {
           return _listWrapReorderable(state.dataUser.devices!);
         } else {
-          print("return container ...");
           return Container();
         }
       },
