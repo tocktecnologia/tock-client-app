@@ -1,19 +1,24 @@
+import 'dart:async';
+
 import 'package:client/bloc/data_user/data_user_bloc.dart';
-import 'package:client/bloc/mqtt/mqtt_bloc.dart';
+import 'package:client/bloc/mqtt/mqtt_connect_bloc.dart';
 import 'package:client/screens/home/devices/device_state.dart';
 import 'package:client/screens/home/devices/device_widget.dart';
 import 'package:client/screens/home/devices/drop_down_hosts.dart';
 import 'package:client/shared/model/data_user_model.dart';
+import 'package:client/shared/services/mqtt/mqtt_service.dart';
+import 'package:client/shared/utils/locator.dart';
 import 'package:client/shared/utils/secrets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:client/shared/utils/colors.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:reorderables/reorderables.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
-const PADDING_HORIZ_INTERN = 10.0;
-const PADDING_HORIZ_EXTERN = 10.0;
-const NUM_LAMPS_ROW = 4;
+const paddingHorizIntern = 10.0;
+const paddingHorizExtern = 10.0;
+const numLampsRow = kIsWeb ? 7 : 4;
 
 class DevicesScreen extends StatefulWidget {
   const DevicesScreen({super.key});
@@ -32,7 +37,12 @@ class _DevicesScreenState extends State<DevicesScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // isLocalEnabled = BlocProvider.of<LocalConfigBloc>(context).state.value;
+
+    // Locator.instance
+    //     .get<MqttService>()
+    //     .awsClient
+    //     ?.messages
+    //     .listen((mqttEvent) => {print("event: $mqttEvent")});
   }
 
   @override
@@ -46,7 +56,7 @@ class _DevicesScreenState extends State<DevicesScreen>
     //   final bool isConnected =
     //       Locator.instance.get<MqttService>().isConnected();
     //   if (!isConnected) {
-    //     context.read<MqttCubit>().mqttConnect();
+    //     context.read<MqttConnectCubit>().mqttConnect();
     //   }
     // }
   }
@@ -57,51 +67,37 @@ class _DevicesScreenState extends State<DevicesScreen>
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Olá!"),
-        actions: [_iconLocal()],
-        leading: _iconRemote(),
-        centerTitle: true,
-      ),
-      body: _cardLights(),
-    );
+  _onMessage(event) {
+    print("event: $event");
   }
 
-  _updateStates() async {
-    // context
-    //     .read<MqttCubit>()
-    //     .mqttPublish("/test", "{\"message\":\"debug bloc\"}");
-    // Locator.instance
-    //     .get<MqttService>()
-    //     .awsClient
-    //     ?.publishMessage("/test", "{\"message\":\"teste\"}");
-
-    // final dataUser = await Locator.instance.get<AwsApi>().getDataUser();
-    // print(dataUser);
-    // await testMosquitto();
-    // if (isLocalEnabled) {
-    //   final lights = BlocProvider.of<LightsBloc>(context).lights;
-    //   BlocProvider.of<CentralBloc>(context)
-    //       .add(GetUpdateLightsFromCentralEvent(lights: lights));
-    // } else {
-    //   final AwsIot awsIot = Locator.instance.get<AwsIot>();
-    //   final status = awsIot.awsIotDevice.client.connectionStatus.state;
-    //   print('status connection : $status');
-    //   print('_updateStatesFromShadow()');
-    //   if (status == MqttConnectionState.connected) {
-    //     BlocProvider.of<IotAwsBloc>(context)
-    //         .add(GetUpdateLightsFromShadowEvent());
-    //     // BlocProvider.of<IotAwsBloc>(context)
-    //     //     .add(GetUpdateLightsFromNodeCentralEvent());
-    //   } else if (status == MqttConnectionState.disconnected) {
-    //     BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
-    //     BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
-    //     Navigator.pushReplacement(context, SizeRoute(page: LoginScreen()));
-    //   }
-    // }
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<MqttConnectCubit, MqttConnectState>(
+      listener: (context, state) {
+        print("state: $state");
+        if (state is ConnectedMqttState) {
+          print("ConnectedMqttState listening ...");
+          Locator.instance
+              .get<MqttService>()
+              .awsClient
+              ?.client
+              ?.updates
+              ?.listen((event) {
+            _onMessage(event);
+          });
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Olá!"),
+          actions: [_iconLocal()],
+          leading: _iconRemote(),
+          centerTitle: true,
+        ),
+        body: _cardLights(),
+      ),
+    );
   }
 
   Widget _cardLights() {
@@ -109,7 +105,7 @@ class _DevicesScreenState extends State<DevicesScreen>
       primary: true,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: PADDING_HORIZ_EXTERN, vertical: 20),
+            horizontal: paddingHorizExtern, vertical: 20),
         child: Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -151,12 +147,14 @@ class _DevicesScreenState extends State<DevicesScreen>
                 ],
               ),
               const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Divider(height: 0)),
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(height: 0),
+              ),
               Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: PADDING_HORIZ_INTERN),
-                  child: _panelLights()),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: paddingHorizIntern),
+                child: _panelLights(),
+              ),
             ],
           ),
         ),
@@ -167,10 +165,19 @@ class _DevicesScreenState extends State<DevicesScreen>
   Widget _panelLights() {
     return BlocBuilder<DataUserCubit, DataUserState>(
       buildWhen: (previous, current) {
+        print("current: $current");
         if (current is LoadDataUserErrorState) {
           showAboutDialog(context: context, children: <Widget>[
             Text(current.message!),
           ]);
+        }
+        if (previous is LoadingDataUserState &&
+            current is LoadedDataUserState) {
+          print("calling mqttConnect ...");
+
+          context
+              .read<MqttConnectCubit>()
+              .mqttConnect(current.dataUser.devices!);
         }
         return true;
       },
@@ -180,9 +187,8 @@ class _DevicesScreenState extends State<DevicesScreen>
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: const <Widget>[
               Center(
-                child:
-                    SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
-              ),
+                  child: SpinKitRipple(
+                      size: 30, color: ColorsCustom.loginScreenUp)),
               Padding(
                 padding: EdgeInsets.all(20),
                 child: Text("Recuperando dados  ... ",
@@ -288,7 +294,8 @@ class _DevicesScreenState extends State<DevicesScreen>
   // }
 
   Widget _updateButton() {
-    return BlocBuilder<MqttCubit, MqttState>(builder: (context, state) {
+    return BlocBuilder<MqttConnectCubit, MqttConnectState>(
+        builder: (context, state) {
       if (state is ConnectingMqttState) {
         return const Padding(
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
@@ -328,8 +335,14 @@ class _DevicesScreenState extends State<DevicesScreen>
     // });
   }
 
+  _updateStates() async {
+    context.read<MqttConnectCubit>().mqttDisconnect();
+    context.read<DataUserCubit>().getDataUser(forceCloud: true);
+  }
+
   Widget _listWrapReorderable(List<Device> devices) {
     // final lights = BlocProvider.of<LightsBloc>(context).lights;
+
     final devicesWidget = devices
         .map<DeviceWidget>(
           (device) => DeviceWidget(
@@ -341,10 +354,10 @@ class _DevicesScreenState extends State<DevicesScreen>
 
     return ReorderableWrap(
       spacing: (MediaQuery.of(context).size.width -
-              NUM_LAMPS_ROW * SIZE_WIDTH_LAMP -
-              2 * PADDING_HORIZ_EXTERN -
-              2 * PADDING_HORIZ_INTERN) /
-          (NUM_LAMPS_ROW - 1),
+              numLampsRow * sizeWidthLamp -
+              2 * paddingHorizExtern -
+              2 * paddingHorizIntern) /
+          (numLampsRow - 1),
       runSpacing: 20,
       padding: const EdgeInsets.only(top: 20, bottom: 10),
       onReorder: _onReorder,
@@ -376,10 +389,32 @@ class _DevicesScreenState extends State<DevicesScreen>
   }
 
   Widget _iconLocal() {
+    return const DropdownButtonExample();
+    // return BlocBuilder<DataUserCubit, DataUserState>(
+    //   builder: (context, state)  {
+    //     if (state is LoadedDataUserState) {
+    //       return InkWell(
+    //         onTap: () {
+    //           // BlocProvider.of<MqttCubit>(context).setHost(MqttSecrets.localhost);
+    //           // context
+    //           //     .read<MqttConnectCubit>()
+    //           //     .changeHost(MqttSecrets.localHost,state);
+    //         },
+    //         child: const Padding(
+    //           padding: EdgeInsets.only(right: 10),
+    //           // child: Icon(Icons.wifi_tethering, color: Colors.white),
+    //           child: DropdownButtonExample(),
+    //         ),
+    //       );
+    //     }
+    //      else return
+    //   },
+    // );
+
     return InkWell(
       onTap: () {
         // BlocProvider.of<MqttCubit>(context).setHost(MqttSecrets.localhost);
-        context.read<MqttCubit>().changeHost(MqttSecrets.localHost);
+        // context.read<MqttConnectCubit>().changeHost(MqttSecrets.localHost);
       },
       child: const Padding(
         padding: EdgeInsets.only(right: 10),

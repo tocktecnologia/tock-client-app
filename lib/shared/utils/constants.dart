@@ -6,38 +6,33 @@ class Endpoints {
       "https://9cw57hx4ja.execute-api.us-east-1.amazonaws.com";
 }
 
-class MqttTopics {
-  static const tockUpdate = 'tock/things/${ThingAWS.piscinaRemoteId}/update';
-  static const tockUpdateReturn = '$tockUpdate/return';
+class AwsIoTSecrets {
+  static const host = 'a33yv9okseqbmj-ats';
+  static const awsIotRegion = 'us-east-1';
+}
 
+class MqttSecrets {
+  static const awsHost = 'a33yv9okseqbmj-ats';
+  static const localHost = 'localhost';
+  static const mosquittoHost = 'test.mosquitto.org';
+}
+
+class MqttTopics {
   static String topicShadowGet(thingId) {
-    return '\$aws/things/${thingId}/shadow/get';
+    return '\$aws/things/$thingId/shadow/get';
   }
 
   static String topicShadowUpdate(thingId) {
-    return '\$aws/things/${thingId}/shadow/update';
+    return '\$aws/things/$thingId/shadow/update';
   }
 
   static String topicShadowGetAccepted(thingId) {
-    return '\$aws/things/${thingId}/shadow/get/accepted';
+    return '\$aws/things/$thingId/shadow/get/accepted';
   }
 
   static String topicShadowUpdateAccepted(thingId) {
-    return '\$aws/things/${thingId}/shadow/update/accepted';
+    return '\$aws/things/$thingId/shadow/update/accepted';
   }
-
-  // static const shadowGet =
-  //     '\$aws/things/${ThingAWS.centralRemoteId}/shadow/get';
-  // static const shadowUpdate =
-  //     '\$aws/things/${ThingAWS.centralRemoteId}/shadow/update';
-  // static const shadowGetAccepted =
-  //     '\$aws/things/${ThingAWS.centralRemoteId}/shadow/get/accepted';
-  // static const shadowUpdateAccepted =
-  //     '\$aws/things/${ThingAWS.centralRemoteId}/shadow/update/accepted';
-
-  static const getStates = '\$aws/things/${ThingAWS.centralRemoteId}/states';
-  static const getStatesFromCentral =
-      '\$aws/things/${ThingAWS.centralRemoteId}/states/ret';
 }
 
 class ThingAWS {

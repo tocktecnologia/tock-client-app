@@ -1,14 +1,10 @@
-import 'dart:io';
-
 import 'package:client/bloc/data_user/data_user_bloc.dart';
 import 'package:client/screens/login/main.dart';
 import 'package:client/shared/utils/locator.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'bloc/auth/auth_bloc.dart';
-import 'bloc/mqtt/mqtt_bloc.dart';
+import 'bloc/mqtt/mqtt_connect_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +33,7 @@ class Application extends StatelessWidget {
         // ),
         BlocProvider(create: (_) => DataUserCubit()),
         BlocProvider(create: (_) => AuthCubit()),
-        BlocProvider(create: (_) => MqttCubit())
+        BlocProvider(create: (_) => MqttConnectCubit())
       ],
       child: const MaterialApp(
         color: Colors.white,
@@ -65,6 +61,6 @@ class _FirstScreenState extends State<FirstScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LoginScreen();
+    return const LoginScreen();
   }
 }

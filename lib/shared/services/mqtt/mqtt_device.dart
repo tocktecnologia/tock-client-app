@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:amazon_cognito_identity_dart_2/sig_v4.dart';
-import 'package:client/shared/utils/secrets.dart';
+import 'package:client/shared/utils/constants.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:tuple/tuple.dart';
@@ -26,6 +26,9 @@ class MQttDevice {
   var _onSubscribed;
   var _onSubscribeFail;
   var _onUnsubscribed;
+  Function? _messageReceive;
+
+  set messageReceive(val) => _messageReceive = val;
 
   get onConnected => _onConnected;
   set onConnected(val) => _client?.onConnected = _onConnected = val;
@@ -40,23 +43,23 @@ class MQttDevice {
   get connectionStatus => _client?.connectionStatus;
 
   MqttClient? _client;
+  MqttClient? get client => _client;
+
   final StreamController<Tuple2<String, String>> _messagesController =
       StreamController<Tuple2<String, String>>();
   Stream<Tuple2<String, String>> get messages => _messagesController.stream;
 
-  MQttDevice(
-    this._region,
-    this._accessKeyId,
-    this._secretAccessKey,
-    this._sessionToken,
-    String host, {
-    bool logging = true,
-    var onConnected,
-    var onDisconnected,
-    var onSubscribed,
-    var onSubscribeFail,
-    var onUnsubscribed,
-  }) {
+  StreamController<String> controller = StreamController<String>();
+
+  MQttDevice(this._region, this._accessKeyId, this._secretAccessKey,
+      this._sessionToken, String host,
+      {bool logging = true,
+      var onConnected,
+      var onDisconnected,
+      var onSubscribed,
+      var onSubscribeFail,
+      var onUnsubscribed,
+      var onMessageReceive}) {
     _logging = logging;
     _onConnected = onConnected;
     _onDisconnected = onDisconnected;
@@ -93,15 +96,20 @@ class MQttDevice {
         rethrow;
       }
     }
-    _client?.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
-      for (MqttReceivedMessage<MqttMessage> message in c) {
-        final MqttPublishMessage recMess =
-            message.payload as MqttPublishMessage;
-        final String pt =
-            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-        _messagesController.add(Tuple2<String, String>(message.topic, pt));
-      }
-    });
+    // _client?.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+    //   for (MqttReceivedMessage<MqttMessage> message in c) {
+    //     final MqttPublishMessage recMess =
+    //         message.payload as MqttPublishMessage;
+    //     final String pt =
+    //         MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+
+    //     // _messagesController.sink.add(Tuple2<String, String>(message.topic, pt));
+
+    //     _messagesController.add(Tuple2<String, String>(message.topic, pt));
+
+    //     print("pt: $pt");
+    //   }
+    // });
   }
 
   _prepare(clientId) {
@@ -126,12 +134,9 @@ class MQttDevice {
   }
 
   _prepareMosquitto(clientId) {
-    if (kIsWeb) {
-      _client = kIsWeb
-          ? mqttsetup.setup('ws://localhost', clientId, 8080)
-          : mqttsetup.setup('localhost', clientId, 1883);
-      _client?.port = kIsWeb ? 8080 : 1883;
-    }
+    _client = kIsWeb
+        ? mqttsetup.setup('ws://localhost', clientId, 8080)
+        : mqttsetup.setup('localhost', clientId, 1883);
     _client?.keepAlivePeriod = 30;
     _client?.websocketProtocols = MqttClientConstants.protocolsSingleDefault;
   }
@@ -213,7 +218,7 @@ class MQttDevice {
       [MqttQos qosLevel = MqttQos.atMostOnce]) {
     /// Check we are connected
     if (_client?.connectionStatus?.state == MqttConnectionState.connected) {
-      print("Subscribing to topic '${topic}'' ");
+      print("Subscribing to topic '$topic'");
       return _client?.subscribe(topic, qosLevel);
     } else {
       /// Use status here rather than state if you also want the broker return code.

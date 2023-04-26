@@ -1,11 +1,19 @@
+import 'dart:async';
+
+import 'package:client/bloc/mqtt/mqtt_connect_bloc.dart';
 import 'package:client/screens/home/devices/device_state.dart';
+import 'package:client/shared/services/mqtt/mqtt_service.dart';
 import 'package:client/shared/utils/colors.dart';
 import 'package:client/shared/utils/components.dart';
 import 'package:client/shared/utils/constants.dart';
+import 'package:client/shared/utils/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:tuple/tuple.dart';
 
-const SIZE_WIDTH_LAMP = 70.0;
+const sizeWidthLamp = 70.0;
 
 class DeviceWidget extends StatefulWidget {
   final DeviceState deviceState;
@@ -36,7 +44,7 @@ class _DeviceWidgetState extends State<DeviceWidget> {
     return Material(
       color: Colors.transparent,
       child: SizedBox(
-        width: SIZE_WIDTH_LAMP,
+        width: sizeWidthLamp,
         child: InkWell(
           onTap: () => widget.isConfigMode ? _configLight() : _onActionDevice(),
           splashColor: ColorsCustom.loginScreenMiddle,
@@ -76,16 +84,16 @@ class _DeviceWidgetState extends State<DeviceWidget> {
 
   Widget _progress() {
     return showProgress
-        ? SizedBox(
-            width: SIZE_WIDTH_LAMP * 0.7,
-            height: SIZE_WIDTH_LAMP * 0.06,
+        ? const SizedBox(
+            width: sizeWidthLamp * 0.7,
+            height: sizeWidthLamp * 0.06,
             child: LinearProgressIndicator(
               backgroundColor: ColorsCustom.loginScreenUp,
             ),
           )
-        : SizedBox(
-            width: SIZE_WIDTH_LAMP * 0.7,
-            height: SIZE_WIDTH_LAMP * 0.06,
+        : const SizedBox(
+            width: sizeWidthLamp * 0.7,
+            height: sizeWidthLamp * 0.06,
           );
   }
 
@@ -98,12 +106,15 @@ class _DeviceWidgetState extends State<DeviceWidget> {
   }
 
   _onActionDevice() {
+    //     ?.messages
+    //     .listen((event) => _onMessage(event));
+
     // final type = light.device.type;
     // if (type == DeviceTypes.BOMB || type == DeviceTypes.LIGHT) {
     //   _updateLightState();
     // } else if (type == DeviceTypes.PULSE_ONOFF ||
     //     type == DeviceTypes.PULSE_COLOR) {
-    //   _updateTockState();
+    _updateTockState();
     // } else {
     //   // no actions for a while
     // }

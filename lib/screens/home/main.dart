@@ -1,8 +1,7 @@
 import 'package:client/bloc/data_user/data_user_bloc.dart';
+import 'package:client/main.dart';
 import 'package:client/screens/home/devices/main.dart';
 import 'package:client/screens/home/schedules/main.dart';
-import 'package:client/shared/services/cognito/user_service.dart';
-import 'package:client/shared/utils/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +10,8 @@ import 'package:client/bloc/auth/auth_state.dart';
 import 'package:client/screens/login/main.dart';
 import 'package:client/shared/utils/colors.dart';
 import 'package:client/shared/utils/screen_transitions/open.transition.dart';
+
+import '../../bloc/mqtt/mqtt_connect_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -68,14 +69,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state is LoadingLogoutState) {
-            // Locator.instance.get<UserCognito>().userAttrs['email'];
-            Navigator.pushReplacement(
-                context, OpenAndFadeTransition(const LoginScreen()));
-          }
-        },
-        child: _body());
+      listener: (context, state) {
+        if (state is LoadingLogoutState) {
+          // Locator.instance.get<UserCognito>().userAttrs['email'];
+          Navigator.pushReplacement(
+              context, OpenAndFadeTransition(const LoginScreen()));
+        }
+      },
+      child: _body(),
+    );
   }
 
   Widget _body() {
@@ -98,82 +100,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         },
       ),
     );
-    // return BlocBuilder<DataUserBloc, DataUserState>(
-    //   condition: (prevState, state) {
-    //     if (state is LoadedDataUserState) {
-    //       BlocProvider.of<LightsBloc>(context).add(
-    //           UpdateDevicesFromAwsAPIEvent(devices: state.dataUser.devices));
-
-    //       BlocProvider.of<SchedulesBloc>(context).add(
-    //           UpdateSchedulesConfigsEvent(schedules: state.dataUser.schedules));
-
-    //       BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
-    //     } else if (state is LoadDataUserErrorState) {
-    //       ShowAlert.open(
-    //           context: context,
-    //           contentText:
-    //               "Não foi possível recuperar os dados: ${state.message}.");
-    //     }
-    //     return;
-    //   },
-    //   builder: (context, state) {
-    //     if (state is LoadedDataUserState)
-    //       return Scaffold(
-    //         drawerDragStartBehavior: DragStartBehavior.down,
-    //         key: _scaffoldKey,
-    //         drawer: _drawer(),
-    //         body: IndexedStack(index: _currentIndex, children: _bodys),
-    //         bottomNavigationBar: BottomNavigationBar(
-    //           currentIndex: _currentIndex,
-    //           items: _bottomNavigatioItens(),
-    //           onTap: (int idx) {
-    //             if (idx == _bodys.length) {
-    //               _scaffoldKey.currentState.openDrawer();
-    //             } else {
-    //               setState(() {
-    //                 _currentIndex = idx;
-    //               });
-    //             }
-    //           },
-    //         ),
-    //       );
-    //     else if (state is LoadingDataUserState)
-    //       return Scaffold(
-    //         backgroundColor: ColorsCustom.loginScreenUp,
-    //         body: Column(
-    //           children: <Widget>[
-    //             SizedBox(height: MediaQuery.of(context).size.height * 0.0871),
-    //             Container(
-    //                 child: Image.asset(
-    //               'assets/images/logo.png',
-    //               height: 140,
-    //               fit: BoxFit.fill,
-    //             )),
-    //             SizedBox(height: MediaQuery.of(context).size.height * 0.020),
-    //             Expanded(
-    //               child: SizedBox(
-    //                 child: SpinKitWave(color: Colors.white),
-    //               ),
-    //             ),
-    //             Expanded(
-    //               child: Text(
-    //                 "Baixando os dados ...",
-    //                 style: TextStylesLogin.textPattern,
-    //               ),
-    //             )
-    //           ],
-    //         ),
-    //       );
-    //     else
-    //       return Container(child: Text("estado: $state"));
-    //   },
-    // );
-  }
-
-  _restartApp() {
-    context.read<DataUserCubit>().getDataUser(forceCloud: true);
-    // BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
-    // Navigator.pushReplacement(context, SizeRoute(page: LoginScreen()));
   }
 
   List<BottomNavigationBarItem> _bottomNavigatioItens() {
@@ -208,15 +134,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _drawer() {
-    final email = Locator.instance.get<CognitoUserService>().user?.email ?? "";
-    final locale =
-        Locator.instance.get<CognitoUserService>().user?.locale ?? "";
     return Drawer(
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text(locale),
-            accountEmail: Text(email),
+            accountName: _environmentName(),
+            accountEmail: _email(),
             currentAccountPicture: const CircleAvatar(
               backgroundImage: AssetImage('assets/images/cond.png'),
             ),
@@ -265,52 +188,77 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  Widget _email() {
+    return BlocBuilder<DataUserCubit, DataUserState>(builder: (context, state) {
+      if (state is LoadedDataUserState) {
+        return Text(state.dataUser.email!);
+      } else {
+        return const Text("...");
+      }
+    });
+  }
+
+  Widget _environmentName() {
+    return BlocBuilder<DataUserCubit, DataUserState>(builder: (context, state) {
+      if (state is LoadedDataUserState) {
+        return Text(state.dataUser.environmentName!);
+      } else {
+        return const Text("...");
+      }
+    });
+  }
+
   Widget _optionsDrawer() {
     const mheight = 8.0;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        ListTile(
-          leading: const CircleAvatar(child: Icon(Icons.plus_one)),
-          title: const Text('Adicionar módulo'),
-          onTap: _showNotImplementedMessage,
-        ),
-        const Divider(height: mheight),
-        ListTile(
-          leading: const CircleAvatar(child: Icon(Icons.invert_colors_on)),
-          title: const Text('Reservatórios'),
-          onTap: () {
-            //  Navigator.push(
-            //   context,
-            //   SlideRightRoute(
-            //     page: WaterScreen(),
-            //   ),
-          },
-        ),
-        const Divider(height: mheight),
-        ListTile(
-          leading: const CircleAvatar(child: Icon(Icons.build)),
-          title: const Text('Configurar'),
-          onTap: _showNotImplementedMessage,
-        ),
-        const Divider(height: mheight),
-        ListTile(
-          leading: const CircleAvatar(child: Icon(Icons.cloud_download)),
-          title: const Text('Download Configurações'),
-          onTap: () {
-            _restartApp();
-            //   BlocProvider.of<DataUserBloc>(context).add(GetDataUserEvent());
-            //   Navigator.pop(context);
-          },
-        ),
+        // ListTile(
+        //   leading: const CircleAvatar(child: Icon(Icons.plus_one)),
+        //   title: const Text('Adicionar módulo'),
+        //   onTap: _showNotImplementedMessage,
+        // ),
+        // const Divider(height: mheight),
+        // ListTile(
+        //   leading: const CircleAvatar(child: Icon(Icons.invert_colors_on)),
+        //   title: const Text('Reservatórios'),
+        //   onTap: () {
+        //     //  Navigator.push(
+        //     //   context,
+        //     //   SlideRightRoute(
+        //     //     page: WaterScreen(),
+        //     //   ),
+        //   },
+        // ),
+        // const Divider(height: mheight),
+        // ListTile(
+        //   leading: const CircleAvatar(child: Icon(Icons.build)),
+        //   title: const Text('Configurar'),
+        //   onTap: _showNotImplementedMessage,
+        // ),
+        // const Divider(height: mheight),
+        // ListTile(
+        //   leading: const CircleAvatar(child: Icon(Icons.cloud_download)),
+        //   title: const Text('Download Configurações'),
+        //   onTap: () {
+        //     //   BlocProvider.of<DataUserBloc>(context).add(GetDataUserEvent());
+        //     context.read<DataUserCubit>().getDataUser(forceCloud: true);
+        //     Navigator.pop(context);
+        //   },
+        // ),
         const Divider(height: mheight),
         ListTile(
           leading: const CircleAvatar(child: Icon(Icons.repeat)),
           title: const Text('Reiniciar'),
           onTap: () {
-            //   Navigator.pop(context);
-            //   _restartApp();
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              OpenAndFadeTransition(
+                const Application(),
+              ),
+            );
           },
         ),
         const Divider(height: mheight),
@@ -320,12 +268,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           onTap: () {
             context.read<AuthCubit>().logout();
             //   BlocProvider.of<AuthBloc>(context).add(LogoutEvent());
-            Navigator.pushReplacement(
-              context,
-              OpenAndFadeTransition(
-                const LoginScreen(),
-              ),
-            );
+            // Navigator.pushReplacement(
+            //   context,
+            //   OpenAndFadeTransition(
+            //     const LoginScreen(),
+            //   ),
+            // );
           },
         ),
         const Divider(height: mheight),

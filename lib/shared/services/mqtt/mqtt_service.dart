@@ -1,6 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
+import 'package:client/shared/services/cognito/user_service.dart';
 import 'package:client/shared/services/mqtt/mqtt_device.dart';
+import 'package:client/shared/utils/constants.dart';
+import 'package:client/shared/utils/locator.dart';
 import 'package:client/shared/utils/secrets.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:uuid/uuid.dart';
@@ -8,8 +13,12 @@ import 'package:uuid/uuid.dart';
 class MqttService {
   MQttDevice? _awsClient;
   MQttDevice? get awsClient => _awsClient;
+  String? userIdentityId;
+  final StreamController<String> _controller = StreamController<String>();
+  StreamController<String> get controller => _controller;
 
-  void init(host, {accessKeyId, secretAccessKey, sessionToken}) {
+  void init(host,
+      {accessKeyId, secretAccessKey, sessionToken, required userIdentityId}) {
     _awsClient = MQttDevice(
       AwsIoTSecrets.awsIotRegion,
       accessKeyId,
@@ -20,11 +29,15 @@ class MqttService {
       onDisconnected: onDisconnected,
       logging: false,
     );
+    this.userIdentityId = userIdentityId;
+  }
+
+  void disconnect() {
+    _awsClient?.disconnect();
   }
 
   void onConnected() {
     print("client Connected!");
-    suibscribe("tock-commands");
   }
 
   void onDisconnected() {
@@ -32,7 +45,7 @@ class MqttService {
   }
 
   Future connect() async {
-    await _awsClient?.connect(const Uuid().v1());
+    await _awsClient?.connect(userIdentityId!);
   }
 
   Future publishJson(message, String topic) async {

@@ -68,15 +68,16 @@ class DataUserCubit extends Cubit<DataUserState> {
 
       // if has data in memory
       if (userPref != null && !forceCloud) {
-        print("getting userData from shared preferences");
+        // print("getting userData from shared preferences");
         Map<String, dynamic> dataUserjson =
             jsonDecode(userPref) as Map<String, dynamic>;
         final dataUser = DataUser.fromJson(dataUserjson);
+        await Future.delayed(const Duration(milliseconds: 100));
         emit(LoadedDataUserState(dataUser: dataUser));
       }
       // else, get from cloud
       else {
-        print("getting userData from cloud");
+        // print("getting userData from cloud");
         final dataUser = await Locator.instance.get<AwsApi>().getDataUser();
         await pref.setString(keyDataUser, jsonEncode(dataUser.toJson()));
         emit(LoadedDataUserState(dataUser: dataUser));

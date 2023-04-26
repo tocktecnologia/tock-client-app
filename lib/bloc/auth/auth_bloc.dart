@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:client/shared/services/cognito/user.dart';
 import 'package:client/shared/services/cognito/user_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:client/shared/utils/handle_exceptions.dart';
 import 'package:client/shared/utils/locator.dart';
 import 'auth_state.dart';
 
@@ -22,7 +19,6 @@ class AuthCubit extends Cubit<AuthState> {
           .get<CognitoUserService>()
           .login(user, passowrd);
       _isConnectedRemote = cognitoUser!.hasAccess;
-      // Locator.instance.get<CognitoUserService>().credentials?.secretAccessKey;
 
       emit(_isConnectedRemote ? LoggedState() : LoggedOutState());
     } catch (e) {

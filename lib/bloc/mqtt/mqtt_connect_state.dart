@@ -1,25 +1,26 @@
-part of 'mqtt_bloc.dart';
+part of 'mqtt_connect_bloc.dart';
 
-@immutable
-abstract class MqttState {}
+abstract class MqttConnectState {}
 
-class MqttInitial extends MqttState {}
+class MqttConnectInitial extends MqttConnectState {}
 
-class ConnectingMqttState extends MqttState {}
+class ConnectingMqttState extends MqttConnectState {}
 
-class ConnectedMqttState extends MqttState {}
+class ConnectedMqttState extends MqttConnectState {}
 
-class ConnectionErrorMqttState extends MqttState {
-  final mesage;
-  final type;
+class DisonnectedMqttState extends MqttConnectState {}
+
+class ConnectionErrorMqttState extends MqttConnectState {
+  final String mesage;
+  final Type? type;
   ConnectionErrorMqttState({required this.mesage, this.type});
 }
 
-class UpdatingLightsFromShadowState extends MqttState {}
+class UpdatingLightsFromShadowState extends MqttConnectState {}
 
-class UpdatingDeviceFromTockState extends MqttState {}
+class UpdatingDeviceFromTockState extends MqttConnectState {}
 
-class UpdatingLightsFromNodeCentralState extends MqttState {}
+class UpdatingLightsFromNodeCentralState extends MqttConnectState {}
 
 // class UpdatedLightsFromNodeCentralState extends MqttState {
 //   final List<Light> lights;
@@ -45,4 +46,4 @@ class UpdatingLightsFromNodeCentralState extends MqttState {}
 //   GettedLighState({this.state, this.deviceId, this.pin});
 // }
 
-// class UpdateErrorLighState extends MqttState {}
+// class UpdateErrorLighState extends MqttConnectionState {}
