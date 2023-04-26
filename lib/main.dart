@@ -1,10 +1,10 @@
 import 'package:client/bloc/data_user/data_user_bloc.dart';
+import 'package:client/bloc/mqtt/mqtt_connect/mqtt_connect_bloc.dart';
 import 'package:client/screens/login/main.dart';
 import 'package:client/shared/utils/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/auth/auth_bloc.dart';
-import 'bloc/mqtt/mqtt_connect_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

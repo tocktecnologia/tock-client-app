@@ -1,17 +1,8 @@
-import 'dart:async';
-
-import 'package:client/bloc/mqtt/mqtt_connect_bloc.dart';
 import 'package:client/screens/home/devices/device_state.dart';
-import 'package:client/shared/services/mqtt/mqtt_service.dart';
 import 'package:client/shared/utils/colors.dart';
 import 'package:client/shared/utils/components.dart';
 import 'package:client/shared/utils/constants.dart';
-import 'package:client/shared/utils/locator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:tuple/tuple.dart';
 
 const sizeWidthLamp = 70.0;
 

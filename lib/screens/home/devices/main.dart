@@ -1,18 +1,16 @@
-import 'dart:async';
-
 import 'package:client/bloc/data_user/data_user_bloc.dart';
-import 'package:client/bloc/mqtt/mqtt_connect_bloc.dart';
+import 'package:client/bloc/mqtt/mqtt_connect/mqtt_connect_bloc.dart';
 import 'package:client/screens/home/devices/device_state.dart';
 import 'package:client/screens/home/devices/device_widget.dart';
 import 'package:client/screens/home/devices/drop_down_hosts.dart';
 import 'package:client/shared/model/data_user_model.dart';
 import 'package:client/shared/services/mqtt/mqtt_service.dart';
 import 'package:client/shared/utils/locator.dart';
-import 'package:client/shared/utils/secrets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:client/shared/utils/colors.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:mqtt_client/mqtt_client.dart';
 import 'package:reorderables/reorderables.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -67,8 +65,15 @@ class _DevicesScreenState extends State<DevicesScreen>
     super.dispose();
   }
 
-  _onMessage(event) {
-    print("event: $event");
+  _listenMqtt() {
+    final client = Locator.instance.get<MqttService>().awsClient?.client;
+    client?.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      final recMess = c![0].payload as MqttPublishMessage;
+      final pt =
+          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+
+      print("pt: $pt");
+    });
   }
 
   @override
@@ -77,15 +82,7 @@ class _DevicesScreenState extends State<DevicesScreen>
       listener: (context, state) {
         print("state: $state");
         if (state is ConnectedMqttState) {
-          print("ConnectedMqttState listening ...");
-          Locator.instance
-              .get<MqttService>()
-              .awsClient
-              ?.client
-              ?.updates
-              ?.listen((event) {
-            _onMessage(event);
-          });
+          _listenMqtt();
         }
       },
       child: Scaffold(

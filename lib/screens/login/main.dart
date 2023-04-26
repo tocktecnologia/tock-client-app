@@ -1,10 +1,4 @@
-import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:client/bloc/data_user/data_user_bloc.dart';
-import 'package:client/bloc/mqtt/mqtt_connect_bloc.dart';
-import 'package:client/shared/services/api/user_aws.dart';
-import 'package:client/shared/services/cognito/user.dart';
-import 'package:client/shared/services/cognito/user_service.dart';
-import 'package:client/shared/utils/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:client/bloc/auth/auth_bloc.dart';

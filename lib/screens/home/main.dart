@@ -11,8 +11,6 @@ import 'package:client/screens/login/main.dart';
 import 'package:client/shared/utils/colors.dart';
 import 'package:client/shared/utils/screen_transitions/open.transition.dart';
 
-import '../../bloc/mqtt/mqtt_connect_bloc.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 

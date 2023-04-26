@@ -90,12 +90,12 @@ class MQttDevice {
 
       try {
         await _client?.connect();
-        _onConnected();
-      } on Exception catch (e) {
+      } on Exception catch (_) {
         _client?.disconnect();
         rethrow;
       }
     }
+
     // _client?.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
     //   for (MqttReceivedMessage<MqttMessage> message in c) {
     //     final MqttPublishMessage recMess =
@@ -135,9 +135,10 @@ class MQttDevice {
 
   _prepareMosquitto(clientId) {
     _client = kIsWeb
-        ? mqttsetup.setup('ws://localhost', clientId, 8080)
-        : mqttsetup.setup('localhost', clientId, 1883);
+        ? mqttsetup.setup('ws://localhost', clientId, 8008)
+        : mqttsetup.setup('192.168.0.6', clientId, 1883);
     _client?.keepAlivePeriod = 30;
+
     _client?.websocketProtocols = MqttClientConstants.protocolsSingleDefault;
   }
 
@@ -215,7 +216,7 @@ class MQttDevice {
   }
 
   Subscription? subscribe(String topic,
-      [MqttQos qosLevel = MqttQos.atMostOnce]) {
+      [MqttQos qosLevel = MqttQos.atLeastOnce]) {
     /// Check we are connected
     if (_client?.connectionStatus?.state == MqttConnectionState.connected) {
       print("Subscribing to topic '$topic'");

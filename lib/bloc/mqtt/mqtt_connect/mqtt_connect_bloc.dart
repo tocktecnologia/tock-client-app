@@ -47,6 +47,7 @@ class MqttConnectCubit extends Cubit<MqttConnectState> {
           await Locator.instance.get<MqttService>().suibscribe(topicUpdate);
           await Locator.instance.get<MqttService>().suibscribe(topicGet);
         }
+        await Locator.instance.get<MqttService>().suibscribe("tock/test");
       }
       // MOSQUITTO
       else {
