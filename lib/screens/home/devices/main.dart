@@ -29,7 +29,6 @@ class DevicesScreen extends StatefulWidget {
 class _DevicesScreenState extends State<DevicesScreen>
     with WidgetsBindingObserver {
   AppLifecycleState? _notification;
-  bool isConfigMode = false;
   bool isLocalEnabled = false;
 
   @override
@@ -42,7 +41,6 @@ class _DevicesScreenState extends State<DevicesScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
       _notification = state;
-      print("state: $state");
     });
 
     // if (state == AppLifecycleState.resumed) {
@@ -68,7 +66,6 @@ class _DevicesScreenState extends State<DevicesScreen>
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
       context.read<DevicesCubit>().updateReportedDevices(pt);
-      print("pt: $pt");
     });
   }
 
@@ -76,7 +73,6 @@ class _DevicesScreenState extends State<DevicesScreen>
   Widget build(BuildContext context) {
     return BlocListener<MqttConnectCubit, MqttConnectState>(
       listener: (context, state) {
-        print("state: $state");
         if (state is ConnectedMqttState) {
           _listenMqtt();
         }
@@ -102,7 +98,7 @@ class _DevicesScreenState extends State<DevicesScreen>
         child: Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
-            color: Colors.white, //isConfigMode ? Colors.grey. : Colors.white,
+            color: Colors.white,
             boxShadow: [
               BoxShadow(
                   color: ColorsCustom.loginScreenMiddle,
@@ -116,17 +112,10 @@ class _DevicesScreenState extends State<DevicesScreen>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  InkWell(
-                    onTap: () => setState(() => isConfigMode = !isConfigMode),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 20),
-                      child: Icon(
-                        isConfigMode ? Icons.keyboard_return : Icons.mode_edit,
-                        size: 20,
-                        color: ColorsCustom.loginScreenUp,
-                      ),
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 20),
+                    child: Container(),
                   ),
                   const Text(
                     "Dispositivos",
@@ -159,6 +148,7 @@ class _DevicesScreenState extends State<DevicesScreen>
     return BlocBuilder<DataUserCubit, DataUserState>(
       builder: (context, state) {
         if (state is LoadedDataUserState) {
+          context.read<DevicesCubit>().initListDevices(state.dataUser.devices!);
           return _listWrapReorderable(state.dataUser.devices!);
         } else {
           return Container();
@@ -166,93 +156,6 @@ class _DevicesScreenState extends State<DevicesScreen>
       },
     );
   }
-
-  // Widget centralConnectionDevices(UpdatedDevicesState stateLights) {
-  //   BlocProvider.of<CentralBloc>(context)
-  //       .add(GetUpdateLightsFromCentralEvent(lights: stateLights.lights));
-
-  //   return BlocBuilder<CentralBloc, CentralState>(
-  //     buildWhen: (prevState, state) {
-  //       if (state is UpdateLightsFromCentralErrorState) {
-  //         ShowAlert.open(context: context, contentText: state.message);
-  //       }
-  //       return true;
-  //     },
-  //     builder: (context, state) {
-  //       if (state is UpdatingLightsFromCentralState) {
-  //         return Column(
-  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //           children: <Widget>[
-  //             Center(
-  //               child:
-  //                   SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
-  //             ),
-  //             Padding(
-  //               padding: const EdgeInsets.symmetric(vertical: 20),
-  //               child: Text("Atualizando estados da central... ",
-  //                   style: TextStyle(
-  //                       fontSize: 17, color: ColorsCustom.loginScreenUp)),
-  //             ),
-  //           ],
-  //         );
-  //       } else {
-  //         return _listWrapReorderable(stateLights);
-  //       }
-  //     },
-  //   );
-  // }
-
-  // Widget iotConnectionDevices(stateLights) {
-  //   return BlocBuilder<IotAwsBloc, IotAwsState>(buildWhen: (prevState, state) {
-  //     if (state is ConnectedIotAwsState) {
-  //       // init listenning aws iot if not local choiced
-  //       final AWSIotDevice awsIotDevice =
-  //           Locator.instance.get<AwsIot>().awsIotDevice;
-  //       // awsIotDevice.client.updates.listen(
-  //       //   (_) {
-  //       //     _onReceive(awsIotDevice);
-  //       //   },
-  //       // );
-  //       _updateStates();
-  //     }
-  //     return true;
-  //   }, builder: (context, state) {
-  //     if (state is ConnectingIotAwsState) {
-  //       return Column(
-  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //         children: <Widget>[
-  //           Center(
-  //             child: SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
-  //           ),
-  //           Padding(
-  //             padding: const EdgeInsets.symmetric(vertical: 20),
-  //             child: Text("Conectando ao sistema ... ",
-  //                 style: TextStyle(
-  //                     fontSize: 17, color: ColorsCustom.loginScreenUp)),
-  //           ),
-  //         ],
-  //       );
-  //     } else if (state is ConnectedIotAwsState ||
-  //         state is UpdatingLightsFromShadowState) {
-  //       return Column(
-  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //         children: <Widget>[
-  //           Center(
-  //             child: SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
-  //           ),
-  //           Padding(
-  //             padding: const EdgeInsets.symmetric(vertical: 20),
-  //             child: Text("Atualizando estados da nuvem... ",
-  //                 style: TextStyle(
-  //                     fontSize: 17, color: ColorsCustom.loginScreenUp)),
-  //           ),
-  //         ],
-  //       );
-  //     } else {
-  //       return _listWrapReorderable(stateLights);
-  //     }
-  //   });
-  // }
 
   Widget _updateButton() {
     return BlocBuilder<MqttConnectCubit, MqttConnectState>(
@@ -308,7 +211,6 @@ class _DevicesScreenState extends State<DevicesScreen>
         .map<DeviceWidget>(
           (device) => DeviceWidget(
             deviceState: DeviceState(device: device),
-            isConfigMode: isConfigMode,
           ),
         )
         .toList();

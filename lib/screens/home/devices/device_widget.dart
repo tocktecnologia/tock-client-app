@@ -10,11 +10,8 @@ const sizeWidthLamp = 70.0;
 
 class DeviceWidget extends StatefulWidget {
   final DeviceState deviceState;
-  final bool isConfigMode;
 
-  const DeviceWidget(
-      {Key? key, required this.deviceState, this.isConfigMode = false})
-      : super(key: key);
+  const DeviceWidget({Key? key, required this.deviceState}) : super(key: key);
   @override
   State<DeviceWidget> createState() => _DeviceWidgetState();
 }
@@ -40,7 +37,8 @@ class _DeviceWidgetState extends State<DeviceWidget> {
       child: SizedBox(
         width: sizeWidthLamp,
         child: InkWell(
-          onTap: () => widget.isConfigMode ? _configLight() : _onActionDevice(),
+          onDoubleTap: () => _configLight(),
+          onTap: () => _onActionDevice(),
           splashColor: ColorsCustom.loginScreenMiddle,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -48,15 +46,11 @@ class _DeviceWidgetState extends State<DeviceWidget> {
               _icon(),
               _progress(),
               const SizedBox(height: 5),
-              InkWell(
-                onDoubleTap: () =>
-                    widget.isConfigMode ? _showDialogHideAnimation() : {},
-                child: Text(
-                  lightNameController.text,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 12, color: Colors.black.withAlpha(200)),
-                ),
+              Text(
+                lightNameController.text,
+                textAlign: TextAlign.center,
+                style:
+                    TextStyle(fontSize: 12, color: Colors.black.withAlpha(200)),
               ),
             ],
           ),
@@ -65,30 +59,27 @@ class _DeviceWidgetState extends State<DeviceWidget> {
     );
   }
 
-  _showDialogHideAnimation() {
-    // showDialog(
-    //     context: context,
-    //     child: Alert(
-    //       contentText:
-    //           "A animação do clique foi ${forceHideAnimation ? 'habilitada' : 'desabilitada'}.'",
-    //     ));
-
-    // setState(() => forceHideAnimation = !forceHideAnimation);
-  }
-
   Widget _progress() {
-    return showProgress
-        ? const SizedBox(
+    return BlocBuilder<DevicesCubit, DevicesState>(
+      builder: (context, state) {
+        if (state is UpdatingDevicesState) {
+          // final myDeviceState = state.deviceStateList
+          //     .where((element) => element.pin == widget.deviceState.pin)
+          //     .first
+          //     .state;
+          return const SizedBox(
             width: sizeWidthLamp * 0.7,
             height: sizeWidthLamp * 0.06,
             child: LinearProgressIndicator(
               backgroundColor: ColorsCustom.loginScreenUp,
             ),
-          )
-        : const SizedBox(
-            width: sizeWidthLamp * 0.7,
-            height: sizeWidthLamp * 0.06,
           );
+        } else {
+          return const SizedBox(
+              width: sizeWidthLamp * 0.7, height: sizeWidthLamp * 0.06);
+        }
+      },
+    );
   }
 
   _changeLightName() {
@@ -176,43 +167,25 @@ class _DeviceWidgetState extends State<DeviceWidget> {
   Widget _icon() {
     return BlocBuilder<DevicesCubit, DevicesState>(
       builder: (context, state) {
-        // print("state: $state");
         if (state is UpdatedDevicesState) {
           final myDeviceState = state.deviceStateList
               .where((element) => element.pin == widget.deviceState.pin)
               .first
               .state;
-          // print(myDeviceState != null);
-          // if (myDeviceState != null)
           return _getIcon(widget.deviceState.type, myDeviceState);
         } else {
-          return const Icon(Icons.sentiment_dissatisfied,
-              size: 40, color: Colors.grey);
+          return _getIcon(
+              deviceState?.type ?? DeviceTypes.LIGHT, deviceState?.state);
         }
       },
     );
-    return _getIcon(deviceState?.type ?? DeviceTypes.LIGHT, deviceState?.state);
-    // return BlocListener<LightBloc, LightState>(
-    //   listener: (context, state) {
-    //     if (state is GettedLighState) {
-    //       if (state.deviceId == light.device.remoteId &&
-    //           state.pin == light.device.pin) {
-    //         setState(() {
-    //           light.state = state.state;
-    //           showProgress = false;
-    //         });
-    //       }
-    //     }
-    //   },
-    //   child: _getIcon(light.device.type ?? DeviceTypes.LIGHT, light.state),
-    // );
   }
 
   Widget _getIcon(type, mState) {
     switch (type) {
       case DeviceTypes.LIGHT:
         return Tab(
-          icon: mState == LightStatesLogic.LIGHT_OFF
+          icon: mState == LightStatesLogic.LIGHT_ON
               ? Image.asset("assets/icons/lampOff.png")
               : Image.asset("assets/icons/lampOn.png"),
         );
@@ -222,7 +195,7 @@ class _DeviceWidgetState extends State<DeviceWidget> {
           width: 60,
           height: 60,
           child: Tab(
-            icon: mState == LightStatesLogic.LIGHT_ON
+            icon: mState == LightStatesLogic.LIGHT_OFF
                 ? Image.asset("assets/icons/bombOff.png")
                 : Image.asset("assets/icons/bombOn.png"),
           ),
@@ -265,7 +238,7 @@ class _DeviceWidgetState extends State<DeviceWidget> {
             child: Text('OK'),
           )
         ],
-        title: Text('Alterar Nome',
+        title: const Text('Alterar Nome',
             style: TextStyle(color: ColorsCustom.loginScreenUp)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -277,7 +250,7 @@ class _DeviceWidgetState extends State<DeviceWidget> {
             ),
             TextFormField(
               controller: lightNameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   hintText: "Nome da luz",
                   contentPadding: EdgeInsets.all(5),
                   isDense: true,

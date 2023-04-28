@@ -22,27 +22,38 @@ class DevicesCubit extends Cubit<DevicesState> {
   }
 
   Future<void> updateReportedDevices(String msg) async {
-    if (deviceStateList.isEmpty) return;
-    deviceStateList[0].state = deviceStateList[0].state == "0" ? "1" : "0";
+    print("msg: $msg");
+    if (deviceStateList.isEmpty) {
+      print("deviceStateList is empty ");
+      return;
+    }
+
+    // deviceStateList[0].state = deviceStateList[0].state == "0" ? "1" : "0";
 
     final Map<String, dynamic> msgJson = jsonDecode(msg);
-    if (!msgJson.containsKey("state")) return;
-    if (!msgJson["state"].containsKey("reported")) return;
+    if (!msgJson.containsKey("state")) {
+      print("not containsKey 'state' ");
+      return;
+    }
 
-    emit(UpdatingDevicesState(deviceStateList));
+    if (!msgJson["state"].containsKey("reported")) {
+      print("not containsKey 'reported' ");
+      return;
+    }
 
-    // msgJson["state"]["reported"].foreach((k, v) {
-    //   final pinReported = k[3];
-    //   final deviceIdx =
-    //       deviceStateList.indexWhere((element) => element.pin = pinReported);
-    //   // substiotution
-    //   if (deviceIdx >= 0) {
-    //     deviceStateList[deviceIdx] =
-    //         DeviceState(device: deviceStateList[deviceIdx], state: v);
-    //   }
-    // });
+    // emit(UpdatingDevicesState(deviceStateList));
+    print(msgJson["state"]["reported"]);
+    msgJson["state"]["reported"].forEach((String k, v) {
+      final pinReported = k.substring(3);
+      final deviceIdx =
+          deviceStateList.indexWhere((element) => element.pin == pinReported);
+      // substiotution
+      if (deviceIdx >= 0) {
+        deviceStateList[deviceIdx] = DeviceState(
+            device: deviceStateList[deviceIdx], state: v.toString());
+      }
+    });
 
-    await Future.delayed(const Duration(seconds: 1));
     emit(UpdatedDevicesState(deviceStateList));
   }
 }

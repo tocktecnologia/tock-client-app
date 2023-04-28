@@ -108,7 +108,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Text(current.message),
           ]);
         } else if (current is LoadedDataUserState) {
-          print("loaded state >> call mqtt connect");
           context
               .read<MqttConnectCubit>()
               .mqttConnect(current.dataUser.devices!);
