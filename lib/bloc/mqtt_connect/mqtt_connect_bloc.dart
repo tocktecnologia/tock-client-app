@@ -21,8 +21,7 @@ class MqttConnectCubit extends Cubit<MqttConnectState> {
   Future<void> mqttConnect(List<Device> devices, {String? host}) async {
     emit(ConnectingMqttState());
     try {
-      _host = host ?? MqttSecrets.localHost;
-
+      _host = host ?? _host;
       CognitoCredentials? credentials =
           await Locator.instance.get<CognitoUserService>().getCredentials();
       // AWS

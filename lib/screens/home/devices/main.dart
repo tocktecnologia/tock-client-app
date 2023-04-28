@@ -1,7 +1,8 @@
 import 'package:client/bloc/data_user/data_user_bloc.dart';
-import 'package:client/bloc/mqtt/mqtt_connect/mqtt_connect_bloc.dart';
-import 'package:client/screens/home/devices/device_state.dart';
+import 'package:client/bloc/devices/devices_bloc.dart';
+import 'package:client/bloc/mqtt_connect/mqtt_connect_bloc.dart';
 import 'package:client/screens/home/devices/device_widget.dart';
+import 'package:client/screens/home/devices/device_state.dart';
 import 'package:client/screens/home/devices/drop_down_hosts.dart';
 import 'package:client/shared/model/data_user_model.dart';
 import 'package:client/shared/services/mqtt/mqtt_service.dart';
@@ -35,12 +36,6 @@ class _DevicesScreenState extends State<DevicesScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
-    // Locator.instance
-    //     .get<MqttService>()
-    //     .awsClient
-    //     ?.messages
-    //     .listen((mqttEvent) => {print("event: $mqttEvent")});
   }
 
   @override
@@ -72,6 +67,7 @@ class _DevicesScreenState extends State<DevicesScreen>
       final pt =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
+      context.read<DevicesCubit>().updateReportedDevices(pt);
       print("pt: $pt");
     });
   }
@@ -161,40 +157,8 @@ class _DevicesScreenState extends State<DevicesScreen>
 
   Widget _panelLights() {
     return BlocBuilder<DataUserCubit, DataUserState>(
-      buildWhen: (previous, current) {
-        print("current: $current");
-        if (current is LoadDataUserErrorState) {
-          showAboutDialog(context: context, children: <Widget>[
-            Text(current.message!),
-          ]);
-        }
-        if (previous is LoadingDataUserState &&
-            current is LoadedDataUserState) {
-          print("calling mqttConnect ...");
-
-          context
-              .read<MqttConnectCubit>()
-              .mqttConnect(current.dataUser.devices!);
-        }
-        return true;
-      },
       builder: (context, state) {
-        if (state is LoadingDataUserState) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const <Widget>[
-              Center(
-                  child: SpinKitRipple(
-                      size: 30, color: ColorsCustom.loginScreenUp)),
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Text("Recuperando dados  ... ",
-                    style: TextStyle(
-                        fontSize: 17, color: ColorsCustom.loginScreenUp)),
-              ),
-            ],
-          );
-        } else if (state is LoadedDataUserState) {
+        if (state is LoadedDataUserState) {
           return _listWrapReorderable(state.dataUser.devices!);
         } else {
           return Container();
@@ -337,10 +301,10 @@ class _DevicesScreenState extends State<DevicesScreen>
     context.read<DataUserCubit>().getDataUser(forceCloud: true);
   }
 
-  Widget _listWrapReorderable(List<Device> devices) {
+  Widget _listWrapReorderable(List<Device> deviceList) {
     // final lights = BlocProvider.of<LightsBloc>(context).lights;
 
-    final devicesWidget = devices
+    final devicesWidget = deviceList
         .map<DeviceWidget>(
           (device) => DeviceWidget(
             deviceState: DeviceState(device: device),

@@ -1,4 +1,7 @@
 import 'package:client/bloc/data_user/data_user_bloc.dart';
+import 'package:client/bloc/devices/devices_bloc.dart';
+import 'package:client/bloc/mqtt_connect/mqtt_connect_bloc.dart';
+import 'package:client/bloc/schedules/schedules_cubit.dart';
 import 'package:client/main.dart';
 import 'package:client/screens/home/devices/main.dart';
 import 'package:client/screens/home/schedules/main.dart';
@@ -10,6 +13,7 @@ import 'package:client/bloc/auth/auth_state.dart';
 import 'package:client/screens/login/main.dart';
 import 'package:client/shared/utils/colors.dart';
 import 'package:client/shared/utils/screen_transitions/open.transition.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -55,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     // implement to get from shared preference for save state
     _currentIndex = 0;
 
-    // BlocProvider.of<DataUserBloc>(context).add(GetDataUserEvent());
+    context.read<DataUserCubit>().getDataUser(forceCloud: false);
   }
 
   @override
@@ -69,34 +73,81 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is LoadingLogoutState) {
-          // Locator.instance.get<UserCognito>().userAttrs['email'];
           Navigator.pushReplacement(
               context, OpenAndFadeTransition(const LoginScreen()));
         }
       },
-      child: _body(),
+      child: Scaffold(
+        backgroundColor: ColorsCustom.loginScreenUp,
+        drawerDragStartBehavior: DragStartBehavior.down,
+        key: _scaffoldKey,
+        drawer: _drawer(),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          items: _bottomNavigatioItens(),
+          onTap: (int idx) {
+            if (idx == _bodys.length) {
+              _scaffoldKey.currentState?.openDrawer();
+            } else {
+              setState(() {
+                _currentIndex = idx;
+              });
+            }
+          },
+        ),
+        body: _body(),
+      ),
     );
   }
 
   Widget _body() {
-    return Scaffold(
-      drawerDragStartBehavior: DragStartBehavior.down,
-      key: _scaffoldKey,
-      drawer: _drawer(),
-      body: IndexedStack(index: _currentIndex, children: _bodys),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        items: _bottomNavigatioItens(),
-        onTap: (int idx) {
-          if (idx == _bodys.length) {
-            _scaffoldKey.currentState?.openDrawer();
-          } else {
-            setState(() {
-              _currentIndex = idx;
-            });
-          }
-        },
-      ),
+    return BlocBuilder<DataUserCubit, DataUserState>(
+      buildWhen: (previous, current) {
+        if (current is LoadDataUserErrorState) {
+          showAboutDialog(context: context, children: <Widget>[
+            Text(current.message),
+          ]);
+        } else if (current is LoadedDataUserState) {
+          print("loaded state >> call mqtt connect");
+          context
+              .read<MqttConnectCubit>()
+              .mqttConnect(current.dataUser.devices!);
+        }
+        return true;
+      },
+      builder: (context, state) {
+        if (state is LoadingDataUserState) {
+          return _loadingData();
+        } else if (state is LoadedDataUserState) {
+          return IndexedStack(
+            index: _currentIndex,
+            children: _bodys,
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
+  }
+
+  Widget _loadingData() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: const <Widget>[
+        Center(
+          child: SpinKitRipple(
+            size: 30,
+            color: ColorsCustom.loginScreenDown,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(20),
+          child: Text(
+            "Buscando dispositivos  ... ",
+            style: TextStyle(fontSize: 22, color: ColorsCustom.loginScreenDown),
+          ),
+        ),
+      ],
     );
   }
 
@@ -264,14 +315,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           leading: const CircleAvatar(child: Icon(Icons.exit_to_app)),
           title: const Text('Sair'),
           onTap: () {
+            context.read<DataUserCubit>().cleanDataUser();
             context.read<AuthCubit>().logout();
-            //   BlocProvider.of<AuthBloc>(context).add(LogoutEvent());
-            // Navigator.pushReplacement(
-            //   context,
-            //   OpenAndFadeTransition(
-            //     const LoginScreen(),
-            //   ),
-            // );
           },
         ),
         const Divider(height: mheight),

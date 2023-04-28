@@ -72,7 +72,7 @@ class DataUserCubit extends Cubit<DataUserState> {
         Map<String, dynamic> dataUserjson =
             jsonDecode(userPref) as Map<String, dynamic>;
         final dataUser = DataUser.fromJson(dataUserjson);
-        await Future.delayed(const Duration(milliseconds: 100));
+        // await Future.delayed(const Duration(milliseconds: 10));
         emit(LoadedDataUserState(dataUser: dataUser));
       }
       // else, get from cloud
@@ -85,5 +85,10 @@ class DataUserCubit extends Cubit<DataUserState> {
     } catch (e) {
       emit(LoadDataUserErrorState(message: e.toString()));
     }
+  }
+
+  Future cleanDataUser() async {
+    SharedPreferences? pref = await SharedPreferences.getInstance();
+    pref.clear();
   }
 }

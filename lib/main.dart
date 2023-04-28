@@ -1,5 +1,7 @@
 import 'package:client/bloc/data_user/data_user_bloc.dart';
-import 'package:client/bloc/mqtt/mqtt_connect/mqtt_connect_bloc.dart';
+import 'package:client/bloc/devices/devices_bloc.dart';
+import 'package:client/bloc/mqtt_connect/mqtt_connect_bloc.dart';
+import 'package:client/bloc/schedules/schedules_cubit.dart';
 import 'package:client/screens/login/main.dart';
 import 'package:client/shared/utils/locator.dart';
 import 'package:flutter/material.dart';
@@ -26,14 +28,11 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        // BlocProvider<AuthCubit>(
-        //   create: (BuildContext context) => AuthCubit(
-        //     LoggedOutState(),
-        //   ),
-        // ),
         BlocProvider(create: (_) => DataUserCubit()),
         BlocProvider(create: (_) => AuthCubit()),
-        BlocProvider(create: (_) => MqttConnectCubit())
+        BlocProvider(create: (_) => MqttConnectCubit()),
+        BlocProvider(create: (_) => DevicesCubit()),
+        BlocProvider(create: (_) => SchedulesCubit())
       ],
       child: const MaterialApp(
         color: Colors.white,

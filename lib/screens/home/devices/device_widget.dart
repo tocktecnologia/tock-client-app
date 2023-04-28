@@ -1,8 +1,10 @@
+import 'package:client/bloc/devices/devices_bloc.dart';
 import 'package:client/screens/home/devices/device_state.dart';
 import 'package:client/shared/utils/colors.dart';
 import 'package:client/shared/utils/components.dart';
 import 'package:client/shared/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 const sizeWidthLamp = 70.0;
 
@@ -22,6 +24,7 @@ class _DeviceWidgetState extends State<DeviceWidget> {
   DeviceState? deviceState;
   bool forceHideAnimation = false;
   bool showProgress = false;
+  DeviceState? myDevice;
 
   @override
   void initState() {
@@ -171,6 +174,23 @@ class _DeviceWidgetState extends State<DeviceWidget> {
   }
 
   Widget _icon() {
+    return BlocBuilder<DevicesCubit, DevicesState>(
+      builder: (context, state) {
+        // print("state: $state");
+        if (state is UpdatedDevicesState) {
+          final myDeviceState = state.deviceStateList
+              .where((element) => element.pin == widget.deviceState.pin)
+              .first
+              .state;
+          // print(myDeviceState != null);
+          // if (myDeviceState != null)
+          return _getIcon(widget.deviceState.type, myDeviceState);
+        } else {
+          return const Icon(Icons.sentiment_dissatisfied,
+              size: 40, color: Colors.grey);
+        }
+      },
+    );
     return _getIcon(deviceState?.type ?? DeviceTypes.LIGHT, deviceState?.state);
     // return BlocListener<LightBloc, LightState>(
     //   listener: (context, state) {

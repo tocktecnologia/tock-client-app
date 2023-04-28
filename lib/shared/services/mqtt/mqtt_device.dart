@@ -135,7 +135,7 @@ class MQttDevice {
 
   _prepareMosquitto(clientId) {
     _client = kIsWeb
-        ? mqttsetup.setup('ws://localhost', clientId, 8008)
+        ? mqttsetup.setup('ws://192.168.0.6', clientId, 8008)
         : mqttsetup.setup('192.168.0.6', clientId, 1883);
     _client?.keepAlivePeriod = 30;
 

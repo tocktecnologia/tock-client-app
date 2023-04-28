@@ -12,6 +12,6 @@ class LoadedDataUserState extends DataUserState {
 }
 
 class LoadDataUserErrorState extends DataUserState {
-  final String? message;
-  LoadDataUserErrorState({this.message});
+  final String message;
+  LoadDataUserErrorState({required this.message});
 }

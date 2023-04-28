@@ -72,8 +72,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _contentLogin() {
     return BlocBuilder<AuthCubit, AuthState>(buildWhen: (previousState, state) {
       if (state is LoggedState) {
-        // BlocProvider.of<IotAwsBloc>(context).add(ConnectIotAwsEvent());
-        context.read<DataUserCubit>().getDataUser(forceCloud: false);
         Navigator.pushReplacement(
           context,
           OpenAndFadeTransition(
