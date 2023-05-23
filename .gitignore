@@ -1,3 +1,7 @@
+# ridden files
+.vscode/
+.idea/
+
 # except this
 !build/
 

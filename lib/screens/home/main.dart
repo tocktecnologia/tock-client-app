@@ -5,6 +5,7 @@ import 'package:client/bloc/schedules/schedules_cubit.dart';
 import 'package:client/main.dart';
 import 'package:client/screens/home/devices/main.dart';
 import 'package:client/screens/home/schedules/main.dart';
+import 'package:client/shared/model/data_user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     // implement to get from shared preference for save state
     _currentIndex = 0;
 
-    context.read<DataUserCubit>().getDataUser(forceCloud: false);
+    context.read<DataUserCubit>().getDataUser();
   }
 
   @override

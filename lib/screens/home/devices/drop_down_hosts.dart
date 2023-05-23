@@ -48,13 +48,13 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
   Widget _dropDownHost(List<Device> devices) {
     return DropdownButton<String>(
       value: dropdownValue,
-      icon: const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Icon(Icons.wifi_rounded, color: Colors.white),
+      icon: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: _iconConnection(),
       ),
       dropdownColor: ColorsCustom.loginScreenMiddle,
       elevation: 5,
-      focusColor: ColorsCustom.loginScreenMiddle.withOpacity(0.9),
+      focusColor: ColorsCustom.loginScreenMiddle.withOpacity(0.1),
       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       underline: Container(),
       onChanged: (String? value) {
@@ -72,5 +72,16 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
         );
       }).toList(),
     );
+  }
+
+  Widget _iconConnection() {
+    return BlocBuilder<MqttConnectCubit, MqttConnectState>(
+        builder: (context, state) {
+      if (state is ConnectedMqttState) {
+        return const Icon(Icons.wifi_rounded, color: Colors.white);
+      } else {
+        return const Icon(Icons.wifi_off_rounded, color: Colors.white);
+      }
+    });
   }
 }

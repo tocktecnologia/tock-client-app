@@ -12,12 +12,11 @@ class UpdatedDevicesState extends DevicesState {
   UpdatedDevicesState(this.deviceStateList);
 }
 
-class UpdatingDevicesState extends DevicesState {
-  final List<DeviceState> someDevices;
-  UpdatingDevicesState(this.someDevices);
+class GettingDevicesState extends DevicesState {
+  GettingDevicesState();
 }
 
 class UpdateDevicesErrorState extends DevicesState {
   final String message;
-  UpdateDevicesErrorState(this.message);
+  UpdateDevicesErrorState({required this.message});
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:client/shared/services/cognito/user_service.dart';
@@ -44,20 +45,37 @@ class MqttService {
     print("client Disconected!");
   }
 
-  Future connect() async {
-    await _awsClient?.connect(userIdentityId!);
+  Future<MqttClientConnectionStatus?> connect() async {
+    return await _awsClient?.connect(userIdentityId!);
   }
 
   Future publishJson(message, String topic) async {
     String msg = jsonEncode(message);
-    _awsClient?.publishMessage(topic, msg);
+
+    if (isConnected()) {
+      _awsClient?.publishMessage(topic, msg);
+    } else {
+      print("client not connected!");
+      connect();
+    }
   }
 
-  Future suibscribe(String topic) async {
-    _awsClient?.subscribe(topic);
+  Future<Subscription?> suibscribe(String topic) async {
+    if (isConnected()) {
+      return _awsClient?.subscribe(topic);
+    }
+
+    print("client not connected!");
+    connect();
+    return null;
   }
 
   bool isConnected() {
-    return _awsClient?.connectionStatus == MqttConnectionState.connected;
+    return _awsClient?.connectionStatus.state == MqttConnectionState.connected;
+  }
+
+  void getShadow(thingId) {
+    print("publishing to ${MqttTopics.topicShadowGet(thingId)}");
+    publishJson({}, MqttTopics.topicShadowGet(thingId));
   }
 }

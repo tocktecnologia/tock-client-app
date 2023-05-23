@@ -65,3 +65,8 @@ class LightStatesLogic {
   static const String LIGHT_ON = "1";
   static const String LIGHT_OFF = "0";
 }
+
+class DeviceStateLogic {
+  static const String DEVICE_ON = "1";
+  static const String DEVICE_OFF = "0";
+}

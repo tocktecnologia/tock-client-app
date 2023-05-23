@@ -34,27 +34,27 @@ class _DevicesScreenState extends State<DevicesScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    // WidgetsBinding.instance.addObserver(this);
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      _notification = state;
-    });
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   // setState(() {
+  //   //   _notification = state;
+  //   // });
 
-    // if (state == AppLifecycleState.resumed) {
-    //   final bool isConnected =
-    //       Locator.instance.get<MqttService>().isConnected();
-    //   if (!isConnected) {
-    //     context.read<MqttConnectCubit>().mqttConnect();
-    //   }
-    // }
-  }
+  //   // if (state == AppLifecycleState.resumed) {
+  //   //   final bool isConnected =
+  //   //       Locator.instance.get<MqttService>().isConnected();
+  //   //   if (!isConnected) {
+  //   //     context.read<MqttConnectCubit>().mqttConnect();
+  //   //   }
+  //   // }
+  // }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    // WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -80,8 +80,8 @@ class _DevicesScreenState extends State<DevicesScreen>
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Olá!"),
-          actions: [_iconLocal()],
-          leading: _iconRemote(),
+          actions: const [DropdownButtonExample()],
+          // leading: _iconRemote(),
           centerTitle: true,
         ),
         body: _cardLights(),
@@ -145,21 +145,75 @@ class _DevicesScreenState extends State<DevicesScreen>
   }
 
   Widget _panelLights() {
+    // Bloc for user data
     return BlocBuilder<DataUserCubit, DataUserState>(
       builder: (context, state) {
         if (state is LoadedDataUserState) {
           context.read<DevicesCubit>().initListDevices(state.dataUser.devices!);
-          return _listWrapReorderable(state.dataUser.devices!);
+          final dataUser = state.dataUser;
+
+          // bloc for mqtt connection
+          return BlocBuilder<MqttConnectCubit, MqttConnectState>(
+            builder: (context, state) {
+              if (state is ConnectingMqttState) {
+                return _loading("Connectando  ... ");
+              } else if (state is ConnectionErrorMqttState) {
+                return const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "Falha na conexão, tente reiniciar!",
+                    style: TextStyle(
+                        fontSize: 17, color: ColorsCustom.loginScreenUp),
+                  ),
+                );
+              } else {
+                // bloc to get devices states
+                return BlocBuilder<DevicesCubit, DevicesState>(
+                  builder: (context, state) {
+                    if (state is GettingDevicesState) {
+                      return _loading("Recuperando estados  ... ");
+                    } else {
+                      return _listWrapReorderable(dataUser.devices!);
+                    }
+                  },
+                );
+              }
+            },
+          );
         } else {
-          return Container();
+          return const Text("Nehum dado foi encontrado!");
         }
       },
     );
   }
 
+  Widget _loading(msg) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        const Center(
+          child: SpinKitRipple(size: 30, color: ColorsCustom.loginScreenUp),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          msg,
+          style: const TextStyle(
+            fontSize: 17,
+            color: ColorsCustom.loginScreenUp,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _updateButton() {
     return BlocBuilder<MqttConnectCubit, MqttConnectState>(
-        builder: (context, state) {
+        buildWhen: (previous, current) {
+      if (previous is ConnectingMqttState && current is ConnectedMqttState) {
+        context.read<DevicesCubit>().getDevicesStates(current.thingIdList);
+      }
+      return true;
+    }, builder: (context, state) {
       if (state is ConnectingMqttState) {
         return const Padding(
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
@@ -167,41 +221,22 @@ class _DevicesScreenState extends State<DevicesScreen>
               SpinKitThreeBounce(color: ColorsCustom.loginScreenUp, size: 20),
         );
       } else {
-        return _icon();
+        return InkWell(
+          onTap: () => _updateStates(),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+            child:
+                Icon(Icons.update, size: 27, color: ColorsCustom.loginScreenUp),
+          ),
+        );
       }
     });
   }
 
-  Widget _icon() {
-    return InkWell(
-      onTap: () => _updateStates(),
-      child: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-        child: Icon(Icons.update, size: 27, color: ColorsCustom.loginScreenUp),
-      ),
-    );
-    // return BlocBuilder<LightsBloc, LightsState>(builder: (context, state) {
-    //   if (state is UpdatingDevicesState) {
-    //     return Padding(
-    //       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-    //       child:
-    //           SpinKitThreeBounce(color: ColorsCustom.loginScreenUp, size: 20),
-    //     );
-    //   } else
-    //     return InkWell(
-    //       onTap: () => _updateStates(),
-    //       child: Padding(
-    //         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-    //         child:
-    //             Icon(Icons.update, size: 27, color: ColorsCustom.loginScreenUp),
-    //       ),
-    //     );
-    // });
-  }
-
-  _updateStates() async {
-    context.read<MqttConnectCubit>().mqttDisconnect();
-    context.read<DataUserCubit>().getDataUser(forceCloud: true);
+  _updateStates() {
+    // context.read<MqttConnectCubit>().mqttDisconnect();
+    // context.read<DataUserCubit>().getDataUser(forceCloud: true);
+    // context.read<DevicesCubit>().getDevicesStates();
   }
 
   Widget _listWrapReorderable(List<Device> deviceList) {
@@ -242,79 +277,5 @@ class _DevicesScreenState extends State<DevicesScreen>
 
     // //update view
     // setState(() {});
-  }
-
-  Widget _iconRemote() {
-    return const Icon(Icons.cloud_off, color: Colors.white30);
-    // return BlocProvider.of<AuthBloc>(context).isConnectedRemote
-    //     ? const Icon(Icons.cloud_done, color: Colors.white)
-    //     : const Icon(Icons.cloud_off, color: Colors.white30);
-  }
-
-  Widget _iconLocal() {
-    return const DropdownButtonExample();
-    // return BlocBuilder<DataUserCubit, DataUserState>(
-    //   builder: (context, state)  {
-    //     if (state is LoadedDataUserState) {
-    //       return InkWell(
-    //         onTap: () {
-    //           // BlocProvider.of<MqttCubit>(context).setHost(MqttSecrets.localhost);
-    //           // context
-    //           //     .read<MqttConnectCubit>()
-    //           //     .changeHost(MqttSecrets.localHost,state);
-    //         },
-    //         child: const Padding(
-    //           padding: EdgeInsets.only(right: 10),
-    //           // child: Icon(Icons.wifi_tethering, color: Colors.white),
-    //           child: DropdownButtonExample(),
-    //         ),
-    //       );
-    //     }
-    //      else return
-    //   },
-    // );
-
-    return InkWell(
-      onTap: () {
-        // BlocProvider.of<MqttCubit>(context).setHost(MqttSecrets.localhost);
-        // context.read<MqttConnectCubit>().changeHost(MqttSecrets.localHost);
-      },
-      child: const Padding(
-        padding: EdgeInsets.only(right: 10),
-        // child: Icon(Icons.wifi_tethering, color: Colors.white),
-        child: DropdownButtonExample(),
-      ),
-    );
-    // return InkWell(
-    // onTap: null,
-    // () {
-    //   ShowAlertOptions.open(
-    //     context: context,
-    //     contentText:
-    //         "Tem certeza que deseja ${isLocalEnabled ? 'desabilitar' : 'habilitar'} o mode operação local?",
-    //     action: () {
-    //       isLocalEnabled
-    //           ? BlocProvider.of<LocalConfigBloc>(context)
-    //               .add(ConfigEvent.disableLocal)
-    //           : BlocProvider.of<LocalConfigBloc>(context)
-    //               .add(ConfigEvent.enableLocal);
-
-    //       //restart app
-    //       BlocProvider.of<AuthBloc>(context).add(ForceLoginEvent());
-    //       Navigator.pushReplacement(context, SizeRoute(page: LoginScreen()));
-    //     },
-    //   );
-    // },
-    //   child: BlocBuilder<LocalConfigBloc, ConfigState>(
-    //     builder: (BuildContext context, ConfigState state) {
-    //       return Padding(
-    //         padding: EdgeInsets.symmetric(horizontal: 10),
-    //         child: state.value
-    //             ? Icon(Icons.wifi_tethering, color: Colors.white)
-    //             : Icon(Icons.portable_wifi_off, color: Colors.white30),
-    //       );
-    //     },
-    //   ),
-    // );
   }
 }

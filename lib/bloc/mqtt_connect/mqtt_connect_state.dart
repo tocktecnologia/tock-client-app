@@ -6,7 +6,10 @@ class MqttConnectInitial extends MqttConnectState {}
 
 class ConnectingMqttState extends MqttConnectState {}
 
-class ConnectedMqttState extends MqttConnectState {}
+class ConnectedMqttState extends MqttConnectState {
+  final List<String> thingIdList;
+  ConnectedMqttState(this.thingIdList);
+}
 
 class DisonnectedMqttState extends MqttConnectState {}
 

@@ -74,26 +74,28 @@ class MQttDevice {
     }
   }
 
-  Future<void> connect(String clientId) async {
+  Future<MqttClientConnectionStatus?> connect(String clientId) async {
     if (_client == null) {
       _prepare(clientId);
     }
 
     /// Check we are connected
     if (_client?.connectionStatus?.state == MqttConnectionState.connected) {
-      // print('EXAMPLE::Mosquitto client connected');
+      print('client already connected!');
+      return _client?.connectionStatus;
     } else {
       /// Use status here rather than state if you also want the broker return code.
       // print(
       //     'EXAMPLE::ERROR Mosquitto client connection failed - disconnecting, status is ${_client?.connectionStatus}');
       _client?.disconnect();
+      return await _client?.connect();
 
-      try {
-        await _client?.connect();
-      } on Exception catch (_) {
-        _client?.disconnect();
-        rethrow;
-      }
+      // try {
+      //   await _client?.connect();
+      // } on Exception catch (_) {
+      //   _client?.disconnect();
+      //   rethrow;
+      // }
     }
 
     // _client?.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
@@ -120,7 +122,7 @@ class MQttDevice {
     }
 
     _client?.logging(on: _logging == true);
-    _client?.autoReconnect = true;
+    _client?.autoReconnect = false;
   }
 
   _prepareAws(String clientId) {
