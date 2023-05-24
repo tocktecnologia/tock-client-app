@@ -42,14 +42,14 @@ class DevicesCubit extends Cubit<DevicesState> {
       return;
     }
 
-    // emit(UpdatingDevicesState(deviceStateList));
-    print("updateReportedDevices received: ${msgJson["state"]["reported"]}");
+    // print("updateReportedDevices received: ${msgJson["state"]["reported"]}");
     msgJson["state"]["reported"].forEach((String k, v) {
       if (k.startsWith("pin")) {
         final pinReported = k.substring(3);
         final deviceIdx =
             deviceStateList.indexWhere((element) => element.pin == pinReported);
-        // substiotution
+
+        // substitution
         if (deviceIdx >= 0) {
           deviceStateList[deviceIdx] = DeviceState(
               device: deviceStateList[deviceIdx], state: v.toString());
@@ -60,12 +60,25 @@ class DevicesCubit extends Cubit<DevicesState> {
     emit(UpdatedDevicesState(deviceStateList));
   }
 
-  Future<void> getDevicesStates(thingIdList) async {
+  Future<void> getDevicesStates() async {
     emit(GettingDevicesState());
+    if (deviceStateList.isEmpty) return;
+
     try {
-      for (var thingId in thingIdList) {
-        Locator.instance.get<MqttService>().getShadow(thingId);
+      final seen = <String>{};
+      List<Device> devicesUnique = deviceStateList
+          .where((device) => seen.add(device.remoteId!))
+          .toList();
+
+      for (int i = 0; i < devicesUnique.length; i++) {
+        Locator.instance
+            .get<MqttService>()
+            .getShadow(devicesUnique[i].remoteId);
       }
+
+      // for (var thingId in thingIdList) {
+      //   Locator.instance.get<MqttService>().getShadow(thingId);
+      // }
       // emit(UpdatedDevicesState(deviceStateList));
     } catch (e) {
       emit(UpdateDevicesErrorState(message: HandleExptions.message(e)));

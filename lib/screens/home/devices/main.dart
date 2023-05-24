@@ -28,29 +28,20 @@ class DevicesScreen extends StatefulWidget {
 
 class _DevicesScreenState extends State<DevicesScreen>
     with WidgetsBindingObserver {
-  AppLifecycleState? _notification;
   bool isLocalEnabled = false;
+  List<String> thingIdList = [];
 
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   // setState(() {
-  //   //   _notification = state;
-  //   // });
-
-  //   // if (state == AppLifecycleState.resumed) {
-  //   //   final bool isConnected =
-  //   //       Locator.instance.get<MqttService>().isConnected();
-  //   //   if (!isConnected) {
-  //   //     context.read<MqttConnectCubit>().mqttConnect();
-  //   //   }
-  //   // }
-  // }
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    context.read<DevicesCubit>().getDevicesStates();
+  }
 
   @override
   void dispose() {
@@ -166,7 +157,9 @@ class _DevicesScreenState extends State<DevicesScreen>
                         fontSize: 17, color: ColorsCustom.loginScreenUp),
                   ),
                 );
-              } else {
+              } else if (state is ConnectedMqttState) {
+                thingIdList = state.thingIdList;
+
                 // bloc to get devices states
                 return BlocBuilder<DevicesCubit, DevicesState>(
                   builder: (context, state) {
@@ -177,6 +170,8 @@ class _DevicesScreenState extends State<DevicesScreen>
                     }
                   },
                 );
+              } else {
+                return Text("state: $state");
               }
             },
           );
@@ -210,7 +205,7 @@ class _DevicesScreenState extends State<DevicesScreen>
     return BlocBuilder<MqttConnectCubit, MqttConnectState>(
         buildWhen: (previous, current) {
       if (previous is ConnectingMqttState && current is ConnectedMqttState) {
-        context.read<DevicesCubit>().getDevicesStates(current.thingIdList);
+        context.read<DevicesCubit>().getDevicesStates();
       }
       return true;
     }, builder: (context, state) {
@@ -234,14 +229,13 @@ class _DevicesScreenState extends State<DevicesScreen>
   }
 
   _updateStates() {
+    context.read<DevicesCubit>().getDevicesStates();
     // context.read<MqttConnectCubit>().mqttDisconnect();
     // context.read<DataUserCubit>().getDataUser(forceCloud: true);
     // context.read<DevicesCubit>().getDevicesStates();
   }
 
   Widget _listWrapReorderable(List<Device> deviceList) {
-    // final lights = BlocProvider.of<LightsBloc>(context).lights;
-
     final devicesWidget = deviceList
         .map<DeviceWidget>(
           (device) => DeviceWidget(

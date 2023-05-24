@@ -72,82 +72,78 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
-      listener: (context, state) {
-        if (state is LoadingLogoutState) {
-          Navigator.pushReplacement(
-              context, OpenAndFadeTransition(const LoginScreen()));
-        }
-      },
-      child: Scaffold(
-        backgroundColor: ColorsCustom.loginScreenUp,
-        drawerDragStartBehavior: DragStartBehavior.down,
-        key: _scaffoldKey,
-        drawer: _drawer(),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          items: _bottomNavigatioItens(),
-          onTap: (int idx) {
-            if (idx == _bodys.length) {
-              _scaffoldKey.currentState?.openDrawer();
+        listener: (context, state) {
+          if (state is LoadingLogoutState) {
+            Navigator.pushReplacement(
+                context, OpenAndFadeTransition(const LoginScreen()));
+          }
+        },
+        child: BlocBuilder<DataUserCubit, DataUserState>(
+          buildWhen: (previous, current) {
+            if (current is LoadDataUserErrorState) {
+              showAboutDialog(context: context, children: <Widget>[
+                Text(current.message),
+              ]);
+            } else if (current is LoadedDataUserState) {
+              context
+                  .read<MqttConnectCubit>()
+                  .mqttConnect(current.dataUser.devices!);
+            }
+            return true;
+          },
+          builder: (context, state) {
+            if (state is LoadingDataUserState) {
+              return _loadingData();
+            } else if (state is LoadedDataUserState) {
+              return Scaffold(
+                backgroundColor: ColorsCustom.loginScreenUp,
+                drawerDragStartBehavior: DragStartBehavior.down,
+                key: _scaffoldKey,
+                drawer: _drawer(),
+                bottomNavigationBar: BottomNavigationBar(
+                  currentIndex: _currentIndex,
+                  items: _bottomNavigatioItens(),
+                  onTap: (int idx) {
+                    if (idx == _bodys.length) {
+                      _scaffoldKey.currentState?.openDrawer();
+                    } else {
+                      setState(() {
+                        _currentIndex = idx;
+                      });
+                    }
+                  },
+                ),
+                body: IndexedStack(index: _currentIndex, children: _bodys),
+              );
             } else {
-              setState(() {
-                _currentIndex = idx;
-              });
+              return Container();
             }
           },
-        ),
-        body: _body(),
-      ),
-    );
-  }
-
-  Widget _body() {
-    return BlocBuilder<DataUserCubit, DataUserState>(
-      buildWhen: (previous, current) {
-        if (current is LoadDataUserErrorState) {
-          showAboutDialog(context: context, children: <Widget>[
-            Text(current.message),
-          ]);
-        } else if (current is LoadedDataUserState) {
-          context
-              .read<MqttConnectCubit>()
-              .mqttConnect(current.dataUser.devices!);
-        }
-        return true;
-      },
-      builder: (context, state) {
-        if (state is LoadingDataUserState) {
-          return _loadingData();
-        } else if (state is LoadedDataUserState) {
-          return IndexedStack(
-            index: _currentIndex,
-            children: _bodys,
-          );
-        } else {
-          return Container();
-        }
-      },
-    );
+        ));
   }
 
   Widget _loadingData() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: const <Widget>[
-        Center(
-          child: SpinKitRipple(
-            size: 30,
-            color: ColorsCustom.loginScreenDown,
+    return Scaffold(
+      backgroundColor: ColorsCustom.loginScreenUp,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: const <Widget>[
+          Center(
+            child: SpinKitRipple(
+              size: 30,
+              color: ColorsCustom.loginScreenDown,
+            ),
           ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(20),
-          child: Text(
-            "Buscando dispositivos  ... ",
-            style: TextStyle(fontSize: 22, color: ColorsCustom.loginScreenDown),
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(
+              "Buscando dispositivos  ... ",
+              style:
+                  TextStyle(fontSize: 22, color: ColorsCustom.loginScreenDown),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

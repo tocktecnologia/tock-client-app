@@ -1,7 +1,7 @@
 class Endpoints {
   static const NetAddress = "http://10.0.1";
 
-  static const String STAGE = "prod";
+  static const String STAGE = "dev";
   static const String AWSBASE =
       "https://9cw57hx4ja.execute-api.us-east-1.amazonaws.com";
 }

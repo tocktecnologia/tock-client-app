@@ -18,8 +18,8 @@ class AwsApi {
     String body =
         '{"email":"${user?.email}","identity_id":"${credentials?.userIdentityId}","environment_name":"${user?.locale}"}';
     Map<String, String> headers = {
-      "Content-type": "application/json",
-      "auth": '${credentials?.sessionToken}'
+      "Content-Type": "application/json",
+      "auth": '${credentials?.sessionToken}',
     };
 
     //try {

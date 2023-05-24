@@ -92,8 +92,6 @@ class _DeviceWidgetState extends State<DeviceWidget> {
     };
     final String topic = '\$aws/things/${deviceState?.remoteId}/shadow/update';
 
-    print("\nmsg: $msg");
-    print("topic: $topic");
     Locator.instance.get<MqttService>().publishJson(msg, topic);
   }
 
