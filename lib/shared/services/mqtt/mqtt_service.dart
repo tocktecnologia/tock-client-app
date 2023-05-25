@@ -41,7 +41,6 @@ class MqttService {
 
   Future<MqttClientConnectionStatus?> connect() async {
     // print("connecting with id: $userIdentityId");
-    // final id = "${const Uuid().v4()}-$userIdentityId";
     final start = sessionToken?.length ?? 10 - 8;
     final id = "$userIdentityId-${sessionToken?.substring(start)}";
 
