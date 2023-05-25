@@ -13,6 +13,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final localeController = TextEditingController();
   final passController = TextEditingController();
@@ -21,9 +22,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   void dispose() {
     super.dispose();
+    nameController.dispose();
     emailController.dispose();
     localeController.dispose();
     passController.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -31,9 +38,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       backgroundColor: ColorsCustom.loginScreenUp,
       appBar: AppBar(
-        leading: const Icon(
-          Icons.arrow_back,
-          color: Colors.white,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: const Text(
@@ -51,7 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       child: Form(
         key: _formKey,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -64,19 +74,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 30.0),
               InputLogin(
+                prefixIcon: Icons.format_color_text_rounded,
+                hint: 'nome',
+                keyboardType: TextInputType.text,
+                textEditingController: nameController,
+              ),
+              const SizedBox(height: 30.0),
+              InputLogin(
                 prefixIcon: Icons.home,
                 hint: 'Local (Casa, Condomínio, AP ...)',
                 keyboardType: TextInputType.text,
                 textEditingController: localeController,
               ),
-              SizedBox(height: 30.0),
+              const SizedBox(height: 30.0),
               InputLogin(
                 prefixIcon: Icons.lock,
                 hint: 'senha',
                 obscureText: true,
                 textEditingController: passController,
               ),
-              SizedBox(height: 30.0),
+              const SizedBox(height: 30.0),
               _buttonSignUp(),
             ],
           ),
@@ -120,7 +137,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
           return ButtonLogin(
             backgroundColor: Colors.white,
             label: 'OK',
-            mOnPressed: () => _signUp(),
+            mOnPressed: () {
+              context.read<AuthCubit>().signup(
+                    email: emailController.text,
+                    password: passController.text,
+                    name: nameController.text,
+                    locale: localeController.text,
+                  );
+            },
           );
         }
       },
@@ -137,17 +161,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   _signUp() {
-    if (_formKey.currentState!.validate()) {
-      // BlocProvider.of<AuthBloc>(context).add(
-      //   SignUpEvent(
-      //     login: emailController.text, password: passController.text,
-      //     // if you want more attributes, just do add in json
-      //     jsonAttrs: {
-      //       'email': emailController.text,
-      //       'locale': localeController.text
-      //     },
-      //   ),
-      // );
-    }
+    if (_formKey.currentState!.validate()) {}
   }
 }

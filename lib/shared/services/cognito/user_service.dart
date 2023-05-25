@@ -144,6 +144,29 @@ class CognitoUserService {
     return user;
   }
 
+  Future<User> signUpTock(
+      {required email,
+      required password,
+      required name,
+      required locale}) async {
+    CognitoUserPoolData? data;
+    final userAttributes = [
+      AttributeArg(name: 'email', value: email),
+      AttributeArg(name: 'name', value: name),
+      AttributeArg(name: 'locale', value: locale),
+    ];
+    data = await _userPool?.signUp(email, password,
+        userAttributes: userAttributes);
+
+    final user = User();
+    user.email = email;
+    user.name = name;
+    user.locale = locale;
+    user.confirmed = data?.userConfirmed ?? false;
+
+    return user;
+  }
+
   Future<void> signOut() async {
     if (credentials != null) {
       await credentials!.resetAwsCredentials();

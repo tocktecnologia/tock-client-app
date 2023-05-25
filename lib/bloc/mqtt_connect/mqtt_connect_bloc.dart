@@ -8,8 +8,10 @@ import 'package:client/shared/services/cognito/user_service.dart';
 import 'package:client/shared/utils/constants.dart';
 import 'package:client/shared/utils/handle_exceptions.dart';
 import 'package:client/shared/utils/locator.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mqtt_client/mqtt_client.dart';
+
 part 'mqtt_connect_state.dart';
 
 class MqttConnectCubit extends Cubit<MqttConnectState> {

@@ -26,8 +26,6 @@ class MqttService {
       secretAccessKey,
       sessionToken,
       host,
-      onConnected: onConnected,
-      onDisconnected: onDisconnected,
       logging: false,
     );
     this.userIdentityId = userIdentityId;
@@ -37,15 +35,8 @@ class MqttService {
     _awsClient?.disconnect();
   }
 
-  void onConnected() {
-    print("client Connected!");
-  }
-
-  void onDisconnected() {
-    print("client Disconected!");
-  }
-
   Future<MqttClientConnectionStatus?> connect() async {
+    // print("connecting with id: $userIdentityId");
     return await _awsClient?.connect(userIdentityId!);
   }
 

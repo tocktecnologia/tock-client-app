@@ -112,7 +112,7 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
               const SizedBox(height: 10),
               Text(
                 'Resend code for ${widget.email} ...',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   color: Colors.white,
                 ),
@@ -120,15 +120,16 @@ class _ConfirmSignUpScreenState extends State<ConfirmSignUpScreen> {
               ),
             ],
           );
-        } else
+        } else {
           return Text(
             "Verify the code sent to email ${widget.email}",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               color: Colors.white,
             ),
             textAlign: TextAlign.center,
           );
+        }
       },
     );
   }

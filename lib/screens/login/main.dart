@@ -80,9 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else if (state is LoginErrorState) {
         ShowAlert.open(
-            context: context,
-            titleText: "Alerta de Conexão",
-            contentText: state.message);
+            context: context, titleText: "Alerta", contentText: state.message);
       }
       return true;
     }, builder: (context, state) {
@@ -225,19 +223,20 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _confirmAccount() {
-    if (regExp.hasMatch(loginController.text))
+    if (regExp.hasMatch(loginController.text)) {
       Navigator.push(
           context,
           SlideDownRoute(
               page: ConfirmSignUpScreen(
             email: loginController.text,
           )));
-    else
+    } else {
       ShowAlert.open(
         context: context,
         titleText: 'Alert',
         contentText: 'Please type a valid Email in login field.',
       );
+    }
   }
 
   _signUp() {

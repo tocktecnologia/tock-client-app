@@ -40,10 +40,27 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> logout() async {
-    emit(LoadingLogoutState());
-    Locator.instance.get<CognitoUserService>().signOut();
-    emit(LoggedOutState());
-    try {} catch (e) {
+    try {
+      emit(LoadingLogoutState());
+      Locator.instance.get<CognitoUserService>().signOut();
+      emit(LoggedOutState());
+    } catch (e) {
+      emit(LoginErrorState(message: e.toString(), type: e.runtimeType));
+    }
+  }
+
+  Future<void> signup(
+      {required email,
+      required password,
+      required name,
+      required locale}) async {
+    try {
+      emit(LoadingSignUpState());
+      await Locator.instance.get<CognitoUserService>().signUpTock(
+          email: email, password: password, locale: locale, name: name);
+
+      emit(LoadedSignUpState());
+    } catch (e) {
       emit(LoginErrorState(message: e.toString(), type: e.runtimeType));
     }
   }
