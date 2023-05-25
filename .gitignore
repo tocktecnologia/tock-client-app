@@ -8,6 +8,7 @@
 # ignore all in this and after except subfolder
 build/*
 !build/app/
+!build/web/
 
 # ignore all in this and after except subfolder
 build/app/*
