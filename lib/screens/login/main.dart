@@ -34,8 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    loginController.text = widget.login ?? 'izaiasemjr@gmail.com';
-    passController.text = 'junymqwe';
+    loginController.text = widget.login ?? 'greenlife2b@gmail.com';
+    passController.text = 'greenlife';
   }
 
   @override

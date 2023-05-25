@@ -14,7 +14,10 @@ import 'package:uuid/uuid.dart';
 class MqttService {
   MQttDevice? _awsClient;
   MQttDevice? get awsClient => _awsClient;
+
   String? userIdentityId;
+  String? sessionToken;
+
   final StreamController<String> _controller = StreamController<String>();
   StreamController<String> get controller => _controller;
 
@@ -29,6 +32,7 @@ class MqttService {
       logging: false,
     );
     this.userIdentityId = userIdentityId;
+    this.sessionToken = sessionToken;
   }
 
   void disconnect() {
@@ -37,7 +41,11 @@ class MqttService {
 
   Future<MqttClientConnectionStatus?> connect() async {
     // print("connecting with id: $userIdentityId");
-    return await _awsClient?.connect(userIdentityId!);
+    // final id = "${const Uuid().v4()}-$userIdentityId";
+    final start = sessionToken?.length ?? 10 - 8;
+    final id = "$userIdentityId-${sessionToken?.substring(start)}";
+
+    return await _awsClient?.connect(id);
   }
 
   Future publishJson(message, String topic) async {
