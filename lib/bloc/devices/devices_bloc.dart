@@ -15,6 +15,8 @@ class DevicesCubit extends Cubit<DevicesState> {
   List<DeviceState> deviceStateList = [];
 
   Future initListDevices(List<Device> deviceList) async {
+    if (deviceStateList.isNotEmpty) return;
+
     deviceStateList = deviceList
         .map<DeviceState>((device) => DeviceState(device: device))
         .toList();

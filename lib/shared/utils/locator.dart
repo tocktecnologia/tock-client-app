@@ -1,3 +1,4 @@
+import 'package:client/shared/services/api/schedules_aws.dart';
 import 'package:client/shared/services/api/user_aws.dart';
 import 'package:client/shared/services/mqtt/mqtt_service.dart';
 import 'package:client/shared/services/cognito/user_service.dart';
@@ -20,6 +21,6 @@ class Locator {
     // _i.registerSingleton<AwsIot>(AwsIot());
 
     _i.registerSingleton<AwsApi>(AwsApi());
-    // _i.registerLazySingleton<AwsApiSchedules>(() => AwsApiSchedules());
+    _i.registerLazySingleton<AwsApiSchedules>(() => AwsApiSchedules());
   }
 }

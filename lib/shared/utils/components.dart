@@ -210,6 +210,14 @@ class ShowAlert {
               if (onConfirmation != null) onConfirmation();
             },
             child: Text(confirmationText ?? 'OK'),
+          ),
+          RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              side: const BorderSide(color: ColorsCustom.loginScreenUp),
+            ),
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Voltar'),
           )
         ],
       ),

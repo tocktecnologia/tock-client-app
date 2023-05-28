@@ -1,6 +1,7 @@
 import 'package:client/bloc/data_user/data_user_bloc.dart';
 import 'package:client/bloc/devices/devices_bloc.dart';
 import 'package:client/bloc/mqtt_connect/mqtt_connect_bloc.dart';
+import 'package:client/bloc/schedules/schedules_cubit.dart';
 import 'package:client/screens/home/devices/device_widget.dart';
 import 'package:client/screens/home/devices/device_state.dart';
 import 'package:client/screens/home/devices/drop_down_hosts.dart';
@@ -17,7 +18,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 const paddingHorizIntern = 10.0;
 const paddingHorizExtern = 10.0;
-const numLampsRow = kIsWeb ? 7 : 4;
 
 class DevicesScreen extends StatefulWidget {
   const DevicesScreen({super.key});
@@ -40,7 +40,8 @@ class _DevicesScreenState extends State<DevicesScreen>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    context.read<DevicesCubit>().getDevicesStates();
+    print(MediaQuery.of(context).size);
+    // context.read<DevicesCubit>().getDevicesStates();
   }
 
   @override
@@ -140,8 +141,9 @@ class _DevicesScreenState extends State<DevicesScreen>
     return BlocBuilder<DataUserCubit, DataUserState>(
       builder: (context, state) {
         if (state is LoadedDataUserState) {
-          context.read<DevicesCubit>().initListDevices(state.dataUser.devices!);
           final dataUser = state.dataUser;
+          context.read<DevicesCubit>().initListDevices(dataUser.devices!);
+          context.read<SchedulesCubit>().initListSchedules(dataUser.schedules!);
 
           // bloc for mqtt connection
           return BlocBuilder<MqttConnectCubit, MqttConnectState>(
@@ -165,8 +167,10 @@ class _DevicesScreenState extends State<DevicesScreen>
                   builder: (context, state) {
                     if (state is GettingDevicesState) {
                       return _loading("Recuperando estados  ... ");
+                    } else if (state is UpdatedDevicesState) {
+                      return _listWrapReorderable(state.deviceStateList);
                     } else {
-                      return _listWrapReorderable(dataUser.devices!);
+                      return Text("state: $state");
                     }
                   },
                 );
@@ -230,30 +234,24 @@ class _DevicesScreenState extends State<DevicesScreen>
 
   _updateStates() {
     context.read<DevicesCubit>().getDevicesStates();
-    // context.read<MqttConnectCubit>().mqttDisconnect();
-    // context.read<DataUserCubit>().getDataUser(forceCloud: true);
-    // context.read<DevicesCubit>().getDevicesStates();
   }
 
-  Widget _listWrapReorderable(List<Device> deviceList) {
+  Widget _listWrapReorderable(List<DeviceState> deviceList) {
     final devicesWidget = deviceList
         .map<DeviceWidget>(
           (device) => DeviceWidget(
-            deviceState: DeviceState(device: device),
+            deviceState: device,
           ),
         )
         .toList();
 
     return ReorderableWrap(
-      spacing: (MediaQuery.of(context).size.width -
-              numLampsRow * sizeWidthLamp -
-              2 * paddingHorizExtern -
-              2 * paddingHorizIntern) /
-          (numLampsRow - 1),
+      spacing: kIsWeb ? 70 : 20,
       runSpacing: 20,
-      padding: const EdgeInsets.only(top: 20, bottom: 10),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       onReorder: _onReorder,
       enableReorder: false,
+      alignment: WrapAlignment.spaceEvenly,
       children: devicesWidget,
     );
   }

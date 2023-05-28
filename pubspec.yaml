@@ -63,10 +63,6 @@ flutter_launcher_icons:
     generate: true
     image_path: "assets/images/1024x1024.png"
 
-# flutter_icons:
-#   android: "launcher_icon" 
-#   ios: true
-#   image_path: "assets/images/1024x1024.png"
 
 # The following section is specific to Flutter packages.
 flutter:

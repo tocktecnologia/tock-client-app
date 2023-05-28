@@ -1,3 +1,5 @@
+import 'package:client/shared/model/data_user_model.dart';
+
 class TockTime {
   /// UTC TO LOCAL /////////////////////////////////////////////////////////
 
@@ -43,38 +45,39 @@ class TockTime {
   ///////////////////////////////////////////////////////////////////////////
 
   /// LOCAL TO UTC /////////////////////////////////////////////////////////
-  // static Schedule scheduleLocal2Utc(Schedule schedule) {
-  //   Schedule newSchedule = Schedule(
-  //       scheduleTime: schedule.scheduleTime,
-  //       scheduleAction: schedule.scheduleAction,
-  //       scheduleId: schedule.scheduleId,
-  //       scheduleName: schedule.scheduleName,
-  //       scheduleState: schedule.scheduleState,
-  //       scheduleType: schedule.scheduleType,
-  //       scheduleWeek: schedule.scheduleWeek);
+  static Schedule scheduleLocal2Utc(Schedule schedule) {
+    Schedule newSchedule = Schedule(
+        scheduleTime: schedule.scheduleTime,
+        scheduleAction: schedule.scheduleAction,
+        scheduleId: schedule.scheduleId,
+        scheduleName: schedule.scheduleName,
+        scheduleState: schedule.scheduleState,
+        scheduleType: schedule.scheduleType,
+        scheduleWeek: schedule.scheduleWeek);
 
-  //   newSchedule.scheduleWeek =
-  //       localDaysWeek2Utc(newSchedule.scheduleWeek!, newSchedule.scheduleTime!);
+    newSchedule.scheduleWeek =
+        localDaysWeek2Utc(newSchedule.scheduleWeek!, newSchedule.scheduleTime!);
 
-  //   newSchedule.scheduleTime = local2UtcTime(newSchedule.scheduleTime!);
-  //   return newSchedule;
-  // }
-  // static Schedule scheduleUtc2local(Schedule schedule) {
-  //   Schedule newSchedule = Schedule(
-  //       scheduleTime: schedule.scheduleTime,
-  //       scheduleAction: schedule.scheduleAction,
-  //       scheduleId: schedule.scheduleId,
-  //       scheduleName: schedule.scheduleName,
-  //       scheduleState: schedule.scheduleState,
-  //       scheduleType: schedule.scheduleType,
-  //       scheduleWeek: schedule.scheduleWeek);
+    newSchedule.scheduleTime = local2UtcTime(newSchedule.scheduleTime!);
+    return newSchedule;
+  }
 
-  //   newSchedule.scheduleWeek =
-  //       utcDaysWeek2Local(newSchedule.scheduleWeek!, newSchedule.scheduleTime!);
+  static Schedule scheduleUtc2local(Schedule schedule) {
+    Schedule newSchedule = Schedule(
+        scheduleTime: schedule.scheduleTime,
+        scheduleAction: schedule.scheduleAction,
+        scheduleId: schedule.scheduleId,
+        scheduleName: schedule.scheduleName,
+        scheduleState: schedule.scheduleState,
+        scheduleType: schedule.scheduleType,
+        scheduleWeek: schedule.scheduleWeek);
 
-  //   newSchedule.scheduleTime = utc2LocalTime(newSchedule.scheduleTime!);
-  //   return newSchedule;
-  // }
+    newSchedule.scheduleWeek =
+        utcDaysWeek2Local(newSchedule.scheduleWeek!, newSchedule.scheduleTime!);
+
+    newSchedule.scheduleTime = utc2LocalTime(newSchedule.scheduleTime!);
+    return newSchedule;
+  }
 
   static String local2UtcTime(String scheduleTime) {
     // get hour and minuto from string
