@@ -72,11 +72,11 @@ class _ScheduleCardState extends State<ScheduleCard> {
                               "Tem certeza que deseja REVERTER esse agendamento?",
                           confirmationText: "sim",
                           onConfirmation: () {
-                            // context
-                            //     .read<SchedulesCubit>()
-                            //     .executeScheduleActions(
-                            //         (schedule?.scheduleAction)!,
-                            //         reverse: true);
+                            context
+                                .read<SchedulesCubit>()
+                                .executeScheduleActions(
+                                    (schedule?.scheduleAction)!,
+                                    reverse: true);
 
                             // BlocProvider.of<SchedulesCubit>(context).add(
                             //   ExecuteScheduleActionsEvent(
