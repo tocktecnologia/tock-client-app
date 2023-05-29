@@ -58,9 +58,11 @@ class _SchedulesScreenState extends State<SchedulesScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: ReorderableWrap(
         direction: Axis.horizontal,
+        spacing: 50,
         runSpacing: 20,
         padding: const EdgeInsets.symmetric(vertical: 20),
         children: schdeulesList,
+        alignment: WrapAlignment.spaceEvenly,
         onReorder: _onReorder,
       ),
     );

@@ -10,6 +10,7 @@ class DeviceState extends Device {
     pin = device.pin;
     remoteId = device.remoteId;
     type = device.type;
+    stateOn = device.stateOn;
     this.state = state ?? LightStatesLogic.LIGHT_OFF;
   }
 }

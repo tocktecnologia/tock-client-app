@@ -131,6 +131,7 @@ class Device {
   String? pin;
   String? remoteId;
   String? type;
+  String? stateOn;
 
   Device({label, localId, objectId, pin, remoteId, type});
 
@@ -141,6 +142,8 @@ class Device {
     pin = json['pin'];
     remoteId = json['remote_id'];
     type = json['type'];
+    stateOn = json['state_on'] ?? "0";
+    // json.containsKey('state_on') ? json['state_on'] : "0";
   }
 
   Map<String, dynamic> toJson() {
@@ -151,6 +154,7 @@ class Device {
     data['pin'] = pin;
     data['remote_id'] = remoteId;
     data['type'] = type;
+    data['state_on'] = stateOn;
     return data;
   }
 }

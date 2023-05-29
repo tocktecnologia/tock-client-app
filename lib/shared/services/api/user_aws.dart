@@ -22,7 +22,7 @@ class AwsApi {
       "auth": '${credentials?.sessionToken}',
     };
 
-    //try {
+    // print('AwsApi - body: $body');
     final response = await post(Uri.https(url, '${Endpoints.STAGE}/user'),
             headers: headers, body: body)
         .timeout(const Duration(seconds: 15));

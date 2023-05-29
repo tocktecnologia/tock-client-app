@@ -117,36 +117,37 @@ class _DeviceWidgetState extends State<DeviceWidget> {
               .where((element) => element.pin == widget.deviceState.pin)
               .first
               .state;
-          return _getIcon(widget.deviceState.type, myDeviceState);
-        } else {
           return _getIcon(
-              deviceState?.type ?? DeviceTypes.LIGHT, deviceState?.state);
+              widget.deviceState.type, myDeviceState, deviceState?.stateOn);
+        } else {
+          return _getIcon(deviceState?.type ?? DeviceTypes.LIGHT,
+              deviceState?.state, deviceState?.stateOn);
         }
       },
     );
   }
 
-  Widget _getIcon(type, mState) {
+  Widget _getIcon(type, mState, stateOn) {
     switch (type) {
       case DeviceTypes.LIGHT:
         return Tab(
-          icon: mState == DeviceStateLogic.DEVICE_ON
-              ? Image.asset("assets/icons/lampOff.png")
-              : Image.asset("assets/icons/lampOn.png"),
+          icon: mState == stateOn
+              ? Image.asset("assets/icons/lampOn.png")
+              : Image.asset("assets/icons/lampOff.png"),
         );
       case DeviceTypes.BOMB:
         return SizedBox(
           width: 60,
           height: 60,
           child: Tab(
-            icon: mState == DeviceStateLogic.DEVICE_OFF
+            icon: mState == stateOn
                 ? Image.asset("assets/icons/bombOff.png")
                 : Image.asset("assets/icons/bombOn.png"),
           ),
         );
       case DeviceTypes.LIGHTS:
         return Tab(
-          icon: mState == DeviceStateLogic.DEVICE_ON
+          icon: mState == stateOn
               ? Image.asset("assets/icons/lampsOff.png")
               : Image.asset("assets/icons/lampsOn.png"),
         );

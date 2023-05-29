@@ -40,9 +40,9 @@ class MqttService {
   }
 
   Future<MqttClientConnectionStatus?> connect() async {
-    // print("connecting with id: $userIdentityId");
-    final start = sessionToken?.length ?? 10 - 8;
+    final start = (sessionToken?.length)! - 8;
     final id = "$userIdentityId-${sessionToken?.substring(start)}";
+    print("connecting with id: $id ...");
 
     return await _awsClient?.connect(id);
   }

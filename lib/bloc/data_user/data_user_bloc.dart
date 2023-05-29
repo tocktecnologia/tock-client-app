@@ -13,7 +13,7 @@ const keyDataUser = "dataUser";
 class DataUserCubit extends Cubit<DataUserState> {
   DataUserCubit() : super(DataUserInitial());
 
-  Future getDataUser({bool forceCloud = false}) async {
+  Future getDataUser({bool forceCloud = true}) async {
     emit(LoadingDataUserState());
 
     try {
@@ -21,6 +21,7 @@ class DataUserCubit extends Cubit<DataUserState> {
       String? userPref = pref.getString(keyDataUser);
 
       // if has data in memory
+
       if (userPref != null && !forceCloud) {
         print("getting userData from shared preferences");
         Map<String, dynamic> dataUserjson =

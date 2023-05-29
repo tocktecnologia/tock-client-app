@@ -37,12 +37,11 @@ class _DevicesScreenState extends State<DevicesScreen>
     WidgetsBinding.instance.addObserver(this);
   }
 
-  @override
-  void didChangeMetrics() {
-    super.didChangeMetrics();
-    print(MediaQuery.of(context).size);
-    // context.read<DevicesCubit>().getDevicesStates();
-  }
+  // @override
+  // void didChangeMetrics() {
+  //   super.didChangeMetrics();
+  //   // context.read<DevicesCubit>().getDevicesStates();
+  // }
 
   @override
   void dispose() {

@@ -13,7 +13,7 @@ class ScheduleCard extends StatefulWidget {
 
   const ScheduleCard({Key? key, this.schedule}) : super(key: key);
   @override
-  _ScheduleCardState createState() => _ScheduleCardState();
+  State<ScheduleCard> createState() => _ScheduleCardState();
 }
 
 class _ScheduleCardState extends State<ScheduleCard> {
@@ -43,7 +43,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
         child: Container(
           decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
               boxShadow: [
                 BoxShadow(
                   color: ColorsCustom.loginScreenMiddle.withAlpha(100),
@@ -51,7 +51,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                   spreadRadius: 1,
                 ),
               ]),
-          width: MediaQuery.of(context).size.width,
+          // width: MediaQuery.of(context).size.width / 2.5,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
             child: Column(
@@ -108,10 +108,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Flexible(
-                        child: Container(
-                      child: SizedBox(
-                          width: 70, height: 80, child: _deleteSchedule()),
-                    )),
+                        child: SizedBox(
+                            width: 70, height: 80, child: _deleteSchedule())),
                     Flexible(
                       child: Text(
                         (widget.schedule?.scheduleTime)!,
