@@ -284,7 +284,7 @@ class ShowAlertOptions {
   }
 }
 
-class RaisedButton extends ElevatedButton {
+class RaisedButton extends MaterialButton {
   final RoundedRectangleBorder? shape;
   final double? elevation;
 
@@ -300,15 +300,18 @@ class RaisedButton extends ElevatedButton {
     return ElevatedButton(
       onPressed: onPressed,
       style: ButtonStyle(
+        backgroundColor:
+            MaterialStateProperty.all<Color>(ColorsCustom.loginScreenMiddle),
         elevation: MaterialStateProperty.all(elevation ?? 1),
-        shape: MaterialStateProperty.all(
-          shape ??
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
-        ),
+        shape: MaterialStateProperty.all(shape ??
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            )),
       ),
-      child: child,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
+        child: child,
+      ),
     );
   }
 }

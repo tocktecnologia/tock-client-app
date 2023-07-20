@@ -1,0 +1,3 @@
+[submodule "tock-web-app"]
+	path = tock-web-app
+	url = https://github.com/tocktecnologia/tock-web-app.git

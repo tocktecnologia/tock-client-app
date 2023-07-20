@@ -180,7 +180,6 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         } else {
           return ButtonLogin(
-            backgroundColor: Colors.white,
             label: 'Entrar',
             mOnPressed: () {
               // _loginCognito();
