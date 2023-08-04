@@ -25,7 +25,7 @@ class DevicesCubit extends Cubit<DevicesState> {
     emit(UpdatedDevicesState(deviceStateList));
   }
 
-  Future<void> updateReportedDevices(String msg) async {
+  Future<void> updateReportedDevices(String msg, String topic) async {
     if (deviceStateList.isEmpty) {
       // print("deviceStateList is empty ");
       return;
@@ -44,20 +44,43 @@ class DevicesCubit extends Cubit<DevicesState> {
       return;
     }
 
+    // get remote id that requested change of pin value
+    final topicSplitted = topic.split("/");
+    String remoteIdTarget = topicSplitted.length > 3
+        ? topicSplitted.elementAt(2)
+        : topicSplitted.first;
+
     // print("updateReportedDevices received: ${msgJson["state"]["reported"]}");
     msgJson["state"]["reported"].forEach((String k, v) {
       if (k.startsWith("pin")) {
         final pinReported = k.substring(3);
-        final deviceIdx =
-            deviceStateList.indexWhere((element) => element.pin == pinReported);
+        final deviceIdx = deviceStateList.indexWhere((element) {
+          return (element.pin == pinReported &&
+              element.remoteId == remoteIdTarget);
+        });
 
         // substitution
         if (deviceIdx >= 0) {
           deviceStateList[deviceIdx] = DeviceState(
               device: deviceStateList[deviceIdx], state: v.toString());
+
+          // print("\ndeviceIdx: $deviceIdx");
+          // print(
+          //     "deviceStateList[deviceIdx].state: ${deviceStateList[deviceIdx].state}");
+          // print(
+          //     "deviceStateList[deviceIdx].remoteId: ${deviceStateList[deviceIdx].remoteId}");
+          // print(
+          //     "deviceStateList[deviceIdx].label: ${deviceStateList[deviceIdx].label}");
+
+          // print("deviceStateList[10].state: ${deviceStateList[10].state}");
+          // print(
+          //     "deviceStateList[10].remoteId: ${deviceStateList[10].remoteId}");
+          // print("deviceStateList[10].label: ${deviceStateList[10].label}");
         }
       }
     });
+
+    // await Future.delayed(const Duration(milliseconds: 300));
 
     emit(UpdatedDevicesState(deviceStateList));
   }

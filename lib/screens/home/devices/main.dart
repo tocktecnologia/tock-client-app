@@ -15,6 +15,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:reorderables/reorderables.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:tuple/tuple.dart';
 
 const paddingHorizIntern = 10.0;
 const paddingHorizExtern = 10.0;
@@ -51,13 +52,33 @@ class _DevicesScreenState extends State<DevicesScreen>
 
   _listenMqtt() {
     final client = Locator.instance.get<MqttService>().awsClient?.client;
-    client?.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-      final recMess = c![0].payload as MqttPublishMessage;
-      final pt =
-          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
-      context.read<DevicesCubit>().updateReportedDevices(pt);
+    client?.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+      for (MqttReceivedMessage<MqttMessage> message in c) {
+        final MqttPublishMessage recMess =
+            message.payload as MqttPublishMessage;
+        final String pt =
+            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+
+        // print("msg form ${message.topic}: $pt");
+
+        context.read<DevicesCubit>().updateReportedDevices(pt, message.topic);
+      }
     });
+
+    // client?.updates?.listen((List<MqttReceivedMessage<MqttMessage?>> c) {
+    //   final bytesPayload = c[0].payload as MqttPublishMessage;
+    //   final message = MqttPublishPayload.bytesToStringAsString(
+    //       bytesPayload.payload.message);
+
+    //   // final bytesTopic = c[0].topic as MqttPublishMessage;
+    //   // final topic =
+    //   //     MqttPublishPayload.bytesToStringAsString(bytesTopic.payload.message);
+
+    //   print("message arrived from : $message");
+
+    //   context.read<DevicesCubit>().updateReportedDevices(message);
+    // });
   }
 
   @override

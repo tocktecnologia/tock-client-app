@@ -99,8 +99,10 @@ class _DeviceWidgetState extends State<DeviceWidget> {
     return BlocBuilder<DevicesCubit, DevicesState>(
       buildWhen: (previous, current) {
         if (current is UpdatedDevicesState) {
-          final deviceStateList = current.deviceStateList
-              .where((element) => element.pin == widget.deviceState.pin);
+          final deviceStateList = current.deviceStateList.where((element) =>
+              element.pin == widget.deviceState.pin &&
+              widget.deviceState.remoteId ==
+                  element.remoteId); // search by pin and remoteId
 
           if (deviceStateList.isNotEmpty) {
             setState(() {
@@ -113,12 +115,18 @@ class _DeviceWidgetState extends State<DeviceWidget> {
       },
       builder: (context, state) {
         if (state is UpdatedDevicesState) {
-          final myDeviceState = state.deviceStateList
-              .where((element) => element.pin == widget.deviceState.pin)
-              .first
-              .state;
-          return _getIcon(
-              widget.deviceState.type, myDeviceState, deviceState?.stateOn);
+          final myDeviceStateList = state.deviceStateList.where((element) =>
+              element.pin == widget.deviceState.pin &&
+              widget.deviceState.remoteId ==
+                  element.remoteId); // search by pin and remoteId
+
+          if (myDeviceStateList.isNotEmpty) {
+            return _getIcon(widget.deviceState.type,
+                myDeviceStateList.first.state, deviceState?.stateOn);
+          } else {
+            return _getIcon(deviceState?.type ?? DeviceTypes.LIGHT,
+                deviceState?.state, deviceState?.stateOn);
+          }
         } else {
           return _getIcon(deviceState?.type ?? DeviceTypes.LIGHT,
               deviceState?.state, deviceState?.stateOn);
