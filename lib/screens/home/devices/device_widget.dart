@@ -118,7 +118,7 @@ class _DeviceWidgetState extends State<DeviceWidget> {
           final myDeviceStateList = state.deviceStateList.where((element) =>
               element.pin == widget.deviceState.pin &&
               widget.deviceState.remoteId ==
-                  element.remoteId); // search by pin and remoteId
+                  element.remoteId); // search by pin and remoteId too
 
           if (myDeviceStateList.isNotEmpty) {
             return _getIcon(widget.deviceState.type,
