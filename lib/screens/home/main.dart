@@ -15,6 +15,7 @@ import 'package:client/screens/login/main.dart';
 import 'package:client/shared/utils/colors.dart';
 import 'package:client/shared/utils/screen_transitions/open.transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -99,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 backgroundColor: ColorsCustom.loginScreenUp,
                 drawerDragStartBehavior: DragStartBehavior.down,
                 key: _scaffoldKey,
-                drawer: _drawer(),
+                drawer: _drawer(state.packageInfo),
                 bottomNavigationBar: BottomNavigationBar(
                   currentIndex: _currentIndex,
                   items: _bottomNavigatioItens(),
@@ -178,13 +179,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ];
   }
 
-  Widget _drawer() {
+  Widget _drawer(PackageInfo packageInfo) {
     return Drawer(
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
             accountName: _environmentName(),
             accountEmail: _email(),
+            otherAccountsPictures: [
+              Text(
+                "v${packageInfo.version}+${packageInfo.buildNumber}",
+                style: const TextStyle(
+                  color: Colors.white54,
+                ),
+              ),
+            ],
+            otherAccountsPicturesSize: const Size.square(60.0),
             currentAccountPicture: const CircleAvatar(
               backgroundImage: AssetImage('assets/images/cond.png'),
             ),
