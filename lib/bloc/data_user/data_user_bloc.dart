@@ -7,6 +7,7 @@ import 'package:client/shared/utils/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 part 'data_user_state.dart';
 
 const keyDataUser = "dataUser";
@@ -22,7 +23,7 @@ class DataUserCubit extends Cubit<DataUserState> {
       String? userPref = pref.getString(keyDataUser);
 
       // if has data in memory
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String version = await _getAppVersion();
 
       if (userPref != null && !forceCloud) {
         print("getting userData from shared preferences");
@@ -31,7 +32,7 @@ class DataUserCubit extends Cubit<DataUserState> {
         final dataUser = DataUser.fromJson(dataUserjson);
         // await Future.delayed(const Duration(milliseconds: 10));
 
-        emit(LoadedDataUserState(dataUser: dataUser, packageInfo: packageInfo));
+        emit(LoadedDataUserState(dataUser: dataUser, version: version));
       }
       // else, get from cloud
       else {
@@ -39,7 +40,7 @@ class DataUserCubit extends Cubit<DataUserState> {
         final dataUser = await Locator.instance.get<AwsApi>().getDataUser();
         await pref.setString(keyDataUser, jsonEncode(dataUser.toJson()));
 
-        emit(LoadedDataUserState(dataUser: dataUser, packageInfo: packageInfo));
+        emit(LoadedDataUserState(dataUser: dataUser, version: version));
       }
     } catch (e) {
       emit(LoadDataUserErrorState(message: e.toString()));
@@ -50,4 +51,18 @@ class DataUserCubit extends Cubit<DataUserState> {
     SharedPreferences? pref = await SharedPreferences.getInstance();
     pref.clear();
   }
+
+  Future<String> _getAppVersion() async {
+    if (kIsWeb) {
+      return WebVersionInfo.name;
+    } else {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      return packageInfo.version;
+    }
+  }
+}
+
+class WebVersionInfo {
+  static const String name = '1.0.0';
+  static const int build = 1;
 }

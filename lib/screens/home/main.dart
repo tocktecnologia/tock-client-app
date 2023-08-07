@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 backgroundColor: ColorsCustom.loginScreenUp,
                 drawerDragStartBehavior: DragStartBehavior.down,
                 key: _scaffoldKey,
-                drawer: _drawer(state.packageInfo),
+                drawer: _drawer(state.version),
                 bottomNavigationBar: BottomNavigationBar(
                   currentIndex: _currentIndex,
                   items: _bottomNavigatioItens(),
@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ];
   }
 
-  Widget _drawer(PackageInfo packageInfo) {
+  Widget _drawer(String version) {
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -188,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             accountEmail: _email(),
             otherAccountsPictures: [
               Text(
-                "v${packageInfo.version}+${packageInfo.buildNumber}",
+                "v $version",
                 style: const TextStyle(
                   color: Colors.white54,
                 ),
